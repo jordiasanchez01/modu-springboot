@@ -28,6 +28,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springdoc.version>3.0.3</springdoc.version>
         <mapstruct.version>1.6.3</mapstruct.version>
+        <lombok.version>1.18.36</lombok.version>
+        <springframework-boot.version>4.1.0-RC1</springframework-boot.version>
     </properties>
 
     <dependencyManagement>
@@ -48,7 +50,13 @@
                 <artifactId>postgres-repository</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
+            <!-- LOMBOK -->
+            <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+            <version>${lombok.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
