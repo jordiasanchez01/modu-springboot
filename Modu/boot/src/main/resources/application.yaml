@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: Modu API
+  datasource:
+    url: jdbc:postgresql://localhost:5432/modu_db
+    username: modu_user
+    password: modu_pass
+  jpa:
+    show_sql: true
+    hibernate:
+      ddl_auto: none
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: always
+
+server:
+  port: 8080
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    urls:
+      - name: Cars API
+        url: /docs/api-spec.yaml
