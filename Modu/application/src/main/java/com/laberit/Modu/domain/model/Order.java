@@ -5,18 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Model {
+public class Order {
     private Long id;
-    private String name;
-    private String description;
-    private Double price;
-    private String image_url;
-    private List<Categories> categories;
-    private List<Product> products;
+    private Long userId;
+    private String specialInstructions;
+    private Date createdAt;
+    private List<OrderItem> orderItems;
 }

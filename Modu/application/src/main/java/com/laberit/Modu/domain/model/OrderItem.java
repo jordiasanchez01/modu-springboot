@@ -5,16 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Cart {
+public class OrderItem {
     private Long id;
-    private Long userId;
-    private Date createdAt;
-    private List<CartItem> cartItems;
+    private Long orderId;
+    private Long productId;
+    private Double unitPrice;
+    private Double totalPrice;
+    private Integer quantity;
 }
