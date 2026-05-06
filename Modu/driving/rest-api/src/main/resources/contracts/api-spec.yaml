@@ -1,5 +1,25 @@
 openapi: 3.0.3
 info:
   title: Modu API
+  description: API for Modu e-commerce
   version: 1.0.0
-paths: {}
+
+servers:
+  - url: http://localhost:8080
+    description: local server
+
+tags:
+  - name: Models
+    description: read operations to get models
+  - name: Categories
+    description: read operation to get categories
+  - name: Cart
+    description: operations related to cart handling (add item, modify quantity, validate)
+paths:
+  /models:
+    $ref: './paths/models/models.yaml'
+
+components:
+  schemas:
+    HomeModelResponse:
+      $ref: './components/schemas/HomeModelResponse.yaml'
