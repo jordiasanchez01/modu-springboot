@@ -1,9 +1,9 @@
 get:
   tags:
-    - Models
-  summary: Get models (paged and filtered if requested)
-  description: Return a list of all models, paged and filtered (if requested).
-  operationId: getModels
+    - Categories
+  summary: Get categories
+  description: Return a list of all available model categories.
+  operationId: getCategories
 
   responses:
     '200':
