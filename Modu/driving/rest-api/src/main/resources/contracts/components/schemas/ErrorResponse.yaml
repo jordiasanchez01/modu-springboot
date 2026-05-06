@@ -1,0 +1,18 @@
+type: object
+required:
+  - model_id
+  - title
+  - description
+  - price
+  - url
+  - sizes
+  - colors
+  - stock
+properties:
+  model_id:
+    type: integer
+    format: int64
+    example: 1
+  title:
+    type: string
+    example: https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=800&q=80

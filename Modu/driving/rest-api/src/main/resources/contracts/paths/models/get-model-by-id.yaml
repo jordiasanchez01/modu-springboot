@@ -26,4 +26,4 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../components/schemas/ErrorResponse.yaml'
+            $ref: '../../components/schemas/ModelDetailsResponse.yaml'

@@ -45,6 +45,13 @@
             <artifactId>mapstruct</artifactId>
             <version>1.6.3</version>
         </dependency>
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <build>
@@ -62,8 +69,8 @@
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/contracts/api-spec.yaml</inputSpec>
                             <generatorName>spring</generatorName>
-                            <apiPackage>Modu.rest.generated.api</apiPackage>
-                            <modelPackage>Modu.rest.generated.model</modelPackage>
+                            <apiPackage>com.laberit.Modu.rest.generated.api</apiPackage>
+                            <modelPackage>com.laberit.Modu.rest.generated.model</modelPackage>
                             <generateSupportingFiles>false</generateSupportingFiles>
                             <configOptions>
                                 <interfaceOnly>true</interfaceOnly>
@@ -80,19 +87,7 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>1.6.3</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
+
         </plugins>
     </build>
 

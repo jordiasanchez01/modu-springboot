@@ -9,13 +9,15 @@ public interface CategoryRepositoryPort {
 
     List<Category> findAll();
 
-    Optional<Category> findById(Long id);
+    Optional<Category> findById(Integer id);
 
     Optional<Category> findByName(String name);
+
+    boolean existsById(Integer id);
 
     boolean existsByName(String name);
 
     Category save(Category category);
 
-    void deleteById(Long id);
+    void deleteById(Integer id);
 }
