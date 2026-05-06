@@ -5,18 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Model {
+public class ProductVariant {
     private Long id;
     private String name;
-    private String description;
-    private Double price;
-    private String image_url;
-    private List<Category> categories;
-    private List<Product> products;
+    private String size;
+    private String color;
+    private Integer stock;
+    private Boolean active;
+    private Long model_id;
 }
