@@ -62,8 +62,8 @@
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/contracts/api-spec.yaml</inputSpec>
                             <generatorName>spring</generatorName>
-                            <apiPackage>org.example.CarsApiHex.rest.generated.api</apiPackage>
-                            <modelPackage>org.example.CarsApiHex.rest.generated.model</modelPackage>
+                            <apiPackage>Modu.rest.generated.api</apiPackage>
+                            <modelPackage>Modu.rest.generated.model</modelPackage>
                             <generateSupportingFiles>false</generateSupportingFiles>
                             <configOptions>
                                 <interfaceOnly>true</interfaceOnly>
