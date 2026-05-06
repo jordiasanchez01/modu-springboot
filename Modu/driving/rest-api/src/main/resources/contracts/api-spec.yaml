@@ -18,6 +18,8 @@ tags:
 paths:
   /models:
     $ref: './paths/models/models.yaml'
+  /model/{modelId}:
+    $ref: './paths/models/get-model-by-id.yaml'
   /categories:
     $ref: './paths/categories.yaml'
 
