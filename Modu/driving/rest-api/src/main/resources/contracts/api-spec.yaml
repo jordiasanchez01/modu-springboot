@@ -18,6 +18,8 @@ tags:
 paths:
   /models:
     $ref: './paths/models/models.yaml'
+  /categories:
+    $ref: './paths/categories.yaml'
 
 components:
   schemas:
