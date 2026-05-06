@@ -9,21 +9,23 @@ servers:
     description: local server
 
 tags:
-  - name: Models
-    description: read operations to get models
+  - name: Products
+    description: read operations to get products
   - name: Categories
     description: read operation to get categories
   - name: Cart
     description: operations related to cart handling (add item, modify quantity, validate)
 paths:
   /models:
-    $ref: './paths/models/models.yaml'
+    $ref: './paths/products/models.yaml'
   /model/{modelId}:
-    $ref: './paths/models/get-model-by-id.yaml'
+    $ref: './paths/products/get-product-by-id.yaml'
   /categories:
     $ref: './paths/categories.yaml'
+  /cart/addItem:
+    $ref: './paths/cart/addItem.yaml'
 
 components:
   schemas:
-    HomeModelResponse:
-      $ref: './components/schemas/HomeModelResponse.yaml'
+    ProductResponse:
+      $ref: './components/schemas/ProductsResponse.yaml'

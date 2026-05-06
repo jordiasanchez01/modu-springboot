@@ -6,7 +6,7 @@ required:
 properties:
   type:
     type: string
-    example: "NOT_FOUND_ERROR",
+    example: "NOT_FOUND_ERROR"
   message:
     type: string
     example: "The requested resource is not found"
@@ -15,12 +15,12 @@ properties:
     items:
       type: object
       required:
-        -field
-        -message
+        - field
+        - message
       properties:
         field:
           type: string
           example: model
         message:
           type: string
-          example: Model with requested id is not found
+          example: Product with requested id is not found
