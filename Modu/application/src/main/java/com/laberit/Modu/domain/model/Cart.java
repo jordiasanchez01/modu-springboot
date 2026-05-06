@@ -17,4 +17,5 @@ public class Cart {
     private Long userId;
     private Date createdAt;
     private List<CartItem> cartItems;
+    private Double totalPrice;
 }

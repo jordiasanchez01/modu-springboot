@@ -17,6 +17,6 @@ public class Model {
     private String description;
     private Double price;
     private String image_url;
-    private List<Categories> categories;
+    private List<Category> categories;
     private List<Product> products;
 }

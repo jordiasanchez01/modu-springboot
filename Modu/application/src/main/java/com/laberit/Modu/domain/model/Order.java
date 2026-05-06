@@ -18,4 +18,5 @@ public class Order {
     private String specialInstructions;
     private Date createdAt;
     private List<OrderItem> orderItems;
+    private Double totalPrice;
 }

@@ -15,4 +15,5 @@ public class CartItem {
     private Long productId;
     private Double price;
     private Integer quantity;
+    private Double totalPrice;
 }
