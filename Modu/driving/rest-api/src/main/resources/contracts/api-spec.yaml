@@ -23,7 +23,9 @@ paths:
   /categories:
     $ref: './paths/categories.yaml'
   /cart/addItem:
-    $ref: './paths/cart/addItem.yaml'
+    $ref: './paths/cart/add-item.yaml'
+  /cart/updateItem/{itemId}:
+    $ref: './paths/cart/update-item.yaml'
 
 components:
   schemas:
