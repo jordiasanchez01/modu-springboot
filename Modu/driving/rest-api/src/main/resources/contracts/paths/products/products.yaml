@@ -57,5 +57,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../components/schemas/ProductPageResponse.yaml'
+            type: array
+            items:
+              $ref: '../../components/schemas/ProductPageResponse.yaml'
 
