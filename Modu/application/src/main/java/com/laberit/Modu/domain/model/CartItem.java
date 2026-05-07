@@ -11,9 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CartItem {
     private Long id;
-    private Long cartId;
-    private Long productId;
-    private Double price;
+    private Long productVariantId;
+    private Double unitPrice;
     private Integer quantity;
-    private Double totalPrice;
+
+    public Double getTotalPrice() { return unitPrice * quantity; }
 }
+
+
