@@ -7,14 +7,14 @@ get:
   parameters:
     - name: page
       in: query
-      required: true
+      required: false
       description: page to be shown
       schema:
         type: integer
         default: 0
     - name: size
       in: query
-      required: true
+      required: false
       description: page size
       schema:
         type: integer
@@ -59,4 +59,5 @@ get:
           schema:
             type: array
             items:
-              $ref: '../../components/schemas/ProductResponse.yaml'
+              $ref: '../../components/schemas/ProductPageResponse.yaml'
+

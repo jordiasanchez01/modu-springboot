@@ -17,11 +17,9 @@ public class Cart {
     private Date createdAt;
     private List<CartItem> cartItems;
 
-    public Double getTotalOrderPrice(){
-        Double sum = 0.0;
-        if (cartItems.isEmpty())
-            return sum;
-        for (CartItem item : cartItems) { sum = sum + item.getTotalPrice();};
-        return sum;
+    public Double getTotalCartPrice(){
+        return cartItems.stream()
+                .mapToDouble(CartItem::getTotalPrice)
+                .sum();
     }
 }

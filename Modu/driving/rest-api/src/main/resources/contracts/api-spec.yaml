@@ -19,8 +19,8 @@ tags:
     description: operations related to cart handling (add item, modify quantity, validate)
 paths:
   /products:
-    $ref: './paths/products/models.yaml'
-  /products/{modelId}:
+    $ref: './paths/products/products.yaml'
+  /product/{productId}:
     $ref: './paths/products/get-product-by-id.yaml'
   /products/{productId}/product_variants:
     $ref: './paths/products/get-variants-by-product-id.yaml'
