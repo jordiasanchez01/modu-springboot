@@ -34,4 +34,4 @@ paths:
 components:
   schemas:
     ProductResponse:
-      $ref: './components/schemas/ProductResponse.yaml'
+      $ref: './components/schemas/ProductPageResponse.yaml'
