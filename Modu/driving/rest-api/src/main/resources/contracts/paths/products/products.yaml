@@ -1,0 +1,61 @@
+get:
+  tags:
+    - Products
+  summary: Get products (paged and filtered if requested)
+  description: Return a list of all products, paged and filtered (if requested).
+  operationId: getProducts
+  parameters:
+    - name: page
+      in: query
+      required: false
+      description: page to be shown
+      schema:
+        type: integer
+        default: 0
+    - name: size
+      in: query
+      required: false
+      description: page size
+      schema:
+        type: integer
+        default: 20
+    - name: title
+      in: query
+      required: false
+      description: search string in title
+      schema:
+        type: string
+        example: "jeans"
+    - name: orderByPrice
+      in: query
+      required: false
+      description: order result by price (lowest first - asc, highest first - desc)
+      schema:
+        type: string
+        example: "asc"
+    - name: maxPrice
+      in: query
+      required: false
+      description: filter up to max price indicated
+      schema:
+        type: integer
+        example: 640
+    - name: category
+      in: query
+      required: false
+      description: a list of categories
+      schema:
+        type: array
+        items:
+          type: string
+          example: activewear
+
+
+  responses:
+    '200':
+      description: List of products by page and filtered (if any)
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ProductPageResponse.yaml'
+

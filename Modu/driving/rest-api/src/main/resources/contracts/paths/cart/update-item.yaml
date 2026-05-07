@@ -1,0 +1,43 @@
+patch:
+  tags:
+    - Cart
+  summary: Update item´s quantity in the user´s cart
+  description: Updates indicated items quantity in the user´s cart
+  operationId: updateCartItem
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas/UpdateItemRequest.yaml'
+  parameters:
+    - $ref: '../../components/parameters/headerUID.yaml'
+    - name: itemID
+      in: path
+      required: true
+      description: Product ID
+      schema:
+        type: integer
+        format: int64
+        example: 2
+
+  responses:
+    '200':
+      description: Item updated successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/CartResponse.yaml'
+    '404':
+      description: Requested item is not found
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '409':
+      description: Item could not be updated due to lack of stock
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+
