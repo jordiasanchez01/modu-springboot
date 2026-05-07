@@ -16,5 +16,5 @@ public class ProductVariant {
     private String color;
     private Integer stock;
     private Boolean active;
-    private Long model_id;
+    private Long productId;
 }

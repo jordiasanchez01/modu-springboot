@@ -18,5 +18,12 @@ public class Order {
     private String specialInstructions;
     private Date createdAt;
     private List<OrderItem> orderItems;
-    private Double totalPrice;
+
+    public Double getTotalOrderPrice(){
+        Double sum = 0.0;
+        if (orderItems.isEmpty())
+            return sum;
+        for (OrderItem item : orderItems) { sum = sum + item.getTotalPrice();};
+        return sum;
+    }
 }
