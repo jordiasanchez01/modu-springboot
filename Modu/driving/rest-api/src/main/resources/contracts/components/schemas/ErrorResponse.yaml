@@ -1,18 +1,26 @@
 type: object
 required:
-  - model_id
-  - title
-  - description
-  - price
-  - url
-  - sizes
-  - colors
-  - stock
+  - type
+  - message
+  - fields
 properties:
-  model_id:
-    type: integer
-    format: int64
-    example: 1
-  title:
+  type:
     type: string
-    example: https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=800&q=80
+    example: "NOT_FOUND_ERROR"
+  message:
+    type: string
+    example: "The requested resource is not found"
+  fields:
+    type: array
+    items:
+      type: object
+      required:
+        - field
+        - message
+      properties:
+        field:
+          type: string
+          example: model
+        message:
+          type: string
+          example: Product with requested id is not found

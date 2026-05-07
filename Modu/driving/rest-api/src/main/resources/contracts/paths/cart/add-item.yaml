@@ -1,0 +1,34 @@
+post:
+  tags:
+    - Cart
+  summary: Add item (product + quantity) to the user´s cart
+  description: Adds item (product + quantity) to the user´s cart, if the user does not have its cart yet, creates the cart first. If item is already in the cart, the request quantity will be added to the existing quantity
+  operationId: addCartItem
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas/AddItemRequest.yaml'
+  parameters:
+    - $ref: '../../components/parameters/headerUID.yaml'
+
+  responses:
+    '200':
+      description: Item added successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/CartResponse.yaml'
+    '404':
+      description: Requested product is not found
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '409':
+      description: Item could not be added due to lack of stock
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'

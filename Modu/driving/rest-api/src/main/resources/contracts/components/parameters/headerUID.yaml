@@ -1,0 +1,6 @@
+name: userUID
+in: header
+required: true
+description: UID of user´s device
+schema:
+  type: string
