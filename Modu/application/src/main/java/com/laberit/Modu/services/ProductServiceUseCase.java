@@ -2,8 +2,10 @@ package com.laberit.Modu.services;
 
 import com.laberit.Modu.domain.model.PagedResult;
 import com.laberit.Modu.domain.model.Product;
+import com.laberit.Modu.ports.driven.CategoryRepositoryPort;
 import com.laberit.Modu.domain.model.ProductSearchCriteria;
 import com.laberit.Modu.ports.driven.ProductRepositoryPort;
+import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
 import com.laberit.Modu.ports.driving.ProductServicePort;
 import com.laberit.Modu.ports.driving.command.AddProductCommand;
 import com.laberit.Modu.ports.driving.command.UpdateProductCommand;
@@ -21,9 +23,14 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class ProductServiceUseCase implements ProductServicePort {
     private final ProductRepositoryPort productRepositoryPort;
+    private final CategoryRepositoryPort categoryRepositoryPort;
+    private final ProductVariantRepositoryPort productVariantRepositoryPort;
 
     @Override
     public Product findProductById(Long productId) {
+        Product product = productRepositoryPort.findById(productId);
+
+
         return null;
     }
 
@@ -43,7 +50,7 @@ public class ProductServiceUseCase implements ProductServicePort {
     }
 
     @Override
-    public void deleteProduct(Long productId) {
+    public void deleteProduct(Long ProductId) {
 
     }
 
