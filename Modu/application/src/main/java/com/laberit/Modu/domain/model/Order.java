@@ -18,5 +18,10 @@ public class Order {
     private String specialInstructions;
     private Date createdAt;
     private List<OrderItem> orderItems;
-    private Double totalPrice;
+
+    public Double getTotalOrderPrice(){
+        return orderItems.stream()
+                .mapToDouble(OrderItem::getTotalPrice)
+                .sum();
+    }
 }

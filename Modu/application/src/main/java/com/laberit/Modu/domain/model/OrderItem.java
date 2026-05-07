@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OrderItem {
     private Long id;
-    private Long orderId;
-    private Long productId;
+    private Long productVariantId;
     private Double unitPrice;
-    private Double totalPrice;
     private Integer quantity;
+
+    public Double getTotalPrice() { return unitPrice * quantity; }
 }

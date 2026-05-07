@@ -1,0 +1,29 @@
+get:
+  tags:
+    - Products
+  summary: Get a product by its ID
+  description: Return a product with provided id.
+  operationId: getProductById
+  parameters:
+    - name: productId
+      in: path
+      required: true
+      description: Product ID
+      schema:
+        type: integer
+        format: int64
+        example: 2
+
+  responses:
+    '200':
+      description: Product retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ProductDetailsResponse.yaml'
+    '404':
+      description: Product with the provided ID is not found
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
