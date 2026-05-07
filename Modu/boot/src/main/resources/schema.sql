@@ -3,7 +3,8 @@ CREATE TABLE product (
     name VARCHAR(100) ,
     description TEXT,
     image_url TEXT,
-    price DECIMAL
+    price DECIMAL,
+    active BOOLEAN
 );
 
 CREATE TABLE product_variant (

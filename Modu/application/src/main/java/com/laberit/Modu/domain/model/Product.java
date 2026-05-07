@@ -15,8 +15,9 @@ public class Product {
     private Long id;
     private String name;
     private String description;
-    private Double price;
     private String imageUrl;
+    private Double price;
+    private Boolean active;
     private List<Category> categories;
     private List<ProductVariant> products;
 }
