@@ -20,10 +20,8 @@ public class Order {
     private List<OrderItem> orderItems;
 
     public Double getTotalOrderPrice(){
-        Double sum = 0.0;
-        if (orderItems.isEmpty())
-            return sum;
-        for (OrderItem item : orderItems) { sum = sum + item.getTotalPrice();};
-        return sum;
+        return orderItems.stream()
+                .mapToDouble(OrderItem::getTotalPrice)
+                .sum();
     }
 }
