@@ -8,10 +8,6 @@ import java.util.List;
 
 public interface ProductServicePort {
 
-    List<Product> findAll();
-
-    List<Product> findAllByProductId(Long ProductId);
-
     Product findProductById(Long ProductId);
 
     Product findProductByName(String name);

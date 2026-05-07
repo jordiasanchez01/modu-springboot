@@ -30,4 +30,5 @@ public interface CategoryPersistanceMapper {
     }
 
     List<Category> toDomainList(List<CategoryEntity> entities);
+    List<CategoryEntity> toEntityList(List<Category> categories);
 }
