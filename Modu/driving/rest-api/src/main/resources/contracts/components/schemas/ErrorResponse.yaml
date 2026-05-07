@@ -1,0 +1,26 @@
+type: object
+required:
+  - type
+  - message
+  - fields
+properties:
+  type:
+    type: string
+    example: "NOT_FOUND_ERROR"
+  message:
+    type: string
+    example: "The requested resource is not found"
+  fields:
+    type: array
+    items:
+      type: object
+      required:
+        - field
+        - message
+      properties:
+        field:
+          type: string
+          example: model
+        message:
+          type: string
+          example: Product with requested id is not found
