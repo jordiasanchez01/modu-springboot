@@ -1,4 +1,4 @@
-INSERT INTO model (name, description, image_url, price, active)
+INSERT INTO product (name, description, image_url, price, active)
 SELECT *
 FROM (
          VALUES
@@ -23,7 +23,7 @@ FROM (
              ('Linen Shirt', 'Breathable linen shirt for summer.', 'https://images.unsplash.com/photo-1521335629791-ce4aec67dd53?auto=format&fit=crop&w=800&q=80', 45.99, TRUE),
              ('Wool Coat', 'Elegant wool coat for winter season.', 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=800&q=80', 179.99, TRUE)
      ) AS v(name, description, image_url, price, active)
-WHERE NOT EXISTS (SELECT 1 FROM model);
+WHERE NOT EXISTS (SELECT 1 FROM product);
 
 INSERT INTO category (name)
 SELECT *
@@ -39,7 +39,7 @@ FROM (
 WHERE NOT EXISTS (SELECT 1 FROM category);
 
 /* SEED VALUES FOR PRODUCT TABLE*/
-INSERT INTO product (name, size, color, stock, active, model_id)
+INSERT INTO product_variant (name, size, color, stock, active, product_id)
 SELECT *
 FROM (
          VALUES
@@ -242,5 +242,5 @@ FROM (
              ('20_S_BLUE', 'S', 'BLUE', 10, TRUE, 20),
              ('20_M_BLUE', 'M', 'BLUE', 10, TRUE, 20),
              ('20_L_BLUE', 'L', 'BLUE', 10, TRUE, 20)
-     ) AS v(name, size, color, stock, active, model_id)
-WHERE NOT EXISTS (SELECT 1 FROM product);
+     ) AS v(name, size, color, stock, active, product_id)
+WHERE NOT EXISTS (SELECT 1 FROM product_variant);
