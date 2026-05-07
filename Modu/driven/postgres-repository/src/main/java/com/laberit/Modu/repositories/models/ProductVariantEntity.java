@@ -22,6 +22,7 @@ public class ProductVariantEntity {
     private Integer stock;
     @Column(nullable = false)
     private Boolean active;
-    @Column(nullable = false)
-    private Long productId;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private ProductEntity product;
 }

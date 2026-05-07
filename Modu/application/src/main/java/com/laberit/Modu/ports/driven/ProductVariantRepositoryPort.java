@@ -19,7 +19,7 @@ public interface ProductVariantRepositoryPort {
 
     boolean existsByName(String name);
 
-    ProductVariant save(ProductVariant category);
+    ProductVariant save(ProductVariant productVariant);
 
     void deleteById(Long id);
 }
