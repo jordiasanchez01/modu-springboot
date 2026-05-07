@@ -24,4 +24,4 @@ springdoc:
     disable-swagger-default-url: true
     urls:
       - name: Cars API
-        url: /docs/api-spec.yaml
+        url: /docs/v3/api-spec.yaml
