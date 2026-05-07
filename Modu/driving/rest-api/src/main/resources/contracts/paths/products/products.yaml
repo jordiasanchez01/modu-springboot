@@ -7,14 +7,14 @@ get:
   parameters:
     - name: page
       in: query
-      required: true
+      required: false
       description: page to be shown
       schema:
         type: integer
         default: 0
     - name: size
       in: query
-      required: true
+      required: false
       description: page size
       schema:
         type: integer
@@ -57,6 +57,22 @@ get:
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: '../../components/schemas/ProductsResponse.yaml'
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../components/schemas/ProductsResponse.yaml'
+              meta:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                    example: 2
+                  size:
+                    type: integer
+                    example: 10
+                  total_pages:
+                    type: integer
+                    example: 100
+

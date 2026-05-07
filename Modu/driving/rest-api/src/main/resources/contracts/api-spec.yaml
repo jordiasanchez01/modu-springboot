@@ -16,9 +16,9 @@ tags:
   - name: Cart
     description: operations related to cart handling (add item, modify quantity, validate)
 paths:
-  /models:
-    $ref: './paths/products/models.yaml'
-  /model/{modelId}:
+  /products:
+    $ref: './paths/products/products.yaml'
+  /product/{productId}:
     $ref: './paths/products/get-product-by-id.yaml'
   /categories:
     $ref: './paths/categories.yaml'
