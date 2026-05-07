@@ -24,40 +24,12 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class ProductRepositoryAdapter implements ProductRepositoryPort {
-    private final ProductJpaRepository repository;
-    private final ProductPersistanceMapper productMapper;
-    private final CategoryPersistanceMapper categoryMapper;
-    private final ProductVariantPersistanceMapper productVariantMapper;
-
     private final ProductJpaRepository productJpaRepository;
+    private final ProductPersistanceMapper productMapper;
+
     @Override
     public Optional<Product> findById(Long id) {
-        return repository.findById(id).map(productMapper::toDomain);
-    }
-
-    @Override
-    public Optional<Product> findByName(String name) {
-        return Optional.empty();
-    }
-
-    @Override
-    public boolean existsById(Long id) {
-        return false;
-    }
-
-    @Override
-    public boolean existsByName(String name) {
-        return false;
-    }
-
-    @Override
-    public Product save(Product product) {
-        return null;
-    }
-
-    @Override
-    public void deleteById(Long id) {
-
+        return productJpaRepository.findById(id).map(productMapper::toDomain);
     }
 
     @Override

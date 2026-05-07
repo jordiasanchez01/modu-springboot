@@ -12,15 +12,5 @@ public interface ProductRepositoryPort {
 
     Optional<Product> findById(Long id);
 
-    Optional<Product> findByName(String name);
-
-    boolean existsById(Long id);
-
-    boolean existsByName(String name);
-
-    Product save(Product product);
-
-    void deleteById(Long id);
-
     PagedResult<Product> findAll(ProductSearchCriteria searchCriteria);
 }

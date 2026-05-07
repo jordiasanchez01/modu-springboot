@@ -1,5 +1,6 @@
 package com.laberit.Modu.services;
 
+import com.laberit.Modu.domain.exceptions.CategoryNotFoundException;
 import com.laberit.Modu.domain.model.Category;
 import com.laberit.Modu.ports.driven.CategoryRepositoryPort;
 import com.laberit.Modu.ports.driving.CategoryServicePort;
@@ -27,7 +28,9 @@ public class CategoryServiceUseCase implements CategoryServicePort {
 
     @Override
     public Category findCategoryById(Integer categoryId) {
-        return null;
+
+        return categoryRepositoryPort.findById(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException(categoryId.toString()));
     }
 
     @Override

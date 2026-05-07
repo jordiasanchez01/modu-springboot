@@ -1,6 +1,7 @@
 package com.laberit.Modu.repositories.mappers;
 
 import com.laberit.Modu.domain.model.ProductVariant;
+import com.laberit.Modu.repositories.models.ProductEntity;
 import com.laberit.Modu.repositories.models.ProductVariantEntity;
 import org.mapstruct.Mapper;
 
@@ -20,7 +21,10 @@ public interface ProductVariantPersistanceMapper {
         entity.setColor(productVariant.getColor());
         entity.setStock(productVariant.getStock());
         entity.setActive(productVariant.getActive());
-        entity.setProductId(productVariant.getProductId());
+
+        ProductEntity productRef = new ProductEntity();
+        productRef.setId(productVariant.getProductId());
+        entity.setProduct(productRef);
         return entity;
     }
 
@@ -35,7 +39,7 @@ public interface ProductVariantPersistanceMapper {
                 .color(entity.getColor())
                 .stock(entity.getStock())
                 .active(entity.getActive())
-                .productId(entity.getProductId())
+                .productId(entity.getProduct().getId())
                 .build();
     }
 

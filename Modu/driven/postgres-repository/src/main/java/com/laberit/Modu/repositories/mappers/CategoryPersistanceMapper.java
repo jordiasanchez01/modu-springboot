@@ -14,8 +14,8 @@ public interface CategoryPersistanceMapper {
             return null;
         }
         CategoryEntity entity = new CategoryEntity();
-        entity.setId(category.getId());
-        entity.setName(category.getName());
+        entity.setId(category.id());
+        entity.setName(category.name());
         return entity;
     }
 

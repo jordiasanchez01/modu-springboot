@@ -20,7 +20,7 @@ properties:
       properties:
         field:
           type: string
-          example: model
+          example: product
         message:
           type: string
           example: Product with requested id is not found

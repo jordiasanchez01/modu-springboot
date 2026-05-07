@@ -1,9 +1,10 @@
 package com.laberit.Modu.services;
 
-import com.laberit.Modu.domain.model.PagedResult;
-import com.laberit.Modu.domain.model.Product;
+import com.laberit.Modu.domain.exceptions.CategoryNotFoundException;
+import com.laberit.Modu.domain.exceptions.ProductNotFoundException;
+import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.ports.driven.CategoryRepositoryPort;
-import com.laberit.Modu.domain.model.ProductSearchCriteria;
+import com.laberit.Modu.ports.driven.ProductCategoryRepositoryPort;
 import com.laberit.Modu.ports.driven.ProductRepositoryPort;
 import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
 import com.laberit.Modu.ports.driving.ProductServicePort;
@@ -24,14 +25,24 @@ import java.util.List;
 public class ProductServiceUseCase implements ProductServicePort {
     private final ProductRepositoryPort productRepositoryPort;
     private final CategoryRepositoryPort categoryRepositoryPort;
+    private final ProductCategoryRepositoryPort productCategoryRepositoryPort;
     private final ProductVariantRepositoryPort productVariantRepositoryPort;
 
     @Override
     public Product findProductById(Long productId) {
-        Product product = productRepositoryPort.findById(productId);
 
+        Product product = productRepositoryPort.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(productId.toString()));
 
-        return null;
+        List<Category> categories = productCategoryRepositoryPort.findAllByProductId(productId).stream()
+                .map(pC -> categoryRepositoryPort.findById(pC.categoryId())
+                        .orElseThrow(() -> new CategoryNotFoundException(pC.categoryId().toString())))
+                .toList();
+
+        product.setCategoriesList(categories);
+        product.setProductVariantsList(productVariantRepositoryPort.findAllByProductId(productId));
+
+        return product;
     }
 
     @Override
