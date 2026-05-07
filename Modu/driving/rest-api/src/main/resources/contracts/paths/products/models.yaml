@@ -59,4 +59,4 @@ get:
           schema:
             type: array
             items:
-              $ref: '../../components/schemas/ProductsResponse.yaml'
+              $ref: '../../components/schemas/ProductResponse.yaml'

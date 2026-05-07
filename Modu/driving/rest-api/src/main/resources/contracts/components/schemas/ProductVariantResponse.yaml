@@ -1,0 +1,35 @@
+type: object
+required:
+  - id
+  - name
+  - size
+  - color
+  - stock
+  - active
+  - productId
+properties:
+  id:
+    type: integer
+    format: int64
+    example: 1
+  name:
+    type: string
+    example: 123_SizeS_Col_Blue_CDJ156
+  size:
+    type: string
+    example: L
+  color:
+    type: string
+    example: Navy Blue
+  stock:
+    type: integer
+    example: 12
+  active:
+    type: boolean
+    example: TRUE
+  productId:
+    type: integer
+    format: int64
+    example: 2
+
+

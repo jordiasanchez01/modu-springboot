@@ -11,15 +11,19 @@ servers:
 tags:
   - name: Products
     description: read operations to get products
+  - name: Product Variants
+    description: read operations to get product variants
   - name: Categories
     description: read operation to get categories
   - name: Cart
     description: operations related to cart handling (add item, modify quantity, validate)
 paths:
-  /models:
+  /products:
     $ref: './paths/products/models.yaml'
-  /model/{modelId}:
+  /products/{modelId}:
     $ref: './paths/products/get-product-by-id.yaml'
+  /products/{productId}/product_variants:
+    $ref: './paths/products/get-variants-by-product-id.yaml'
   /categories:
     $ref: './paths/categories.yaml'
   /cart/addItem:
@@ -30,4 +34,4 @@ paths:
 components:
   schemas:
     ProductResponse:
-      $ref: './components/schemas/ProductsResponse.yaml'
+      $ref: './components/schemas/ProductResponse.yaml'

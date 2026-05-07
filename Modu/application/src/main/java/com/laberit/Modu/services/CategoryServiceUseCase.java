@@ -3,7 +3,7 @@ package com.laberit.Modu.services;
 import com.laberit.Modu.domain.model.Category;
 import com.laberit.Modu.ports.driven.CategoryRepositoryPort;
 import com.laberit.Modu.ports.driving.CategoryServicePort;
-import com.laberit.Modu.ports.driving.command.RegisterCategoryCommand;
+import com.laberit.Modu.ports.driving.command.AddCategoryCommand;
 import com.laberit.Modu.ports.driving.command.UpdateCategoryCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class CategoryServiceUseCase implements CategoryServicePort {
     }
 
     @Override
-    public Category addCategory(RegisterCategoryCommand command) {
+    public Category addCategory(AddCategoryCommand command) {
         return null;
     }
 

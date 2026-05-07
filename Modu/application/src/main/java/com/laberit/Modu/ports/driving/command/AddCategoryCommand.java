@@ -1,6 +1,6 @@
 package com.laberit.Modu.ports.driving.command;
 
-public record RegisterCategoryCommand(
+public record AddCategoryCommand(
         String name
 ) {
 }

@@ -1,0 +1,31 @@
+get:
+  tags:
+    - Product Variants
+  summary: Get product variants
+  description: Return a list of all available variants for the product.
+  operationId: getAllProductVariantsByProductId
+  parameters:
+    - name: productId
+      in: path
+      required: true
+      description: Product ID
+      schema:
+        type: integer
+        format: int64
+        example: 2
+
+  responses:
+    '200':
+      description: List of available product variants
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '../../components/schemas/ProductVariantResponse.yaml'
+    '404':
+      description: Variants for the Product with the provided ID not found
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
