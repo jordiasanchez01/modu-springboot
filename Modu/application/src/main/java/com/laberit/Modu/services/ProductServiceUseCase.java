@@ -10,7 +10,6 @@ import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
 import com.laberit.Modu.ports.driving.ProductServicePort;
 import com.laberit.Modu.ports.driving.command.AddProductCommand;
 import com.laberit.Modu.ports.driving.command.UpdateProductCommand;
-import com.laberit.Modu.ports.driving.command.SearchProductsCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -65,16 +64,6 @@ public class ProductServiceUseCase implements ProductServicePort {
 
     }
 
-    @Override
-    public PagedResult<Product> search(SearchProductsCommand command) {
-        ProductSearchCriteria criteria = new ProductSearchCriteria(
-                command.title(),
-                command.sort(),
-                command.maxPrice(),
-                command.categoryIds(),
-                command.page(),
-                command.size()
-        );
-       return productRepositoryPort.findAll(criteria);
-    }
+
+
 }
