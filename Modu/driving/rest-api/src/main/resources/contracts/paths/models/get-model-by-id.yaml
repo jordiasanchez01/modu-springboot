@@ -1,0 +1,29 @@
+get:
+  tags:
+    - Models
+  summary: Get a model by its ID
+  description: Return a model with provided id.
+  operationId: getModelById
+  parameters:
+    - name: modelId
+      in: path
+      required: true
+      description: Model ID
+      schema:
+        type: integer
+        format: int64
+        example: 2
+
+  responses:
+    '200':
+      description: Model retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ModelDetailsResponse.yaml'
+    '404':
+      description: Model with the provided ID is not found
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ModelDetailsResponse.yaml'

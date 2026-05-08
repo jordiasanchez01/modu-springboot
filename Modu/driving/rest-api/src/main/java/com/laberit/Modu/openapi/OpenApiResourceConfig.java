@@ -8,7 +8,7 @@ public class OpenApiResourceConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/docs/**")
+        registry.addResourceHandler("/docs/v3/**")
                 .addResourceLocations("classpath:/contracts/");
     }
 }
