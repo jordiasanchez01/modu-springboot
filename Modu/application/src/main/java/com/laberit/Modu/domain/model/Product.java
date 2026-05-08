@@ -20,4 +20,5 @@ public class Product {
     private Boolean active;
     private List<Category> categoriesList;
     private List<ProductVariant> productVariantsList;
+
 }

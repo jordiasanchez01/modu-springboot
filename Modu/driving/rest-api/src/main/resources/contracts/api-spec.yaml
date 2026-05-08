@@ -11,8 +11,6 @@ servers:
 tags:
   - name: Products
     description: read operations to get products
-  - name: Product Variants
-    description: read operations to get product variants
   - name: Categories
     description: read operation to get categories
   - name: Cart
@@ -22,8 +20,6 @@ paths:
     $ref: './paths/products/products.yaml'
   /product/{productId}:
     $ref: './paths/products/get-product-by-id.yaml'
-  /products/{productId}/product_variants:
-    $ref: './paths/products/get-variants-by-product-id.yaml'
   /categories:
     $ref: './paths/categories.yaml'
   /cart/addItem:
