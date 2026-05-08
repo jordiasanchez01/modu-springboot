@@ -1,0 +1,12 @@
+type: object
+required:
+  - item_id
+  - quantity
+properties:
+  item_id:
+    type: integer
+    format: int64
+    example: 2
+  quantity:
+    type: integer
+    example: 1

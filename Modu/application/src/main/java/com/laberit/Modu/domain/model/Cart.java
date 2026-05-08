@@ -13,9 +13,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Cart {
-    private Long id;
     private Long userId;
     private Date createdAt;
     private List<CartItem> cartItems;
-    private Double totalPrice;
+
+    public Double getTotalCartPrice(){
+        return cartItems.stream()
+                .mapToDouble(CartItem::getTotalPrice)
+                .sum();
+    }
 }
