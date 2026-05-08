@@ -19,8 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ProductServiceUseCase implements ProductServicePort {
     private final ProductRepositoryPort productRepositoryPort;
-    private final CategoryRepositoryPort categoryRepositoryPort;
-    private final ProductVariantRepositoryPort productVariantRepositoryPort;
 
     @Override
     public Product findProductById(Long productId) {
@@ -43,9 +41,7 @@ public class ProductServiceUseCase implements ProductServicePort {
     }
 
     @Override
-    public void deleteProduct(Long ProductId) {
-
-    }
+    public void deleteProduct(Long ProductId) {}
 
     @Override
     public PagedResult<Product> search(SearchProductsCommand command) {

@@ -27,9 +27,7 @@ public class ProductRestAdapter implements ProductsApi {
 
     @Override
     public ResponseEntity<ProductDetailsResponse> getProductById(Long productId) {
-        return ResponseEntity.ok(
-                mapper.toProductDetailsResponse(productServicePort.findProductById(productId))
-        );
+        return null;
     }
 
     @Override

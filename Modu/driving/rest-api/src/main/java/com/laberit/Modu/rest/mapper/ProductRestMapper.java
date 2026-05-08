@@ -13,8 +13,6 @@ public interface ProductRestMapper {
 
     ProductDetailsResponse toProductDetailsResponse(Product product);
 
-    List<ProductDetailsResponse>  toProductDetailsResponseList(List<Product> products);
-
     @Mapping(source = "id", target = "productId")
     @Mapping(source = "imageUrl", target = "url")
     ProductsResponse toProductsResponse(Product product);
