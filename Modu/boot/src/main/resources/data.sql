@@ -51,6 +51,7 @@ FROM (
      ) AS v(product_id,category_id)
 WHERE NOT EXISTS (SELECT 1 FROM product_categories);
 
+
 /* SEED VALUES FOR PRODUCT TABLE*/
 INSERT INTO product_variant (name, size, color, stock, active, product_id)
 SELECT *
@@ -257,3 +258,26 @@ FROM (
              ('20_L_BLUE', 'L', 'BLUE', 10, TRUE, 20)
      ) AS v(name, size, color, stock, active, product_id)
 WHERE NOT EXISTS (SELECT 1 FROM product_variant);
+
+
+INSERT INTO cart (user_id, total_price)
+SELECT *
+FROM (
+         VALUES
+             (1,429.94),
+             (2,594.92)
+     ) AS v(user_id, total_price)
+WHERE NOT EXISTS (SELECT 1 FROM cart);
+
+INSERT INTO cart_item (quantity, cart_id, product_variant_id, unit_price, total_price)
+SELECT *
+FROM (
+         VALUES
+             (1,1,10,149.99,149.99),
+             (3,1,4,79.99,239.97),
+             (2,1,45,19.99,39.98),
+             (2,2,4,79.99,159.98),
+             (3,2,81,24.99,74.97),
+             (3,2,88,119.99, 359.97)
+     ) AS v(quantity, cart_id, product_variant_id, unit_price, total_price)
+WHERE NOT EXISTS (SELECT 1 FROM cart_item);

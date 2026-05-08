@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Cart {
     private Long userId;
-    private Date createdAt;
+    private LocalDateTime createdAt;
     private List<CartItem> cartItems;
 
     public Double getTotalCartPrice(){
