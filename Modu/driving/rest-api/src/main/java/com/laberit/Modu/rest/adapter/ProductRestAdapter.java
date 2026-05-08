@@ -4,14 +4,12 @@ import com.laberit.Modu.ports.driving.ProductServicePort;
 import com.laberit.Modu.rest.generated.api.ProductsApi;
 import com.laberit.Modu.rest.generated.model.ProductDetailsResponse;
 import com.laberit.Modu.rest.generated.model.ProductPageResponse;
-import com.laberit.Modu.rest.generated.model.ProductResponse;
 import com.laberit.Modu.rest.mapper.ProductRestMapper;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

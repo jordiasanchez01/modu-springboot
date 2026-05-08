@@ -14,6 +14,7 @@ public class CartItem {
     private Long productVariantId;
     private Double unitPrice;
     private Integer quantity;
+    private Integer currentStock;
 
     public Double getTotalPrice() { return unitPrice * quantity; }
 }

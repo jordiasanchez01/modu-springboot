@@ -1,36 +1,44 @@
 type: object
 required:
   - cart_items
-  - price_changed_alert
 properties:
   cart_items:
     type: array
     items:
       type: object
       required:
-        - item_id
-        - variant_id
+        - id
+        - productVariantId
+        - unitPrice
         - quantity
-        - stock_actual
+        - totalPrice
+        - currentStock
       properties:
-        item_id:
+        id:
           type: integer
           format: int64
           example: 1
-        variant_id:
+        productVariantId:
           type: integer
           format: int64
           example: 2
+        unitPrice:
+          type: number
+          example: 19.99
         quantity:
           type: integer
           example: 2
-        stock_actual:
+        totalPrice:
+          type: number
+          example: 39.98
+        currentStock:
           type: integer
           example: 10
   price_changed_alert:
     type: object
     required:
       - price_changed
+      - cartItems
     properties:
       price_changed:
         type: boolean

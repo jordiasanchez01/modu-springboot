@@ -1,4 +1,4 @@
-name: userUID
+name: X-Device-Id
 in: header
 required: true
 description: UID of user´s device
