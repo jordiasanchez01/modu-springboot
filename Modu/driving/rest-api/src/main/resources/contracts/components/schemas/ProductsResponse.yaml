@@ -1,6 +1,6 @@
 type: object
 required:
-  - model_id
+  - product_id
   - url
 properties:
   product_id:
