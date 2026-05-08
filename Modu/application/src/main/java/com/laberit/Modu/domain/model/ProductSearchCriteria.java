@@ -4,7 +4,8 @@ import java.util.List;
 
 public record ProductSearchCriteria(
         String title,
-        ProductSortField sort,
+        ProductSortField sortField,
+        SortDirection sortDirection,
         Integer maxPrice,
         List<Integer> categoryIds,
         Integer page,

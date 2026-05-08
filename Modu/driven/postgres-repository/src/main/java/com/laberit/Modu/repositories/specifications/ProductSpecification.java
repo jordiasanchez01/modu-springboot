@@ -21,8 +21,10 @@ public class ProductSpecification {
             }
 
             if (criteria.categoryIds() != null && !criteria.categoryIds().isEmpty()) {
-                Join<ProductEntity, CategoryEntity> categoriesJoin = root.join("categoriesList");
-                predicates.add(categoriesJoin.get("id").in(criteria.categoryIds()));
+                for (Integer categoryId : criteria.categoryIds()) {
+                    Join<ProductEntity, CategoryEntity> categoriesJoin = root.join("categoriesList");
+                    predicates.add(criteriaBuilder.equal(categoriesJoin.get("id"), categoryId));
+                }
                 query.distinct(true);
             }
 

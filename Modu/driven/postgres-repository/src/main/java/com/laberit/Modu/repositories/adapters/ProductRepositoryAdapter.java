@@ -1,14 +1,11 @@
 package com.laberit.Modu.repositories.adapters;
 
-import com.laberit.Modu.domain.exceptions.ProductNotFoundException;
 import com.laberit.Modu.domain.model.PagedResult;
 import com.laberit.Modu.domain.model.Product;
 import com.laberit.Modu.domain.model.ProductSearchCriteria;
 import com.laberit.Modu.ports.driven.ProductRepositoryPort;
 import com.laberit.Modu.repositories.ProductJpaRepository;
-import com.laberit.Modu.repositories.mappers.CategoryPersistanceMapper;
 import com.laberit.Modu.repositories.mappers.ProductPersistanceMapper;
-import com.laberit.Modu.repositories.mappers.ProductVariantPersistanceMapper;
 import com.laberit.Modu.repositories.models.ProductEntity;
 import com.laberit.Modu.repositories.specifications.ProductSpecification;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +23,6 @@ import java.util.Optional;
 public class ProductRepositoryAdapter implements ProductRepositoryPort {
     private final ProductJpaRepository repository;
     private final ProductPersistanceMapper productMapper;
-    private final CategoryPersistanceMapper categoryMapper;
-    private final ProductVariantPersistanceMapper productVariantMapper;
 
     private final ProductJpaRepository productJpaRepository;
     @Override
@@ -62,15 +57,15 @@ public class ProductRepositoryAdapter implements ProductRepositoryPort {
 
     @Override
     public PagedResult<Product> findAll(ProductSearchCriteria searchCriteria) {
-        String sortFieldName = switch (searchCriteria.sort()) {
+        String sortFieldName = switch (searchCriteria.sortField()) {
             case PRICE -> "price";
-            case CREATED_AT -> "createdAt";
+            case ID -> "id";
         };
 
         PageRequest pageRequest= PageRequest.of(
                 searchCriteria.page(),
                 searchCriteria.size(),
-                Sort.by(Sort.Direction.DESC, sortFieldName)
+                Sort.by(Sort.Direction.fromString(searchCriteria.sortDirection().name()), sortFieldName)
         );
 
 
@@ -79,7 +74,11 @@ public class ProductRepositoryAdapter implements ProductRepositoryPort {
 
         Page<ProductEntity> page = productJpaRepository.findAll(specification, pageRequest);
 
-        //Here goes mapping
-        return null;
+        List<Product> products = page.getContent()
+                .stream()
+                .map(productMapper::toDomain)
+                .toList();
+
+        return new PagedResult<>(products,page.getNumber(), page.getNumberOfElements(), page.hasNext());
     }
 }

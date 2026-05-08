@@ -38,6 +38,19 @@ FROM (
      ) AS v(name)
 WHERE NOT EXISTS (SELECT 1 FROM category);
 
+INSERT INTO product_categories (product_id,category_id)
+SELECT *
+FROM (
+         VALUES
+             (4,1),
+             (1,6),
+             (2,1),
+             (2,6),
+             (3,1),
+             (3,5)
+     ) AS v(product_id,category_id)
+WHERE NOT EXISTS (SELECT 1 FROM product_categories);
+
 /* SEED VALUES FOR PRODUCT TABLE*/
 INSERT INTO product_variant (name, size, color, stock, active, product_id)
 SELECT *

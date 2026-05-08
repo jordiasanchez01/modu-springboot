@@ -1,9 +1,7 @@
 package com.laberit.Modu.services;
 
-import com.laberit.Modu.domain.model.PagedResult;
-import com.laberit.Modu.domain.model.Product;
+import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.ports.driven.CategoryRepositoryPort;
-import com.laberit.Modu.domain.model.ProductSearchCriteria;
 import com.laberit.Modu.ports.driven.ProductRepositoryPort;
 import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
 import com.laberit.Modu.ports.driving.ProductServicePort;
@@ -14,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -28,9 +24,6 @@ public class ProductServiceUseCase implements ProductServicePort {
 
     @Override
     public Product findProductById(Long productId) {
-        Product product = productRepositoryPort.findById(productId);
-
-
         return null;
     }
 
@@ -56,9 +49,22 @@ public class ProductServiceUseCase implements ProductServicePort {
 
     @Override
     public PagedResult<Product> search(SearchProductsCommand command) {
+        ProductSortField sortField;
+        SortDirection sortDirection;
+
+        if (command.orderByPrice() != null) {
+            sortField = ProductSortField.PRICE;
+            sortDirection =command.orderByPrice().equalsIgnoreCase("ASC") ?
+                    SortDirection.ASC : SortDirection.DESC;
+        } else {
+            sortField = ProductSortField.ID;
+            sortDirection = SortDirection.DESC;
+        }
+
         ProductSearchCriteria criteria = new ProductSearchCriteria(
                 command.title(),
-                command.sort(),
+                sortField,
+                sortDirection,
                 command.maxPrice(),
                 command.categoryIds(),
                 command.page(),
