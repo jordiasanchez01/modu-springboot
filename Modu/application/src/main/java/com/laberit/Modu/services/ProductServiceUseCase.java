@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,12 +35,13 @@ public class ProductServiceUseCase implements ProductServicePort {
         Product product = productRepositoryPort.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(productId.toString()));
 
-        List<Category> categories = productCategoryRepositoryPort.findAllByProductId(productId).stream()
-                .map(pC -> categoryRepositoryPort.findById(pC.categoryId())
-                        .orElseThrow(() -> new CategoryNotFoundException(pC.categoryId().toString())))
-                .toList();
+        Set<Integer> categoryIds = productCategoryRepositoryPort.findAllByProductId(productId).stream()
+                .map(ProductCategory::categoryId)
+                .collect(Collectors.toSet());
 
-        product.setCategoriesList(categories);
+        Set<Category> categories = categoryRepositoryPort.findAllByIdIn(categoryIds);
+
+        product.setCategoriesSet(categories);
         product.setProductVariantsList(productVariantRepositoryPort.findAllByProductId(productId));
 
         return product;

@@ -9,5 +9,5 @@ public interface ProductRepositoryPort {
 
     Optional<Product> findById(Long id);
 
-    List<Product> findAll();
+    //List<Product> findAll(); TODO: Pertenece al endpoint de Ksenia
 }

@@ -10,8 +10,6 @@ import java.util.Optional;
 @NullMarked
 public interface ProductVariantJpaRepository extends JpaRepository<ProductVariantEntity, Long> {
 
-    List<ProductVariantEntity> findAll();
-
     List<ProductVariantEntity> findAllByProductId(Long id);
 
     Optional<ProductVariantEntity> findById(Long id);

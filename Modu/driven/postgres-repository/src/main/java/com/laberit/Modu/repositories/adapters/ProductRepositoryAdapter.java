@@ -21,11 +21,10 @@ public class ProductRepositoryAdapter implements ProductRepositoryPort {
         return productJpaRepository.findById(id).map(productMapper::toDomain);
     }
 
-    @Override
+    /*@Override
     public List<Product> findAll() {
 
-
-        //Here goes mapping
+        //TODO: add mapping
         return null;
-    }
+    }*/
 }

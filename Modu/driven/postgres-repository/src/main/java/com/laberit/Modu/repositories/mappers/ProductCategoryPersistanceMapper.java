@@ -9,7 +9,11 @@ import java.util.List;
 @Mapper(componentModel="spring")
 public interface ProductCategoryPersistanceMapper {
 
-    default ProductCategoryEntity toEntity(ProductCategory productCategory){
+    ProductCategoryEntity toEntity(ProductCategory productCategory);
+
+    ProductCategory toDomain(ProductCategoryEntity entity);
+
+    /*default ProductCategoryEntity toEntity(ProductCategory productCategory){
         if (productCategory==null){
             return null;
         }
@@ -29,7 +33,7 @@ public interface ProductCategoryPersistanceMapper {
                 .categoryId(entity.getCategoryId())
                 .productId(entity.getProductId())
                 .build();
-    }
+    }*/
 
     List<ProductCategory> toDomainList(List<ProductCategoryEntity> entities);
     List<ProductCategoryEntity> toEntityList(List<ProductCategory> categories);
