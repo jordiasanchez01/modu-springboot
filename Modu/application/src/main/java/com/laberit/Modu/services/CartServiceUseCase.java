@@ -6,6 +6,7 @@ import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.ports.driven.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
 import com.laberit.Modu.ports.driving.ProductServicePort;
+import com.laberit.Modu.ports.driving.ProductVariantServicePort;
 import com.laberit.Modu.ports.driving.command.AddCartCommand;
 import com.laberit.Modu.ports.driving.command.AddProductCommand;
 import com.laberit.Modu.ports.driving.command.UpdateCartCommand;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 public class CartServiceUseCase implements CartServicePort {
     private final CartRepositoryPort cartRepositoryPort;
     private final CartItemRepositoryPort cartItemRepositoryPort;
+    private final ProductVariantServicePort productVariantServicePort;
 
 
     @Override
@@ -35,7 +38,21 @@ public class CartServiceUseCase implements CartServicePort {
         Cart cart = cartRepositoryPort.findByUserId(userId)
                 .orElseThrow(() -> new CartNotFoundException(userId.toString()));
 
-        cart.setCartItems(cartItemRepositoryPort.findAllByCartId(cart.getUserId()));
+        List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getUserId());
+
+        Set<Long> variantIds = cartItems.stream()
+                                .map(CartItem::getProductVariantId)
+                                .collect(Collectors.toSet());
+        Set<ProductVariant> variants = productVariantServicePort.findAllByIdIn(variantIds);
+
+        Map<Long, ProductVariant> variantMap = variants.stream()
+                .collect(Collectors.toMap(ProductVariant::getId, pV -> pV));
+
+        cartItems.forEach(cartItem -> cartItem.setCurrentStock(
+                variantMap.get(cartItem.getProductVariantId()).getStock()
+        ));
+
+        cart.setCartItems(cartItems);
 
         return cart;
     }
