@@ -7,8 +7,11 @@ import com.laberit.Modu.repositories.mappers.CategoryPersistanceMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -19,6 +22,11 @@ public class CategoryRepositoryAdapter implements CategoryRepositoryPort {
     @Override
     public List<Category> findAll() {
         return mapper.toDomainList(repository.findAll());
+    }
+
+    @Override
+    public Set<Category> findAllByIdIn(Set<Integer> id) {
+        return new HashSet<>((mapper.toDomainList(repository.findAllById(id))));
     }
 
     @Override

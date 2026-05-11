@@ -4,10 +4,13 @@ import com.laberit.Modu.domain.model.Category;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface CategoryRepositoryPort {
 
     List<Category> findAll();
+
+    Set<Category> findAllByIdIn(Set<Integer> id);
 
     Optional<Category> findById(Integer id);
 

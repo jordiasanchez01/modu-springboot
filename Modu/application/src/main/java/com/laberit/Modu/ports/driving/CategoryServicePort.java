@@ -1,7 +1,7 @@
 package com.laberit.Modu.ports.driving;
 
 import com.laberit.Modu.domain.model.Category;
-import com.laberit.Modu.ports.driving.command.RegisterCategoryCommand;
+import com.laberit.Modu.ports.driving.command.AddCategoryCommand;
 import com.laberit.Modu.ports.driving.command.UpdateCategoryCommand;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public interface CategoryServicePort {
 
     Category findCategoryByName(String name);
 
-    Category addCategory(RegisterCategoryCommand command);
+    Category addCategory(AddCategoryCommand command);
 
     Category updateCategory(UpdateCategoryCommand command);
 
