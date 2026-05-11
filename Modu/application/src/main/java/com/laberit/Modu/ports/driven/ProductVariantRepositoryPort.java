@@ -14,6 +14,8 @@ public interface ProductVariantRepositoryPort {
 
     Optional<ProductVariant> findByName(String name);
 
+    Optional<ProductVariant> findByProductId(Long productId);
+
     boolean existsById(Long id);
 
     boolean existsByName(String name);

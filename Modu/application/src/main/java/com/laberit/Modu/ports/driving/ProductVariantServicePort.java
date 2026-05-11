@@ -5,10 +5,13 @@ import com.laberit.Modu.ports.driving.command.AddProductVariantCommand;
 import com.laberit.Modu.ports.driving.command.UpdateProductVariantCommand;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public interface ProductVariantServicePort {
 
     List<ProductVariant> findAllByProductId(Long productId);
+
+    Optional<ProductVariant> findById(Long id);
 
 }

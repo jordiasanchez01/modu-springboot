@@ -36,10 +36,7 @@ public class CartServiceUseCase implements CartServicePort {
                 .orElseThrow(() -> new CartNotFoundException(userId.toString()));
 
         cart.setCartItems(cartItemRepositoryPort.findAllByCartId(cart.getUserId()));
-        /*CartItem testItem = new CartItem(1L,1L,10.50,3,5);
-        List<CartItem> testList = new ArrayList<>();
-        testList.add(testItem);
-        cart.setCartItems(testList);*/
+
         return cart;
     }
 
@@ -57,4 +54,5 @@ public class CartServiceUseCase implements CartServicePort {
     public void deleteCart(Long CartId) {
 
     }
+
 }

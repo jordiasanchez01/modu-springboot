@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -24,6 +25,11 @@ public class ProductVariantServiceUseCase implements ProductVariantServicePort {
     public List<ProductVariant> findAllByProductId(Long productId) {
         log.debug("Fetching all Product Variants of this Product");
         return productVariantRepositoryPort.findAllByProductId(productId);
+    }
+
+    @Override
+    public Optional<ProductVariant> findById(Long id) {
+        return productVariantRepositoryPort.findById(id);
     }
 
 }
