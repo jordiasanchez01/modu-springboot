@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -31,8 +31,8 @@ public class ProductEntity {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    private List<CategoryEntity> categoriesList;
+    private Set<CategoryEntity> categoriesSet;
 
     @OneToMany(mappedBy = "product")
-    private List<ProductVariantEntity> productVariantsList;
+    private Set<ProductVariantEntity> productVariantsSet;
 }

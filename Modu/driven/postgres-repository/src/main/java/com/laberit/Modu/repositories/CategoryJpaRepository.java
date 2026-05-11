@@ -10,6 +10,8 @@ import java.util.Optional;
 @NullMarked
 public interface CategoryJpaRepository extends JpaRepository<CategoryEntity, Integer> {
 
+    List<CategoryEntity> findAllByIdIn(List<Integer> id);
+
     Optional<CategoryEntity> findByName(String name);
 
     boolean existsByName(String name);
