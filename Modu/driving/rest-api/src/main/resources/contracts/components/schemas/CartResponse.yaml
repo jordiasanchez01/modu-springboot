@@ -20,35 +20,7 @@ properties:
   cart_items:
     type: array
     items:
-      type: object
-      required:
-        - id
-        - productVariantId
-        - unitPrice
-        - quantity
-        - totalPrice
-        - currentStock
-      properties:
-        id:
-          type: integer
-          format: int64
-          example: 1
-        productVariantId:
-          type: integer
-          format: int64
-          example: 2
-        unitPrice:
-          type: number
-          example: 19.99
-        quantity:
-          type: integer
-          example: 2
-        totalPrice:
-          type: number
-          example: 39.98
-        currentStock:
-          type: integer
-          example: 10
+      $ref: '../../components/schemas/CartItemResponse.yaml'
   price_changed_alert:
     type: object
     required:

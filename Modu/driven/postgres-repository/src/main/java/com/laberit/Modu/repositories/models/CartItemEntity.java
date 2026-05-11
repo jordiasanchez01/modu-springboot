@@ -12,9 +12,9 @@ public class CartItemEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, name="unit_price")
+    @Column(name="unit_price")
     private Double unitPrice;
-    @Column(nullable = false, name="total_price")
+    @Column(name="total_price")
     private Double totalPrice;
     @Column(nullable = false)
     private Integer quantity;

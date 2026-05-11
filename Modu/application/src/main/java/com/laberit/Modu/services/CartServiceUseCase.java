@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,7 +36,10 @@ public class CartServiceUseCase implements CartServicePort {
                 .orElseThrow(() -> new CartNotFoundException(userId.toString()));
 
         cart.setCartItems(cartItemRepositoryPort.findAllByCartId(cart.getUserId()));
-
+        /*CartItem testItem = new CartItem(1L,1L,10.50,3,5);
+        List<CartItem> testList = new ArrayList<>();
+        testList.add(testItem);
+        cart.setCartItems(testList);*/
         return cart;
     }
 

@@ -17,7 +17,7 @@ public class Cart {
     private LocalDateTime createdAt;
     private List<CartItem> cartItems;
 
-    public Double getTotalCartPrice(){
+    public Double getTotalPrice(){
         return cartItems.stream()
                 .mapToDouble(CartItem::getTotalPrice)
                 .sum();
