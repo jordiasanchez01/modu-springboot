@@ -6,9 +6,7 @@ import com.laberit.Modu.ports.driving.command.UpdateCartCommand;
 
 public interface CartServicePort {
 
-    Cart findCartById(Long CartId);
-
-    Cart findCartByName(String name);
+    Cart findCartByUserId(Long userId);
 
     Cart addCart(AddCartCommand command);
 
