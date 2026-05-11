@@ -27,7 +27,8 @@ public class CartRestAdapter implements CartApi {
 
     @Override
     public ResponseEntity<CartResponse> getCart(String xDeviceId) {
-        return null;
+
+        return ResponseEntity.ok(mapper.toCartResponse(cartServicePort.findCartByUserId(Long.valueOf(xDeviceId))));
     }
 
     @Override

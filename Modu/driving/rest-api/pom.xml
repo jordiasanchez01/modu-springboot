@@ -95,7 +95,7 @@
                                 <useJakartaEe>true</useJakartaEe>
                                 <useTags>true</useTags>
                                 <openApiNullable>false</openApiNullable>
-                                <dateLibrary>java8</dateLibrary>
+                                <dateLibrary>java8-localdatetime</dateLibrary>
                                 <hideGenerationTimestamp>true</hideGenerationTimestamp>
                                 <skipDefaultInterface>true</skipDefaultInterface>
                             </configOptions>

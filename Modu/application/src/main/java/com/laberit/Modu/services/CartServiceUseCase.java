@@ -1,10 +1,8 @@
 package com.laberit.Modu.services;
 
+import com.laberit.Modu.domain.exceptions.CartNotFoundException;
 import com.laberit.Modu.domain.exceptions.ProductNotFoundException;
-import com.laberit.Modu.domain.model.Cart;
-import com.laberit.Modu.domain.model.Category;
-import com.laberit.Modu.domain.model.Product;
-import com.laberit.Modu.domain.model.ProductCategory;
+import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.ports.driven.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
 import com.laberit.Modu.ports.driving.ProductServicePort;
@@ -17,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,14 +25,18 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class CartServiceUseCase implements CartServicePort {
     private final CartRepositoryPort cartRepositoryPort;
-    private final CategoryRepositoryPort categoryRepositoryPort;
-    private final ProductCategoryRepositoryPort productCategoryRepositoryPort;
-    private final ProductVariantRepositoryPort productVariantRepositoryPort;
+    private final CartItemRepositoryPort cartItemRepositoryPort;
 
 
     @Override
     public Cart findCartByUserId(Long userId) {
-        return null;
+
+        Cart cart = cartRepositoryPort.findByUserId(userId)
+                .orElseThrow(() -> new CartNotFoundException(userId.toString()));
+
+        cart.setCartItems(cartItemRepositoryPort.findAllByCartId(cart.getUserId()));
+
+        return cart;
     }
 
     @Override

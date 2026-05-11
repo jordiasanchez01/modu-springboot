@@ -1,7 +1,22 @@
 type: object
 required:
+  - userId
+  - createdAt
+  - total_price
   - cart_items
 properties:
+  userId:
+    type: integer
+    format: int64
+    example: 1
+  createdAt:
+    type: string
+    format: date-time
+    example: "2026-01-15T10:30:00"
+  total_price:
+    type: number
+    format: double
+    example: 86.95
   cart_items:
     type: array
     items:
