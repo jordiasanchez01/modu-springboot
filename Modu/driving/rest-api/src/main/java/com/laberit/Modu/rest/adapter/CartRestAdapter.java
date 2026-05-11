@@ -28,10 +28,8 @@ public class CartRestAdapter implements CartApi {
     private final CartServicePort cartServicePort;
     private final CartRestMapper cartMapper;
     private final ProductVariantServicePort productVariantServicePort;
-    private final ProductVariantRestMapper productVariantMapper;
 
     private final ProductServicePort productServicePort;
-    private final ProductRestMapper productMapper;
 
 
     @Override

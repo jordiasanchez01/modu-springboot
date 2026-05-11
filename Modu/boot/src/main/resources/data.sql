@@ -60,7 +60,7 @@ FROM (
              ('1_S_BLACK', 'S', 'BLACK', 10, TRUE, 1),
              ('1_M_BLACK', 'M', 'BLACK', 10, TRUE, 1),
              ('1_L_BLACK', 'L', 'BLACK', 10, TRUE, 1),
-             ('1_S_WHITE', 'S', 'WHITE', 10, TRUE, 1),
+             ('1_S_WHITE', 'S', 'WHITE', 50, TRUE, 1),
              ('1_M_WHITE', 'M', 'WHITE', 10, TRUE, 1),
              ('1_L_WHITE', 'L', 'WHITE', 10, TRUE, 1),
              ('1_S_BLUE', 'S', 'BLUE', 10, TRUE, 1),
