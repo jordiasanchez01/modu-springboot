@@ -27,14 +27,14 @@ public class ProductRestAdapter implements ProductsApi {
 
     @Override
     public ResponseEntity<ProductDetailsResponse> getProductById(Long productId) {
-        return null;
+        return ResponseEntity.ok(
+                mapper.toProductDetailsResponse(productServicePort.findProductById(productId))
+        );
     }
 
     @Override
-    public ResponseEntity<ProductPageResponse> getProducts(Integer page, Integer size, String title, String orderByPrice, Integer maxPrice, List<Integer> category) {
-      SearchProductsCommand command = new SearchProductsCommand(title, orderByPrice, maxPrice, category, page,size);
-      return ResponseEntity.ok(mapper.toProductPageResponse(productServicePort.search(command)));
+    public ResponseEntity<ProductPageResponse> getProducts(Integer page, Integer size, @Nullable String title, @Nullable String orderByPrice, @Nullable Integer maxPrice, @Nullable List<Integer> category) {
+        SearchProductsCommand command = new SearchProductsCommand(title, orderByPrice, maxPrice, category, page,size);
+        return ResponseEntity.ok(mapper.toProductPageResponse(productServicePort.search(command)));
     }
-
-
 }

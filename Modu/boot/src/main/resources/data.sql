@@ -42,7 +42,7 @@ INSERT INTO product_categories (product_id,category_id)
 SELECT *
 FROM (
          VALUES
-             (4,1),
+             (1,1),
              (1,6),
              (2,1),
              (2,6),

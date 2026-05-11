@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS product (
     name VARCHAR(100) ,
     description TEXT,
     image_url TEXT,
-    price DECIMAL
+    price DECIMAL,
+    active BOOLEAN
 );
 
 CREATE TABLE IF NOT EXISTS product_variant (
