@@ -10,13 +10,14 @@ import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
 import com.laberit.Modu.ports.driving.ProductServicePort;
 import com.laberit.Modu.ports.driving.command.AddProductCommand;
 import com.laberit.Modu.ports.driving.command.UpdateProductCommand;
-import com.laberit.Modu.ports.driving.command.SearchProductsCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -34,12 +35,13 @@ public class ProductServiceUseCase implements ProductServicePort {
         Product product = productRepositoryPort.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(productId.toString()));
 
-        List<Category> categories = productCategoryRepositoryPort.findAllByProductId(productId).stream()
-                .map(pC -> categoryRepositoryPort.findById(pC.categoryId())
-                        .orElseThrow(() -> new CategoryNotFoundException(pC.categoryId().toString())))
-                .toList();
+        Set<Integer> categoryIds = productCategoryRepositoryPort.findAllByProductId(productId).stream()
+                .map(ProductCategory::categoryId)
+                .collect(Collectors.toSet());
 
-        product.setCategoriesList(categories);
+        Set<Category> categories = categoryRepositoryPort.findAllByIdIn(categoryIds);
+
+        product.setCategoriesSet(categories);
         product.setProductVariantsList(productVariantRepositoryPort.findAllByProductId(productId));
 
         return product;
@@ -65,16 +67,6 @@ public class ProductServiceUseCase implements ProductServicePort {
 
     }
 
-    @Override
-    public PagedResult<Product> search(SearchProductsCommand command) {
-        ProductSearchCriteria criteria = new ProductSearchCriteria(
-                command.title(),
-                command.sort(),
-                command.maxPrice(),
-                command.categoryIds(),
-                command.page(),
-                command.size()
-        );
-       return productRepositoryPort.findAll(criteria);
-    }
+
+
 }

@@ -9,25 +9,8 @@ import java.util.List;
 @Mapper(componentModel="spring")
 public interface CategoryPersistanceMapper {
 
-    default CategoryEntity toEntity(Category category){
-        if (category==null){
-            return null;
-        }
-        CategoryEntity entity = new CategoryEntity();
-        entity.setId(category.id());
-        entity.setName(category.name());
-        return entity;
-    }
-
-    default Category toDomain(CategoryEntity entity){
-        if (entity==null){
-            return null;
-        }
-        return Category.builder()
-                .id(entity.getId())
-                .name(entity.getName())
-                .build();
-    }
+    CategoryEntity toEntity(Category category);
+    Category toDomain(CategoryEntity entity);
 
     List<Category> toDomainList(List<CategoryEntity> entities);
     List<CategoryEntity> toEntityList(List<Category> categories);

@@ -7,19 +7,16 @@ import com.laberit.Modu.repositories.mappers.ProductVariantPersistanceMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
 public class ProductVariantRepositoryAdapter implements ProductVariantRepositoryPort {
     private final ProductVariantJpaRepository repository;
     private final ProductVariantPersistanceMapper mapper;
-
-    @Override
-    public List<ProductVariant> findAll() {
-        return mapper.toDomainList(repository.findAll());
-    }
 
     @Override
     public List<ProductVariant> findAllByProductId(Long productId) {
