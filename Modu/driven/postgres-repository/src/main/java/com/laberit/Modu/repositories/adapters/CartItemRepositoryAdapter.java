@@ -41,4 +41,9 @@ public class CartItemRepositoryAdapter implements CartItemRepositoryPort {
     public boolean existsByProductVariantId(Long productVariantId) {
         return false;
     }
+
+    @Override
+    public CartItem save(CartItem cartItem) {
+        return cartItemMapper.toDomain(cartItemJpaRepository.save(cartItemMapper.toEntity(cartItem)));
+    }
 }

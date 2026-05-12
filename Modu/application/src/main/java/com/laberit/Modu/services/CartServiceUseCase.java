@@ -5,11 +5,13 @@ import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.ports.driven.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
+import com.laberit.Modu.ports.driving.ProductServicePort;
 import com.laberit.Modu.ports.driving.ProductVariantServicePort;
 import com.laberit.Modu.ports.driving.command.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -26,9 +28,11 @@ public class CartServiceUseCase implements CartServicePort {
     private final CartRepositoryPort cartRepositoryPort;
     private final CartItemRepositoryPort cartItemRepositoryPort;
     private final ProductVariantServicePort productVariantServicePort;
+    private final ProductServicePort productServicePort;
 
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Cart findCartByUserId(Long userId) {
 
         Cart cart = cartRepositoryPort.findByUserId(userId)
@@ -54,24 +58,24 @@ public class CartServiceUseCase implements CartServicePort {
     }
 
     @Override
-    public Cart addCartItemToCart (AddCartItemCommand addCommand) {
-        if (!cartRepositoryPort.existsByUserId(addCommand.userId())){
-            addCart(
-                new AddCartCommand(
-                            addCommand.userId(),
-                            new ArrayList<>()
-                    )
-            );
-        }
+    @Transactional
+    public Cart addCartItemToCart(AddCartItemCommand addCommand) {
         Cart cart = cartRepositoryPort.findByUserId(addCommand.userId())
-                .orElseThrow(()-> new CartNotFoundException(addCommand.userId().toString()));
+                .orElseGet(() -> addCart(new AddCartCommand(
+                        addCommand.userId(),
+                        new ArrayList<>()
+                )));
+
         CartItem item = newCartItem(new AddCartItemCommand(
                 cart.getUserId(),
                 addCommand.productVariantId(),
                 addCommand.quantity()
         ));
+
         cart.setCartItems(addItemToCartItemList(item, cart.getCartItems()));
-        return cartRepositoryPort.save(cart);
+        cartRepositoryPort.save(cart);
+
+        return findCartByUserId(addCommand.userId());
     }
 
     private CartItem newCartItem(AddCartItemCommand command) {
@@ -79,9 +83,13 @@ public class CartServiceUseCase implements CartServicePort {
                 .orElseThrow(()-> new ProductVariantNotFoundException(
                         command.productVariantId().toString()
                 ));
+        Double productPrice = productServicePort.findProductById(variant.getProductId()).getPrice();
         return CartItem.builder()
+                .cartId(command.userId())
                 .productVariantId(command.productVariantId())
+                .unitPrice(productPrice)
                 .quantity(command.quantity())
+                .currentStock(variant.getStock())
                 .build();
     }
 
@@ -93,13 +101,14 @@ public class CartServiceUseCase implements CartServicePort {
                 return itemList;
             }
         }
+        itemList.add(newItem);
         return itemList;
     }
 
 
     private Cart addCart(AddCartCommand command) {
         Cart newCart = Cart.builder()
-                .userId(command.userId())
+                .userId(command.cartId())
                 .cartItems(command.cartItems())
                 .build();
         return cartRepositoryPort.save(newCart);

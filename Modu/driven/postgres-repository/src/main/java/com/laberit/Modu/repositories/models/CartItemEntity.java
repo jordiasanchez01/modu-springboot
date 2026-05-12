@@ -20,7 +20,7 @@ public class CartItemEntity {
     private Integer quantity;
 
     @ManyToOne
-    @JoinColumn(name = "cart_id")
+    @JoinColumn(name = "cartuser_id")
     private CartEntity cart;
 
     @ManyToOne

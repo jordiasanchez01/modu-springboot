@@ -27,16 +27,15 @@ public class CartRestAdapter implements CartApi {
     private final CartServicePort cartServicePort;
     private final CartRestMapper cartMapper;
     private final ProductVariantServicePort productVariantServicePort;
-
     private final ProductServicePort productServicePort;
 
 
     @Override
-    public ResponseEntity<CartResponse> addCartItem(String xDeviceId, AddItemRequest addItemRequest) {
-        AddCartItemCommand addItemCommand = cartMapper.toAddCartItemCommand(
-                Long.valueOf(xDeviceId),addItemRequest);
+    public ResponseEntity<CartResponse> getCart(String xDeviceId) {
 
-        Cart cart = cartServicePort.addCartItemToCart(addItemCommand);
+        Cart cart = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
+
+        System.out.println("Cart createdAt in getCart: "+ cart.getCreatedAt());
 
         CartResponse cartResponse = cartMapper.toCartResponse(cart);
 
@@ -46,13 +45,13 @@ public class CartRestAdapter implements CartApi {
     }
 
     @Override
-    public ResponseEntity<CartResponse> getCart(String xDeviceId) {
+    public ResponseEntity<CartResponse> addCartItem(String xDeviceId, AddItemRequest addItemRequest) {
+        AddCartItemCommand addItemCommand = cartMapper.toAddCartItemCommand(
+                Long.valueOf(xDeviceId),addItemRequest);
 
-        Cart cart = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
+        Cart cart = cartServicePort.addCartItemToCart(addItemCommand);
 
         CartResponse cartResponse = cartMapper.toCartResponse(cart);
-
-        cartResponse.setPriceChangedAlert(checkIfPricesChanged(cart.getCartItems()));
 
         return ResponseEntity.ok(cartResponse);
     }

@@ -17,4 +17,6 @@ public interface CartItemRepositoryPort {
 
     boolean existsByProductVariantId(Long productVariantId);
 
+    CartItem save(CartItem cartItem);
+
 }
