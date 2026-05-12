@@ -6,5 +6,7 @@ public record PagedResult<T> (
     List<T> content,
     int page,
     int size,
-    boolean hasNext) {}
+    boolean hasNext) {
+    }
+
 

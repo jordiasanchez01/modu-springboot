@@ -8,4 +8,5 @@ public record SearchProductsCommand(
         Integer maxPrice,
         List<Integer> categoryIds,
         Integer page,
-        Integer size) {}
+        Integer size) {
+    }
