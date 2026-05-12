@@ -5,7 +5,6 @@ public enum ErrorType {
     NOT_FOUND(null),
     CONFLICT(null),
     INTERNAL_ERROR(null);
-    //TODO: Add other types like Unauthorized, forbidden, if authorization will be finally required.
 
     private final String message;
 

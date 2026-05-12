@@ -47,7 +47,7 @@ public class GlobalControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
-    public ErrorResponse handleConstraintViolaton(ConstraintViolationException ex) {
+    public ErrorResponse handleConstraintViolation(ConstraintViolationException ex) {
         List<ErrorResponseFieldsInner> responseFields = ex.getConstraintViolations().stream()
                 .map(constraintViolation ->
                         new ErrorResponseFieldsInner(constraintViolation.getPropertyPath().toString().split("\\.")[1], constraintViolation.getMessage()))
