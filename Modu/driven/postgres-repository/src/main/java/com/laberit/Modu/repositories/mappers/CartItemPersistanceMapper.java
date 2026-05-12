@@ -33,8 +33,6 @@ public interface CartItemPersistanceMapper {
                 .unitPrice(entity.getUnitPrice())
                 .quantity(entity.getQuantity())
                 .build();
-
-
     }
 
     List<CartItem> toDomainList(List<CartItemEntity> entities);

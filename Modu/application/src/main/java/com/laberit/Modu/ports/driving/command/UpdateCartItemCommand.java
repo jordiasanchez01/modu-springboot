@@ -1,8 +1,8 @@
 package com.laberit.Modu.ports.driving.command;
 
 public record UpdateCartItemCommand(
-        Long productVariantId,
-        Double price,
+        Long cartId,
+        Long cartItemId,
         Integer quantity
 ) {
 }
