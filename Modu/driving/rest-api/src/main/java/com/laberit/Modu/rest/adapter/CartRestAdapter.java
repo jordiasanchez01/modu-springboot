@@ -8,11 +8,10 @@ import com.laberit.Modu.domain.model.ProductVariant;
 import com.laberit.Modu.ports.driving.CartServicePort;
 import com.laberit.Modu.ports.driving.ProductServicePort;
 import com.laberit.Modu.ports.driving.ProductVariantServicePort;
+import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
 import com.laberit.Modu.rest.generated.api.CartApi;
 import com.laberit.Modu.rest.generated.model.*;
 import com.laberit.Modu.rest.mapper.CartRestMapper;
-import com.laberit.Modu.rest.mapper.ProductRestMapper;
-import com.laberit.Modu.rest.mapper.ProductVariantRestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,7 +33,16 @@ public class CartRestAdapter implements CartApi {
 
     @Override
     public ResponseEntity<CartResponse> addCartItem(String xDeviceId, AddItemRequest addItemRequest) {
-        return null;
+        AddCartItemCommand addItemCommand = cartMapper.toAddCartItemCommand(
+                Long.valueOf(xDeviceId),addItemRequest);
+
+        Cart cart = cartServicePort.addCartItemToCart(addItemCommand);
+
+        CartResponse cartResponse = cartMapper.toCartResponse(cart);
+
+        cartResponse.setPriceChangedAlert(checkIfPricesChanged(cart.getCartItems()));
+
+        return ResponseEntity.ok(cartResponse);
     }
 
     @Override

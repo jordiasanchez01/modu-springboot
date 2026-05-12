@@ -7,7 +7,6 @@ import java.util.List;
 
 public record AddCartCommand(
         Long userId,
-        LocalDateTime createdAt,
         List<CartItem> cartItems
 ) {
 }
