@@ -18,7 +18,6 @@ public interface CartPersistanceMapper {
         entity.setUserId(cart.getUserId());
         entity.setTotalPrice(cart.getTotalPrice());
 
-
         return entity;
     }
 

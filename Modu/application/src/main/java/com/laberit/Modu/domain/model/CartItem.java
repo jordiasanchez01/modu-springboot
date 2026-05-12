@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,7 +20,9 @@ public class CartItem {
     private Integer quantity;
     private Integer currentStock;
 
-    public Double getTotalPrice() { return unitPrice * quantity; }
+    public Double getTotalPrice() { return BigDecimal.valueOf(unitPrice * quantity)
+            .setScale(2, RoundingMode.HALF_UP)
+            .doubleValue(); }
 }
 
 

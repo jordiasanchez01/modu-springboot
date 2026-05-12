@@ -38,6 +38,7 @@ public class CartRepositoryAdapter implements CartRepositoryPort {
         cartItemJpaRepository.saveAll(items);
 
         // Force Hibernate to discard cached entity and re-read from database
+        entityManager.flush();
         entityManager.refresh(savedCart);
 
         Cart result = cartMapper.toDomain(savedCart);

@@ -66,13 +66,20 @@ public class CartServiceUseCase implements CartServicePort {
                         new ArrayList<>()
                 )));
 
-        CartItem item = newCartItem(new AddCartItemCommand(
+        CartItem cartItem = newCartItem(new AddCartItemCommand(
                 cart.getUserId(),
                 addCommand.productVariantId(),
                 addCommand.quantity()
         ));
 
-        cart.setCartItems(addItemToCartItemList(item, cart.getCartItems()));
+        cart.setCartItems(addItemToCartItemList(cartItem, cart.getCartItems()));
+
+        cart.getCartItems().forEach(item ->
+                System.out.println("Item productVariantId: " + item.getProductVariantId() +
+                        " unitPrice: " + item.getUnitPrice() +
+                        " quantity: " + item.getQuantity()));
+        System.out.println("Total price: " + cart.getTotalPrice());
+
         cartRepositoryPort.save(cart);
 
         return findCartByUserId(addCommand.userId());
