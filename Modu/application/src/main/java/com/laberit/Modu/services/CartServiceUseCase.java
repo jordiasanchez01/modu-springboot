@@ -101,15 +101,20 @@ public class CartServiceUseCase implements CartServicePort {
 
         cartRepositoryPort.save(cart);
 
-        return findCartByUserId(addCommand.userId());
+        return findCartByUserId(addCommand.userId()).cart();
     }
 
     private CartItem newCartItem(AddCartItemCommand command) {
-        ProductVariant variant = productVariantServicePort.findById(command.productVariantId())
+        ProductVariant variant = productVariantRepositoryPort.findById(command.productVariantId())
                 .orElseThrow(()-> new ProductVariantNotFoundException(
                         command.productVariantId().toString()
                 ));
-        Double productPrice = productServicePort.findProductById(variant.getProductId()).getPrice();
+        Product product = productRepositoryPort.findById(variant.getProductId())
+                .orElseThrow(()->new ProductNotFoundException(
+                        variant.getProductId().toString()
+                ));
+        Double productPrice = product.getPrice();
+
         return CartItem.builder()
                 .cartId(command.userId())
                 .productVariantId(command.productVariantId())
