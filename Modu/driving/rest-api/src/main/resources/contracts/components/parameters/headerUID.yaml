@@ -1,6 +1,7 @@
-name: userUID
+name: userUID #the parameter name will be changed to X-Device-Id in the next cart related PR(MDU-9)
 in: header
 required: true
 description: UID of user´s device
 schema:
   type: string
+  minLength: 15 #IMEI format applied

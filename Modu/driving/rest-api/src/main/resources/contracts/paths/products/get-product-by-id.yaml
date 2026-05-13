@@ -21,8 +21,20 @@ get:
         application/json:
           schema:
             $ref: '../../components/schemas/ProductDetailsResponse.yaml'
+    '400':
+      description: Invalid path parameter
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
     '404':
       description: Product with the provided ID is not found
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '500':
+      description: Internal error.
       content:
         application/json:
           schema:
