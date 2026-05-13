@@ -1,7 +1,6 @@
 package com.laberit.Modu.repositories.mappers;
 
 import com.laberit.Modu.domain.model.CartItem;
-import com.laberit.Modu.repositories.models.CartEntity;
 import com.laberit.Modu.repositories.models.CartItemEntity;
 import com.laberit.Modu.repositories.models.ProductVariantEntity;
 import org.mapstruct.Mapper;

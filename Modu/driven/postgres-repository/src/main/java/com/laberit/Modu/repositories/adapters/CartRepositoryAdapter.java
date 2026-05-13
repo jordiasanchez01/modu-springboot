@@ -26,7 +26,6 @@ public class CartRepositoryAdapter implements CartRepositoryPort {
     private final CartItemPersistanceMapper cartItemMapper;
     private final EntityManager entityManager;
 
-
     @Override
     public Cart save(Cart cart) {
         // Save cart first to get the confirmed ID from the database

@@ -6,8 +6,6 @@ import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.ports.driven.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
-import com.laberit.Modu.ports.driving.ProductServicePort;
-import com.laberit.Modu.ports.driving.ProductVariantServicePort;
 import com.laberit.Modu.ports.driving.command.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -135,7 +133,6 @@ public class CartServiceUseCase implements CartServicePort {
         }
         return changedPricesList;
     }
-
 
     private CartItem newCartItem(AddCartItemCommand command) {
         ProductVariant variant = productVariantRepositoryPort.findById(command.productVariantId())

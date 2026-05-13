@@ -16,7 +16,6 @@ public class CartItemRepositoryAdapter implements CartItemRepositoryPort {
     private final CartItemJpaRepository cartItemJpaRepository;
     private final CartItemPersistanceMapper cartItemMapper;
 
-
     @Override
     public Optional<CartItem> findById(Long id) {
         return cartItemJpaRepository.findById(id).map(cartItemMapper::toDomain);

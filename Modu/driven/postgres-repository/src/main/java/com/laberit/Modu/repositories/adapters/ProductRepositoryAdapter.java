@@ -24,7 +24,6 @@ public class ProductRepositoryAdapter implements ProductRepositoryPort {
     private final ProductJpaRepository productJpaRepository;
     private final ProductPersistanceMapper productMapper;
 
-
     @Override
     public Optional<Product> findById(Long id) {
         return productJpaRepository.findById(id).map(productMapper::toDomain);
