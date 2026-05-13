@@ -31,7 +31,12 @@ paths:
   /cart/updateItem/{itemId}:
     $ref: './paths/cart/update-item.yaml'
 
+  /checkout:
+    $ref: './paths/checkout/checkout.yaml'
+
 components:
   schemas:
     ProductResponse:
       $ref: './components/schemas/ProductPageResponse.yaml'
+    CartResponse:
+      $ref: './components/schemas/CartResponse.yaml'

@@ -5,7 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -16,12 +18,15 @@ public class Order {
     private Long id;
     private Long userId;
     private String specialInstructions;
-    private Date createdAt;
+    private LocalDateTime createdAt;
     private List<OrderItem> orderItems;
 
     public Double getTotalOrderPrice(){
-        return orderItems.stream()
-                .mapToDouble(OrderItem::getTotalPrice)
-                .sum();
+        return BigDecimal.valueOf(
+                        orderItems.stream()
+                                .mapToDouble(OrderItem::getTotalPrice)
+                                .sum())
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
     }
 }

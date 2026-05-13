@@ -1,0 +1,22 @@
+post:
+  tags:
+    - Checkout
+  summary: Places the user's cart contents as an Order
+  description: Displays the user's cart details and contained items, receives Special Instructions if any
+  operationId: getCart
+  parameters:
+    - $ref: '../../components/parameters/headerUID.yaml'
+
+  responses:
+    '200':
+      description: Cart retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/CartResponse.yaml'
+    '404':
+      description: Requested cart could not be found
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
