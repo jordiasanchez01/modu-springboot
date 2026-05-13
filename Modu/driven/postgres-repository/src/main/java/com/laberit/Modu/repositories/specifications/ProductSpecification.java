@@ -29,11 +29,15 @@ public class ProductSpecification {
     public static Specification<ProductEntity> hasCategories(List<Integer> categoryIds) {
         return (root, query, cb) -> {
             if (categoryIds == null || categoryIds.isEmpty()) return cb.conjunction();
+            List<Predicate> predicates = new ArrayList<>();
+            for (Integer categoryId : categoryIds) {
+                Join<ProductEntity, CategoryEntity> join = root.join("categoriesSet");
+                predicates.add(cb.equal(join.get("id"), categoryId));
+            }
             if (Long.class != query.getResultType()) {
                 query.distinct(true);
             }
-            Join<ProductEntity, CategoryEntity> join = root.join("categoriesSet");
-            return join.get("id").in(categoryIds);
+            return cb.and(predicates.toArray(new Predicate[0]));
         };
     }
 

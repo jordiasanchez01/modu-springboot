@@ -48,7 +48,7 @@ get:
         type: array
         items:
           type: integer
-          example: activewear
+          example: 1
 
 
   responses:
