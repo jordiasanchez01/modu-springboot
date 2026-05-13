@@ -1,0 +1,18 @@
+type: object
+required:
+    - productVariantId
+    - oldPrice
+    - newPrice
+properties:
+  productVariantId:
+    type: integer
+    format: int64
+    example: 1
+  oldPrice:
+    type: number
+    format: double
+    example: 39.99
+  newPrice:
+    type: number
+    format: double
+    example: 39.99

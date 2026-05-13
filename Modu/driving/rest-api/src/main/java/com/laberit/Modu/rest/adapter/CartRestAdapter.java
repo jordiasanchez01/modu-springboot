@@ -1,13 +1,7 @@
 package com.laberit.Modu.rest.adapter;
 
-import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
-import com.laberit.Modu.domain.model.Cart;
-import com.laberit.Modu.domain.model.CartItem;
-import com.laberit.Modu.domain.model.Product;
-import com.laberit.Modu.domain.model.ProductVariant;
+import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
-import com.laberit.Modu.ports.driving.ProductServicePort;
-import com.laberit.Modu.ports.driving.ProductVariantServicePort;
 import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
 import com.laberit.Modu.rest.generated.api.CartApi;
 import com.laberit.Modu.rest.generated.model.*;
@@ -16,9 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 @RestController
@@ -26,20 +18,16 @@ import java.util.Objects;
 public class CartRestAdapter implements CartApi {
     private final CartServicePort cartServicePort;
     private final CartRestMapper cartMapper;
-    private final ProductVariantServicePort productVariantServicePort;
-    private final ProductServicePort productServicePort;
 
 
     @Override
     public ResponseEntity<CartResponse> getCart(String xDeviceId) {
 
-        Cart cart = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
+        GetCartResponse getCartResponse = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
 
-        System.out.println("Cart createdAt in getCart: "+ cart.getCreatedAt());
+        CartResponse cartResponse = cartMapper.toCartResponse(getCartResponse.cart());
 
-        CartResponse cartResponse = cartMapper.toCartResponse(cart);
-
-        cartResponse.setPriceChangedAlert(checkIfPricesChanged(cart.getCartItems()));
+        cartResponse.setPriceChangedAlert(checkIfPricesChanged(getCartResponse.changedPrices()));
 
         return ResponseEntity.ok(cartResponse);
     }
@@ -57,31 +45,19 @@ public class CartRestAdapter implements CartApi {
     }
 
     @Override
-    public ResponseEntity<CartResponse> updateCartItem(String xDeviceId, Long itemID, UpdateItemRequest updateItemRequest) {
+    public ResponseEntity<CartResponse> updateCartItem(String xDeviceId, UpdateItemRequest updateItemRequest) {
         return null;
     }
 
-    private CartResponsePriceChangedAlert checkIfPricesChanged(List<CartItem> cartItems){
+
+    private CartResponsePriceChangedAlert checkIfPricesChanged(List<ProductPriceChange> pricesList){
 
         CartResponsePriceChangedAlert changedAlert = new CartResponsePriceChangedAlert();
-        List<CartResponsePriceChangedAlertCartItemsInner> alertList = new ArrayList<>();
+        changedAlert.setPriceChanged(false);
 
-        for (CartItem item : cartItems) {
-            Long varId = item.getProductVariantId();
-            ProductVariant prodVar = productVariantServicePort.findById(varId)
-                    .orElseThrow(() -> new ProductVariantNotFoundException(varId.toString()));
-            Product product = productServicePort.findProductById(prodVar.getProductId());
-
-            if (!Objects.equals(item.getUnitPrice(), product.getPrice())){
-                CartResponsePriceChangedAlertCartItemsInner innerItem = new CartResponsePriceChangedAlertCartItemsInner(
-                  prodVar.getId(), product.getPrice()
-                );
-                alertList.add(innerItem);
-            }
-        }
-        if (!alertList.isEmpty()){
+        if (!pricesList.isEmpty()){
             changedAlert.setPriceChanged(true);
-            changedAlert.setCartItems(alertList);
+            changedAlert.setCartItems(cartMapper.toProductPriceChangeResponseList(pricesList));
         }
         return changedAlert;
     }
