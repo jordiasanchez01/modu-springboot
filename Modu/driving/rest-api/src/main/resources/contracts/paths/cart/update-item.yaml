@@ -12,6 +12,14 @@ patch:
           $ref: '../../components/schemas/UpdateItemRequest.yaml'
   parameters:
     - $ref: '../../components/parameters/headerUID.yaml'
+    - name: itemId
+      in: path
+      required: true
+      description: CartItem ID
+      schema:
+        type: integer
+        format: int64
+        example: 2
 
   responses:
     '200':
