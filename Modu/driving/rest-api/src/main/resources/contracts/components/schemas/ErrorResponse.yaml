@@ -2,14 +2,13 @@ type: object
 required:
   - type
   - message
-  - fields
 properties:
   type:
     type: string
-    example: "NOT_FOUND_ERROR"
+    example: "VALIDATION_ERROR"
   message:
     type: string
-    example: "The requested resource is not found"
+    example: "Input validation failed"
   fields:
     type: array
     items:
@@ -20,7 +19,7 @@ properties:
       properties:
         field:
           type: string
-          example: product
+          example: email
         message:
           type: string
-          example: Product with requested id is not found
+          example: The email format is not valid
