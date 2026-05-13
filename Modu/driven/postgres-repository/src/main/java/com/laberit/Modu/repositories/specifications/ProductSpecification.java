@@ -1,6 +1,5 @@
 package com.laberit.Modu.repositories.specifications;
 
-import com.laberit.Modu.domain.model.ProductSearchCriteria;
 import com.laberit.Modu.repositories.models.CategoryEntity;
 import com.laberit.Modu.repositories.models.ProductEntity;
 import jakarta.persistence.criteria.*;
@@ -12,32 +11,32 @@ import java.util.List;
 public class ProductSpecification {
 
     public static Specification<ProductEntity> hasTitle(String title) {
-        return (root, query, cb) -> {
-            if (title == null) return cb.conjunction();
+        return (root, query, criteriaBuilder) -> {
+            if (title == null) return criteriaBuilder.conjunction();
             String pattern = "%" + escapeLike(title.toLowerCase()) + "%";
-            return cb.like(cb.lower(root.get("name")), pattern, '\\');
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), pattern, '\\');
         };
     }
 
     public static Specification<ProductEntity> hasMaxPrice(Integer maxPrice) {
-        return (root, query, cb) -> {
-            if (maxPrice == null) return cb.conjunction();
-            return cb.lessThanOrEqualTo(root.get("price"), maxPrice);
+        return (root, query, criteriaBuilder) -> {
+            if (maxPrice == null) return criteriaBuilder.conjunction();
+            return criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice);
         };
     }
 
     public static Specification<ProductEntity> hasCategories(List<Integer> categoryIds) {
-        return (root, query, cb) -> {
-            if (categoryIds == null || categoryIds.isEmpty()) return cb.conjunction();
+        return (root, query, criteriaBuilder) -> {
+            if (categoryIds == null || categoryIds.isEmpty()) return criteriaBuilder.conjunction();
             List<Predicate> predicates = new ArrayList<>();
             for (Integer categoryId : categoryIds) {
                 Join<ProductEntity, CategoryEntity> join = root.join("categoriesSet");
-                predicates.add(cb.equal(join.get("id"), categoryId));
+                predicates.add(criteriaBuilder.equal(join.get("id"), categoryId));
             }
             if (Long.class != query.getResultType()) {
                 query.distinct(true);
             }
-            return cb.and(predicates.toArray(new Predicate[0]));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
 
