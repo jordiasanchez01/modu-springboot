@@ -6,8 +6,6 @@ import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.ports.driven.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
-import com.laberit.Modu.ports.driving.ProductServicePort;
-import com.laberit.Modu.ports.driving.ProductVariantServicePort;
 import com.laberit.Modu.ports.driving.command.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +25,6 @@ public class CartServiceUseCase implements CartServicePort {
     private final CartItemRepositoryPort cartItemRepositoryPort;
     private final ProductVariantRepositoryPort productVariantRepositoryPort;
     private final ProductRepositoryPort productRepositoryPort;
-
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -104,6 +101,39 @@ public class CartServiceUseCase implements CartServicePort {
         return findCartByUserId(addCommand.userId()).cart();
     }
 
+    @Override
+    public Cart updateCart(UpdateCartCommand command) {
+        return null;
+    }
+
+    @Override
+    public void deleteCart(Long CartId) {
+
+    }
+
+    @Override
+    public List<ProductPriceChange> checkIfPricesChanged(List<CartItem> cartItems){
+        List<ProductPriceChange> changedPricesList = new ArrayList<>();
+
+        for (CartItem item : cartItems) {
+            Long varId = item.getProductVariantId();
+            ProductVariant prodVar = productVariantRepositoryPort.findById(varId)
+                    .orElseThrow(() -> new ProductVariantNotFoundException(varId.toString()));
+            Product product = productRepositoryPort.findById(prodVar.getProductId())
+                    .orElseThrow(()-> new ProductNotFoundException(prodVar.getProductId().toString()));
+
+            if (!Objects.equals(item.getUnitPrice(), product.getPrice())){
+                ProductPriceChange changedPrices = new ProductPriceChange(
+                        prodVar.getId(),
+                        item.getUnitPrice(),
+                        product.getPrice()
+                );
+                changedPricesList.add(changedPrices);
+            }
+        }
+        return changedPricesList;
+    }
+
     private CartItem newCartItem(AddCartItemCommand command) {
         ProductVariant variant = productVariantRepositoryPort.findById(command.productVariantId())
                 .orElseThrow(()-> new ProductVariantNotFoundException(
@@ -144,38 +174,4 @@ public class CartServiceUseCase implements CartServicePort {
                 .build();
         return cartRepositoryPort.save(newCart);
     }
-
-    @Override
-    public Cart updateCart(UpdateCartCommand command) {
-        return null;
-    }
-
-    @Override
-    public void deleteCart(Long CartId) {
-
-    }
-
-    @Override
-    public List<ProductPriceChange> checkIfPricesChanged(List<CartItem> cartItems){
-        List<ProductPriceChange> changedPricesList = new ArrayList<>();
-
-        for (CartItem item : cartItems) {
-            Long varId = item.getProductVariantId();
-            ProductVariant prodVar = productVariantRepositoryPort.findById(varId)
-                    .orElseThrow(() -> new ProductVariantNotFoundException(varId.toString()));
-            Product product = productRepositoryPort.findById(prodVar.getProductId())
-                    .orElseThrow(()-> new ProductNotFoundException(prodVar.getProductId().toString()));
-
-            if (!Objects.equals(item.getUnitPrice(), product.getPrice())){
-                ProductPriceChange changedPrices = new ProductPriceChange(
-                        prodVar.getId(),
-                        item.getUnitPrice(),
-                        product.getPrice()
-                );
-                changedPricesList.add(changedPrices);
-            }
-        }
-        return changedPricesList;
-    }
-
 }
