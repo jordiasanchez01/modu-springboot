@@ -68,7 +68,6 @@ public class GlobalControllerAdvice {
         return error(ErrorType.INTERNAL_ERROR, ex.getMessage());
     }
 
-
     private ErrorResponse error(ErrorType type, String message) {
         return new ErrorResponse()
                 .type(type.name())

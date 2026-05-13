@@ -8,7 +8,6 @@ public enum ErrorType {
 
     private final String message;
 
-
     ErrorType(String message) {
         this.message = message;
     }
