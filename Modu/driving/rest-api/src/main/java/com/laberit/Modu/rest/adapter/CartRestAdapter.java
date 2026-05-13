@@ -5,11 +5,13 @@ import com.laberit.Modu.domain.model.Cart;
 import com.laberit.Modu.domain.model.CartItem;
 import com.laberit.Modu.domain.model.Product;
 import com.laberit.Modu.domain.model.ProductVariant;
+import com.laberit.Modu.ports.driving.CartItemServicePort;
 import com.laberit.Modu.ports.driving.CartServicePort;
 import com.laberit.Modu.ports.driving.ProductServicePort;
 import com.laberit.Modu.ports.driving.ProductVariantServicePort;
 import com.laberit.Modu.rest.generated.api.CartApi;
 import com.laberit.Modu.rest.generated.model.*;
+import com.laberit.Modu.rest.mapper.CartItemRestMapper;
 import com.laberit.Modu.rest.mapper.CartRestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +28,10 @@ public class CartRestAdapter implements CartApi {
     private final CartServicePort cartServicePort;
     private final CartRestMapper cartMapper;
     private final ProductVariantServicePort productVariantServicePort;
-
     private final ProductServicePort productServicePort;
+    private final CartItemServicePort cartItemServicePort;
+    private final CartItemRestMapper cartItemMapper;
+
 
 
     @Override
@@ -49,7 +53,8 @@ public class CartRestAdapter implements CartApi {
 
     @Override
     public ResponseEntity<CartResponse> updateCartItem(String xDeviceId, Long itemID, UpdateItemRequest updateItemRequest) {
-        return null;
+        cartItemServicePort.updateCartItem(Long.valueOf(xDeviceId), itemID, cartItemMapper.toCommand(updateItemRequest));
+        return getCart(xDeviceId);
     }
 
     private CartResponsePriceChangedAlert checkIfPricesChanged(List<CartItem> cartItems){
