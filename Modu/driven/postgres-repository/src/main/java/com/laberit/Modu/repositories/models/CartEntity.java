@@ -18,12 +18,12 @@ public class CartEntity {
     @Column(nullable = false, name="user_id")
     private Long userId;
     
-    @Column(name="created_at")
+    @Column(name="created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
     @Column(name="total_price")
     private Double totalPrice;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cart")
     private List<CartItemEntity> cartItems;
 
 }

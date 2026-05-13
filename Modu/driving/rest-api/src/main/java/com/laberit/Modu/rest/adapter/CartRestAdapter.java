@@ -1,16 +1,9 @@
 package com.laberit.Modu.rest.adapter;
 
-import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
-import com.laberit.Modu.domain.model.*;
-import com.laberit.Modu.domain.exceptions.ProductVariantNotAvailableException;
-import com.laberit.Modu.domain.model.Cart;
-import com.laberit.Modu.domain.model.CartItem;
-import com.laberit.Modu.domain.model.Product;
-import com.laberit.Modu.domain.model.ProductVariant;
 import com.laberit.Modu.ports.driving.CartItemServicePort;
+import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
-import com.laberit.Modu.ports.driving.ProductServicePort;
-import com.laberit.Modu.ports.driving.ProductVariantServicePort;
+import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
 import com.laberit.Modu.rest.generated.api.CartApi;
 import com.laberit.Modu.rest.generated.model.*;
 import com.laberit.Modu.rest.mapper.CartItemRestMapper;
@@ -19,9 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 @RestController
@@ -32,13 +23,6 @@ public class CartRestAdapter implements CartApi {
     private final CartItemServicePort cartItemServicePort;
     private final CartItemRestMapper cartItemMapper;
 
-
-
-    @Override
-    public ResponseEntity<CartResponse> addCartItem(String xDeviceId, AddItemRequest addItemRequest) {
-        return null;
-    }
-
     @Override
     public ResponseEntity<CartResponse> getCart(String xDeviceId) {
 
@@ -47,6 +31,18 @@ public class CartRestAdapter implements CartApi {
         CartResponse cartResponse = cartMapper.toCartResponse(getCartResponse.cart());
 
         cartResponse.setPriceChangedAlert(checkIfPricesChanged(getCartResponse.changedPrices()));
+
+        return ResponseEntity.ok(cartResponse);
+    }
+
+    @Override
+    public ResponseEntity<CartResponse> addCartItem(String xDeviceId, AddItemRequest addItemRequest) {
+        AddCartItemCommand addItemCommand = cartMapper.toAddCartItemCommand(
+                Long.valueOf(xDeviceId),addItemRequest);
+
+        Cart cart = cartServicePort.addCartItemToCart(addItemCommand);
+
+        CartResponse cartResponse = cartMapper.toCartResponse(cart);
 
         return ResponseEntity.ok(cartResponse);
     }

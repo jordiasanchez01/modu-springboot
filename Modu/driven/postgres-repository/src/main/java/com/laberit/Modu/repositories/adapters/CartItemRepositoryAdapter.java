@@ -16,7 +16,6 @@ public class CartItemRepositoryAdapter implements CartItemRepositoryPort {
     private final CartItemJpaRepository cartItemJpaRepository;
     private final CartItemPersistanceMapper cartItemMapper;
 
-
     @Override
     public CartItem save(CartItem cartItem) {
         return cartItemMapper.toDomain(cartItemJpaRepository.save(cartItemMapper.toEntity(cartItem)));
@@ -50,5 +49,10 @@ public class CartItemRepositoryAdapter implements CartItemRepositoryPort {
     @Override
     public boolean existsByProductVariantId(Long productVariantId) {
         return false;
+    }
+
+    @Override
+    public CartItem save(CartItem cartItem) {
+        return cartItemMapper.toDomain(cartItemJpaRepository.save(cartItemMapper.toEntity(cartItem)));
     }
 }
