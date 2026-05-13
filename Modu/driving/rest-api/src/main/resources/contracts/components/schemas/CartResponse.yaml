@@ -1,36 +1,31 @@
 type: object
 required:
+  - userId
+  - createdAt
+  - total_price
   - cart_items
-  - price_changed_alert
 properties:
+  userId:
+    type: integer
+    format: int64
+    example: 1
+  createdAt:
+    type: string
+    format: date-time
+    example: "2026-01-15T10:30:00"
+  total_price:
+    type: number
+    format: double
+    example: 86.95
   cart_items:
     type: array
     items:
-      type: object
-      required:
-        - item_id
-        - variant_id
-        - quantity
-        - stock_actual
-      properties:
-        item_id:
-          type: integer
-          format: int64
-          example: 1
-        variant_id:
-          type: integer
-          format: int64
-          example: 2
-        quantity:
-          type: integer
-          example: 2
-        stock_actual:
-          type: integer
-          example: 10
+      $ref: './CartItemResponse.yaml'
   price_changed_alert:
     type: object
     required:
       - price_changed
+      - cartItems
     properties:
       price_changed:
         type: boolean
@@ -38,18 +33,6 @@ properties:
       cartItems:
         type: array
         items:
-          type: object
-          required:
-            - item_id
-            - new_price
-          properties:
-            item_id:
-              type: integer
-              format: int64
-              example: 1
-            new_price:
-              type: number
-              format: double
-              example: 39.99
+          $ref: './ProductPriceChangeResponse.yaml'
 
 

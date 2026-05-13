@@ -24,6 +24,11 @@ public class ProductVariantRepositoryAdapter implements ProductVariantRepository
     }
 
     @Override
+    public Set<ProductVariant> findAllByIdIn(Set<Long> ids) {
+        return mapper.toDomainSet(repository.findAllByIdIn(ids));
+    }
+
+    @Override
     public Optional<ProductVariant> findById(Long id) {
         return repository.findById(id).map(mapper::toDomain);
     }
@@ -31,6 +36,11 @@ public class ProductVariantRepositoryAdapter implements ProductVariantRepository
     @Override
     public Optional<ProductVariant> findByName(String name) {
         return repository.findByName(name).map(mapper::toDomain);
+    }
+
+    @Override
+    public Optional<ProductVariant> findByProductId(Long productId) {
+        return repository.findByProductId(productId).map(mapper::toDomain);
     }
 
     @Override

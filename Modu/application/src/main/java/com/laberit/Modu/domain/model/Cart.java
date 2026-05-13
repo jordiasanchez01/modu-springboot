@@ -5,7 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -13,13 +16,18 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Cart {
+    private Long id;
     private Long userId;
-    private Date createdAt;
-    private List<CartItem> cartItems;
+    private LocalDateTime createdAt;
+    @Builder.Default
+    private List<CartItem> cartItems = new ArrayList<>();
 
-    public Double getTotalCartPrice(){
-        return cartItems.stream()
-                .mapToDouble(CartItem::getTotalPrice)
-                .sum();
+    public Double getTotalPrice(){
+        return BigDecimal.valueOf(
+                cartItems.stream()
+                        .mapToDouble(CartItem::getTotalPrice)
+                        .sum())
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
     }
 }

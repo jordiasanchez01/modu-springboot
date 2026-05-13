@@ -10,9 +10,13 @@ public interface ProductVariantRepositoryPort {
 
     List<ProductVariant> findAllByProductId(Long productId);
 
+    Set<ProductVariant> findAllByIdIn(Set<Long> ids);
+
     Optional<ProductVariant> findById(Long id);
 
     Optional<ProductVariant> findByName(String name);
+
+    Optional<ProductVariant> findByProductId(Long productId);
 
     boolean existsById(Long id);
 
