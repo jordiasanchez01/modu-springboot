@@ -1,5 +1,7 @@
 package com.laberit.Modu.rest.adapter;
 
+import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
+import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.domain.exceptions.ProductVariantNotAvailableException;
 import com.laberit.Modu.domain.model.Cart;
 import com.laberit.Modu.domain.model.CartItem;
@@ -27,8 +29,6 @@ import java.util.Objects;
 public class CartRestAdapter implements CartApi {
     private final CartServicePort cartServicePort;
     private final CartRestMapper cartMapper;
-    private final ProductVariantServicePort productVariantServicePort;
-    private final ProductServicePort productServicePort;
     private final CartItemServicePort cartItemServicePort;
     private final CartItemRestMapper cartItemMapper;
 
@@ -42,11 +42,11 @@ public class CartRestAdapter implements CartApi {
     @Override
     public ResponseEntity<CartResponse> getCart(String xDeviceId) {
 
-        Cart cart = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
+        GetCartResponse getCartResponse = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
 
-        CartResponse cartResponse = cartMapper.toCartResponse(cart);
+        CartResponse cartResponse = cartMapper.toCartResponse(getCartResponse.cart());
 
-        cartResponse.setPriceChangedAlert(checkIfPricesChanged(cart.getCartItems()));
+        cartResponse.setPriceChangedAlert(checkIfPricesChanged(getCartResponse.changedPrices()));
 
         return ResponseEntity.ok(cartResponse);
     }
@@ -57,27 +57,15 @@ public class CartRestAdapter implements CartApi {
         return getCart(xDeviceId);
     }
 
-    private CartResponsePriceChangedAlert checkIfPricesChanged(List<CartItem> cartItems){
+
+    private CartResponsePriceChangedAlert checkIfPricesChanged(List<ProductPriceChange> pricesList){
 
         CartResponsePriceChangedAlert changedAlert = new CartResponsePriceChangedAlert();
-        List<CartResponsePriceChangedAlertCartItemsInner> alertList = new ArrayList<>();
+        changedAlert.setPriceChanged(false);
 
-        for (CartItem item : cartItems) {
-            Long varId = item.getProductVariantId();
-            ProductVariant prodVar = productVariantServicePort.findById(varId)
-                    .orElseThrow(() -> new ProductVariantNotAvailableException(varId.toString()));
-            Product product = productServicePort.findProductById(prodVar.getProductId());
-
-            if (!Objects.equals(item.getUnitPrice(), product.getPrice())){
-                CartResponsePriceChangedAlertCartItemsInner innerItem = new CartResponsePriceChangedAlertCartItemsInner(
-                  prodVar.getId(), product.getPrice()
-                );
-                alertList.add(innerItem);
-            }
-        }
-        if (!alertList.isEmpty()){
+        if (!pricesList.isEmpty()){
             changedAlert.setPriceChanged(true);
-            changedAlert.setCartItems(alertList);
+            changedAlert.setCartItems(cartMapper.toProductPriceChangeResponseList(pricesList));
         }
         return changedAlert;
     }
