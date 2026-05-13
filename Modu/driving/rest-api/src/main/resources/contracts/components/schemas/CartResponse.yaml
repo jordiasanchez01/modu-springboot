@@ -20,7 +20,7 @@ properties:
   cart_items:
     type: array
     items:
-      $ref: '../../components/schemas/CartItemResponse.yaml'
+      $ref: './CartItemResponse.yaml'
   price_changed_alert:
     type: object
     required:
@@ -33,18 +33,6 @@ properties:
       cartItems:
         type: array
         items:
-          type: object
-          required:
-            - item_id
-            - new_price
-          properties:
-            item_id:
-              type: integer
-              format: int64
-              example: 1
-            new_price:
-              type: number
-              format: double
-              example: 39.99
+          $ref: './ProductPriceChangeResponse.yaml'
 
 

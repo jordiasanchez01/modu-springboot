@@ -2,6 +2,7 @@ package com.laberit.Modu.services;
 
 import com.laberit.Modu.domain.exceptions.CartNotFoundException;
 import com.laberit.Modu.domain.exceptions.ProductNotFoundException;
+import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.ports.driven.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
@@ -16,10 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,21 +27,43 @@ import java.util.stream.Collectors;
 public class CartServiceUseCase implements CartServicePort {
     private final CartRepositoryPort cartRepositoryPort;
     private final CartItemRepositoryPort cartItemRepositoryPort;
-    private final ProductVariantServicePort productVariantServicePort;
+    private final ProductVariantRepositoryPort productVariantRepositoryPort;
+    private final ProductRepositoryPort productRepositoryPort;
 
 
     @Override
-    public Cart findCartByUserId(Long userId) {
+    public GetCartResponse findCartByUserId(Long userId) {
 
         Cart cart = cartRepositoryPort.findByUserId(userId)
                 .orElseThrow(() -> new CartNotFoundException(userId.toString()));
 
         List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getUserId());
 
+        List<ProductPriceChange> changedPricesList = new ArrayList<>();
+
+        for (CartItem item : cartItems) {
+            Long varId = item.getProductVariantId();
+            ProductVariant prodVar = productVariantRepositoryPort.findById(varId)
+                    .orElseThrow(() -> new ProductVariantNotFoundException(varId.toString()));
+            Product product = productRepositoryPort.findById(prodVar.getProductId())
+                    .orElseThrow(()-> new ProductNotFoundException(prodVar.getProductId().toString()));
+
+            if (!Objects.equals(item.getUnitPrice(), product.getPrice())){
+                ProductPriceChange changedPrices = new ProductPriceChange(
+                        prodVar.getId(),
+                        item.getUnitPrice(),
+                        product.getPrice()
+                );
+                changedPricesList.add(changedPrices);
+
+                item.setUnitPrice(product.getPrice());
+            }
+        }
+
         Set<Long> variantIds = cartItems.stream()
                                 .map(CartItem::getProductVariantId)
                                 .collect(Collectors.toSet());
-        Set<ProductVariant> variants = productVariantServicePort.findAllByIdIn(variantIds);
+        Set<ProductVariant> variants = productVariantRepositoryPort.findAllByIdIn(variantIds);
 
         Map<Long, ProductVariant> variantMap = variants.stream()
                 .collect(Collectors.toMap(ProductVariant::getId, pV -> pV));
@@ -54,7 +74,7 @@ public class CartServiceUseCase implements CartServicePort {
 
         cart.setCartItems(cartItems);
 
-        return cart;
+        return new GetCartResponse(cart, changedPricesList);
     }
 
     @Override
@@ -70,6 +90,29 @@ public class CartServiceUseCase implements CartServicePort {
     @Override
     public void deleteCart(Long CartId) {
 
+    }
+
+    @Override
+    public List<ProductPriceChange> checkIfPricesChanged(List<CartItem> cartItems){
+        List<ProductPriceChange> changedPricesList = new ArrayList<>();
+
+        for (CartItem item : cartItems) {
+            Long varId = item.getProductVariantId();
+            ProductVariant prodVar = productVariantRepositoryPort.findById(varId)
+                    .orElseThrow(() -> new ProductVariantNotFoundException(varId.toString()));
+            Product product = productRepositoryPort.findById(prodVar.getProductId())
+                    .orElseThrow(()-> new ProductNotFoundException(prodVar.getProductId().toString()));
+
+            if (!Objects.equals(item.getUnitPrice(), product.getPrice())){
+                ProductPriceChange changedPrices = new ProductPriceChange(
+                        prodVar.getId(),
+                        item.getUnitPrice(),
+                        product.getPrice()
+                );
+                changedPricesList.add(changedPrices);
+            }
+        }
+        return changedPricesList;
     }
 
 }
