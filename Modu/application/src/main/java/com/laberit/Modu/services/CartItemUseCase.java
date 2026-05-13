@@ -1,11 +1,11 @@
 package com.laberit.Modu.services;
 
-import com.laberit.Modu.domain.exceptions.CartItemNotFoundException;
-import com.laberit.Modu.domain.exceptions.NotEnoughStockException;
-import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
+import com.laberit.Modu.domain.exceptions.*;
+import com.laberit.Modu.domain.model.Cart;
 import com.laberit.Modu.domain.model.CartItem;
 import com.laberit.Modu.domain.model.ProductVariant;
 import com.laberit.Modu.ports.driven.CartItemRepositoryPort;
+import com.laberit.Modu.ports.driven.CartRepositoryPort;
 import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
 import com.laberit.Modu.ports.driving.CartItemServicePort;
 import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CartItemUseCase implements CartItemServicePort {
     private final CartItemRepositoryPort cartItemRepositoryPort;
     private final ProductVariantRepositoryPort productVariantRepositoryPort;
+    private final CartRepositoryPort cartRepositoryPort;
     @Override
     public CartItem findCartItemById(Long CartItemId) {
         return null;
@@ -38,14 +39,15 @@ public class CartItemUseCase implements CartItemServicePort {
     }
 
     @Override
-    public CartItem updateCartItem(UpdateCartItemCommand command) {
-        Long cartItemId = command.cartItemId();
-        Long cartId = command.cartId();
+    public CartItem updateCartItem(Long userId, Long cartItemId, UpdateCartItemCommand command) {
         int requestedQuantity = command.quantity();
-        CartItem item = cartItemRepositoryPort.findByIdAndCartId(command.cartItemId(), command.cartId())
+        Cart cart = cartRepositoryPort.findByUserId(userId).orElseThrow(
+                () -> new CartNotFoundException(userId));
+        CartItem item = cartItemRepositoryPort.findByIdAndCartId(cartItemId, cart.getId())
                 .orElseThrow(() -> new CartItemNotFoundException(cartItemId));
         ProductVariant productVariant = productVariantRepositoryPort.findById(item.getProductVariantId())
-                        .orElseThrow(() -> new ProductVariantNotFoundException(item.getProductVariantId()));
+                        .orElseThrow(() -> new ProductVariantNotAvailableException(item.getProductVariantId().toString()));
+        if (!productVariant.getActive()) throw new ProductVariantDataIntegrityException(item.getProductVariantId());
         if (productVariant.getStock() >= requestedQuantity) item.setQuantity(requestedQuantity);
         else throw new NotEnoughStockException(productVariant.getProductId());
         return cartItemRepositoryPort.save(item);

@@ -12,7 +12,7 @@ public interface CartItemServicePort {
 
     CartItem addCartItem(AddCartItemCommand command);
 
-    CartItem updateCartItem(UpdateCartItemCommand command);
+    CartItem updateCartItem(Long userId, Long cartItemId, UpdateCartItemCommand command);
 
     void deleteCartItem(Long CartItemId);
 

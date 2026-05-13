@@ -36,7 +36,7 @@ public class CartServiceUseCase implements CartServicePort {
     public Cart findCartByUserId(Long userId) {
 
         Cart cart = cartRepositoryPort.findByUserId(userId)
-                .orElseThrow(() -> new CartNotFoundException(userId.toString()));
+                .orElseThrow(() -> new CartNotFoundException(userId));
 
         List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getUserId());
 

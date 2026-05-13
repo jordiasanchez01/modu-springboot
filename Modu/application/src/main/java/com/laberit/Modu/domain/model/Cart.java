@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Cart {
+    private Long id;
     private Long userId;
     private LocalDateTime createdAt;
     private List<CartItem> cartItems;

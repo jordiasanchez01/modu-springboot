@@ -1,6 +1,6 @@
 package com.laberit.Modu.rest.adapter;
 
-import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
+import com.laberit.Modu.domain.exceptions.ProductVariantNotAvailableException;
 import com.laberit.Modu.domain.model.Cart;
 import com.laberit.Modu.domain.model.CartItem;
 import com.laberit.Modu.domain.model.Product;
@@ -11,8 +11,6 @@ import com.laberit.Modu.ports.driving.ProductVariantServicePort;
 import com.laberit.Modu.rest.generated.api.CartApi;
 import com.laberit.Modu.rest.generated.model.*;
 import com.laberit.Modu.rest.mapper.CartRestMapper;
-import com.laberit.Modu.rest.mapper.ProductRestMapper;
-import com.laberit.Modu.rest.mapper.ProductVariantRestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,7 +49,6 @@ public class CartRestAdapter implements CartApi {
 
     @Override
     public ResponseEntity<CartResponse> updateCartItem(String xDeviceId, Long itemID, UpdateItemRequest updateItemRequest) {
-
         return null;
     }
 
@@ -63,7 +60,7 @@ public class CartRestAdapter implements CartApi {
         for (CartItem item : cartItems) {
             Long varId = item.getProductVariantId();
             ProductVariant prodVar = productVariantServicePort.findById(varId)
-                    .orElseThrow(() -> new ProductVariantNotFoundException(varId.toString()));
+                    .orElseThrow(() -> new ProductVariantNotAvailableException(varId.toString()));
             Product product = productServicePort.findProductById(prodVar.getProductId());
 
             if (!Objects.equals(item.getUnitPrice(), product.getPrice())){
