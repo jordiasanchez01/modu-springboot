@@ -1,11 +1,10 @@
 package com.laberit.Modu.services;
 
-import com.laberit.Modu.domain.exceptions.CartNotFoundException;
-import com.laberit.Modu.domain.exceptions.ProductNotFoundException;
-import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
+import com.laberit.Modu.domain.exceptions.*;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.ports.driven.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
+import com.laberit.Modu.ports.driving.ProductVariantServicePort;
 import com.laberit.Modu.ports.driving.command.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +23,7 @@ public class CartServiceUseCase implements CartServicePort {
     private final CartRepositoryPort cartRepositoryPort;
     private final CartItemRepositoryPort cartItemRepositoryPort;
     private final ProductVariantRepositoryPort productVariantRepositoryPort;
+    private final ProductVariantServicePort productVariantServicePort;
     private final ProductRepositoryPort productRepositoryPort;
 
     @Override
@@ -68,6 +68,8 @@ public class CartServiceUseCase implements CartServicePort {
                 variantMap.get(cartItem.getProductVariantId()).getStock()
         ));
 
+        cartItemRepositoryPort.saveAll(cartItems);
+
         cart.setCartItems(cartItems);
 
         return new GetCartResponse(cart, changedPricesList);
@@ -87,6 +89,8 @@ public class CartServiceUseCase implements CartServicePort {
                 addCommand.productVariantId(),
                 addCommand.quantity()
         ));
+
+        productVariantServicePort.assertIsValidToPurchase(cartItem.getProductVariantId(), cartItem.getQuantity());
 
         cart.setCartItems(addItemToCartItemList(cartItem, cart.getCartItems()));
 

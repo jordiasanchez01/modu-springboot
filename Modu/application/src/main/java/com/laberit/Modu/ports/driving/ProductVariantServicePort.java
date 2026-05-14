@@ -1,8 +1,6 @@
 package com.laberit.Modu.ports.driving;
 
 import com.laberit.Modu.domain.model.ProductVariant;
-import com.laberit.Modu.ports.driving.command.AddProductVariantCommand;
-import com.laberit.Modu.ports.driving.command.UpdateProductVariantCommand;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,4 +14,5 @@ public interface ProductVariantServicePort {
 
     Optional<ProductVariant> findById(Long id);
 
+    void assertIsValidToPurchase(Long id, Integer requiredStock);
 }

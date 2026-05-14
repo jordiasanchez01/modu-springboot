@@ -1,5 +1,8 @@
 package com.laberit.Modu.services;
 
+import com.laberit.Modu.domain.exceptions.NotEnoughStockException;
+import com.laberit.Modu.domain.exceptions.ProductVariantDataIntegrityException;
+import com.laberit.Modu.domain.exceptions.ProductVariantNotAvailableException;
 import com.laberit.Modu.domain.model.ProductVariant;
 import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
 import com.laberit.Modu.ports.driving.ProductVariantServicePort;
@@ -35,6 +38,14 @@ public class ProductVariantServiceUseCase implements ProductVariantServicePort {
     @Override
     public Optional<ProductVariant> findById(Long id) {
         return productVariantRepositoryPort.findById(id);
+    }
+
+    @Override
+    public void assertIsValidToPurchase(Long id, Integer requiredStock) {
+        ProductVariant productVariant = productVariantRepositoryPort.findById(id)
+                .orElseThrow(() -> new ProductVariantNotAvailableException(id.toString()));
+        if (!productVariant.getActive()) throw new ProductVariantDataIntegrityException(id);
+        if (productVariant.getStock() < requiredStock) throw new NotEnoughStockException(productVariant.getProductId());
     }
 
 }

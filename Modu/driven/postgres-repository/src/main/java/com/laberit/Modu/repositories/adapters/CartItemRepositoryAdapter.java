@@ -17,11 +17,6 @@ public class CartItemRepositoryAdapter implements CartItemRepositoryPort {
     private final CartItemPersistanceMapper cartItemMapper;
 
     @Override
-    public CartItem save(CartItem cartItem) {
-        return cartItemMapper.toDomain(cartItemJpaRepository.save(cartItemMapper.toEntity(cartItem)));
-    }
-
-    @Override
     public Optional<CartItem> findById(Long id) {
         return cartItemJpaRepository.findById(id).map(cartItemMapper::toDomain);
     }
@@ -54,5 +49,10 @@ public class CartItemRepositoryAdapter implements CartItemRepositoryPort {
     @Override
     public CartItem save(CartItem cartItem) {
         return cartItemMapper.toDomain(cartItemJpaRepository.save(cartItemMapper.toEntity(cartItem)));
+    }
+
+    @Override
+    public List<CartItem> saveAll(List<CartItem> cartItems) {
+        return cartItemMapper.toDomainList(cartItemJpaRepository.saveAll(cartItemMapper.toEntityList(cartItems)));
     }
 }

@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface CartItemRepositoryPort {
     CartItem save(CartItem cartItem);
+    List<CartItem> saveAll(List<CartItem> cartItems);
 
     Optional<CartItem> findById(Long id);
 
