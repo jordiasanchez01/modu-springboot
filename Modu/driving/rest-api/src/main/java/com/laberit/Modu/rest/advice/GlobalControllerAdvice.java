@@ -47,9 +47,15 @@ public class GlobalControllerAdvice {
         return error(ErrorType.NOT_FOUND, ex.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(CartItemNotFoundException.class)
+    public ErrorResponse handleCartItemNotFound(CartItemNotFoundException ex) {
+        return error(ErrorType.NOT_FOUND, ex.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(NotEnoughStockException.class)
-    public ErrorResponse handleNotEnoughStock(NotEnoughStockException ex) {
+    @ExceptionHandler(ProductVariantNotAvailableException.class)
+    public ErrorResponse handleProductVariableNotAvailable(ProductVariantNotAvailableException ex) {
         return error(ErrorType.CONFLICT, ex.getMessage());
     }
 
