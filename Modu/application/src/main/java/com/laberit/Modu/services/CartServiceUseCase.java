@@ -111,8 +111,11 @@ public class CartServiceUseCase implements CartServicePort {
     }
 
     @Override
-    public void deleteCart(Long CartId) {
-
+    public void deleteCart(Long userId) {
+        Cart cart = cartRepositoryPort.findByUserId(userId).orElseThrow(
+                () -> new CartNotFoundException(userId)
+        );
+        cartRepositoryPort.deleteById(cart.getId());
     }
 
     @Override

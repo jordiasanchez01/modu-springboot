@@ -10,4 +10,6 @@ public interface CartRepositoryPort {
     boolean existsByUserId(Long userId);
 
     Cart save(Cart cart);
+
+    void deleteById(Long cartId);
 }
