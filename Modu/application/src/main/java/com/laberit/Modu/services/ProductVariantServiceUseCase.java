@@ -42,7 +42,7 @@ public class ProductVariantServiceUseCase implements ProductVariantServicePort {
         ProductVariant productVariant = productVariantRepositoryPort.findById(id)
                 .orElseThrow(() -> new ProductVariantNotFoundException(id.toString()));
         if (!productVariant.getActive() || (productVariant.getStock() < requiredStock))
-            throw new ProductVariantNotAvailableException(id.toString());
+            throw new ProductVariantNotAvailableException(id, (productVariant.getStock() < requiredStock));
     }
 
 }
