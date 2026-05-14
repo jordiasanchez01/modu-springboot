@@ -1,6 +1,7 @@
 package com.laberit.Modu.repositories.mappers;
 
 import com.laberit.Modu.domain.model.CartItem;
+import com.laberit.Modu.repositories.models.CartEntity;
 import com.laberit.Modu.repositories.models.CartItemEntity;
 import com.laberit.Modu.repositories.models.ProductVariantEntity;
 import org.mapstruct.Mapper;
@@ -15,11 +16,12 @@ public interface CartItemPersistanceMapper {
             return null;
         }
         CartItemEntity entity = new CartItemEntity();
-        entity.setId(cartItem.getId());
+            CartEntity cart = new CartEntity();
+            cart.setId(cartItem.getCartId());
+        entity.setCart(cart);
         entity.setUnitPrice(cartItem.getUnitPrice());
         entity.setQuantity(cartItem.getQuantity());
         entity.setTotalPrice(cartItem.getTotalPrice());
-
             ProductVariantEntity productVariant = new ProductVariantEntity();
             productVariant.setId(cartItem.getProductVariantId());
         entity.setProductVariant(productVariant);
@@ -34,7 +36,7 @@ public interface CartItemPersistanceMapper {
         }
         return CartItem.builder()
                 .id(entity.getId())
-                .cartId(entity.getCart().getUserId())
+                .cartId(entity.getCart().getId())
                 .productVariantId(entity.getProductVariant().getId())
                 .unitPrice(entity.getUnitPrice())
                 .quantity(entity.getQuantity())

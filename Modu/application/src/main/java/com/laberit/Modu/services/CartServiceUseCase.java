@@ -33,7 +33,7 @@ public class CartServiceUseCase implements CartServicePort {
         Cart cart = cartRepositoryPort.findByUserId(userId)
                 .orElseThrow(() -> new CartNotFoundException(userId.toString()));
 
-        List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getUserId());
+        List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
 
         List<ProductPriceChange> changedPricesList = new ArrayList<>();
 
