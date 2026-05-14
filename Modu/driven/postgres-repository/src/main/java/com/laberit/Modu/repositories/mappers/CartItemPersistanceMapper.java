@@ -16,6 +16,7 @@ public interface CartItemPersistanceMapper {
             return null;
         }
         CartItemEntity entity = new CartItemEntity();
+        entity.setId(cartItem.getId());
             CartEntity cart = new CartEntity();
             cart.setId(cartItem.getCartId());
         entity.setCart(cart);

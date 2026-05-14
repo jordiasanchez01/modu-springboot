@@ -27,6 +27,12 @@ public class CartItemRepositoryAdapter implements CartItemRepositoryPort {
     }
 
     @Override
+    public Optional<CartItem> findByCartIdAndProductVariantId(Long cartId, Long productVariantId) {
+        return cartItemJpaRepository.findByCartIdAndProductVariantId(cartId,productVariantId)
+                .map(cartItemMapper::toDomain);
+    }
+
+    @Override
     public List<CartItem> findAllByCartId(Long cartId) {
         return cartItemMapper.toDomainList(cartItemJpaRepository.findAllByCartId(cartId));
     }

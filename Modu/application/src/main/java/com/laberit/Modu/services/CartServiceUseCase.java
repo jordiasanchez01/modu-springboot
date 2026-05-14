@@ -76,29 +76,42 @@ public class CartServiceUseCase implements CartServicePort {
     @Override
     @Transactional
     public Cart addCartItemToCart(AddCartItemCommand addCommand) {
-        Cart cart = cartRepositoryPort.findByUserId(addCommand.userId())
-                .orElseGet(() -> addCart(new AddCartCommand(
-                        addCommand.userId(),
-                        new ArrayList<>()
-                )));
+        Cart cart = cartRepositoryPort.findByUserId(addCommand.cartId())
+            .orElseGet(() -> addCart(new AddCartCommand(
+                addCommand.cartId(),
+                new ArrayList<>()
+            )));
 
-        CartItem cartItem = newCartItem(new AddCartItemCommand(
-                cart.getUserId(),
-                addCommand.productVariantId(),
-                addCommand.quantity()
-        ));
+        Optional<CartItem> existing = cartItemRepositoryPort
+                .findByCartIdAndProductVariantId(
+                        cart.getId(),
+                        addCommand.productVariantId()
+                );
 
-        cart.setCartItems(addItemToCartItemList(cartItem, cart.getCartItems()));
+        if (existing.isPresent()) {
+            // Product already in cart — update quantity and total
+            CartItem item = existing.get();
+            item.setQuantity(item.getQuantity() + addCommand.quantity());
 
-        cart.getCartItems().forEach(item ->
-                System.out.println("Item productVariantId: " + item.getProductVariantId() +
-                        " unitPrice: " + item.getUnitPrice() +
-                        " quantity: " + item.getQuantity()));
-        System.out.println("Total price: " + cart.getTotalPrice());
+            System.out.println("IsPresent is called");
+            item.setCurrentStock(getProductVariant(addCommand.productVariantId()).getStock());
+            System.out.println(item.toString());
+            CartItem savedItem = cartItemRepositoryPort.save(item);
+            System.out.println("Save in IsPresent is called");
+            System.out.println("SavedItem: "+savedItem.toString());
+        } else {
+            // Product not in cart yet — insert new cart item
+            CartItem cartItem = newCartItem(new AddCartItemCommand(
+                    cart.getId(),
+                    addCommand.productVariantId(),
+                    addCommand.quantity()
+            ));
+            cartItemRepositoryPort.save(cartItem);
+            System.out.println("IsPresent is NOT called");
+        }
 
-        cartRepositoryPort.save(cart);
 
-        return findCartByUserId(addCommand.userId()).cart();
+        return findCartByUserId(addCommand.cartId()).cart();
     }
 
     @Override
@@ -116,9 +129,7 @@ public class CartServiceUseCase implements CartServicePort {
         List<ProductPriceChange> changedPricesList = new ArrayList<>();
 
         for (CartItem item : cartItems) {
-            Long varId = item.getProductVariantId();
-            ProductVariant prodVar = productVariantRepositoryPort.findById(varId)
-                    .orElseThrow(() -> new ProductVariantNotFoundException(varId.toString()));
+            ProductVariant prodVar = getProductVariant(item.getProductVariantId());
             Product product = productRepositoryPort.findById(prodVar.getProductId())
                     .orElseThrow(()-> new ProductNotFoundException(prodVar.getProductId().toString()));
 
@@ -135,10 +146,7 @@ public class CartServiceUseCase implements CartServicePort {
     }
 
     private CartItem newCartItem(AddCartItemCommand command) {
-        ProductVariant variant = productVariantRepositoryPort.findById(command.productVariantId())
-                .orElseThrow(()-> new ProductVariantNotFoundException(
-                        command.productVariantId().toString()
-                ));
+        ProductVariant variant = getProductVariant(command.productVariantId());
         Product product = productRepositoryPort.findById(variant.getProductId())
                 .orElseThrow(()->new ProductNotFoundException(
                         variant.getProductId().toString()
@@ -146,7 +154,7 @@ public class CartServiceUseCase implements CartServicePort {
         Double productPrice = product.getPrice();
 
         return CartItem.builder()
-                .cartId(command.userId())
+                .cartId(command.cartId())
                 .productVariantId(command.productVariantId())
                 .unitPrice(productPrice)
                 .quantity(command.quantity())
@@ -173,5 +181,12 @@ public class CartServiceUseCase implements CartServicePort {
                 .cartItems(command.cartItems())
                 .build();
         return cartRepositoryPort.save(newCart);
+    }
+
+    private ProductVariant getProductVariant(Long id) {
+        return productVariantRepositoryPort.findById(id)
+                .orElseThrow(()-> new ProductVariantNotFoundException(
+                        id.toString()
+                ));
     }
 }
