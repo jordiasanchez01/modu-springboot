@@ -19,4 +19,6 @@ public interface CartItemRepositoryPort {
     List<CartItem> findAllByProductVariantId(Long productVariantId);
 
     boolean existsByProductVariantId(Long productVariantId);
+
+    void deleteById(Long id);
 }

@@ -29,7 +29,7 @@ paths:
   /cart/addItem:
     $ref: './paths/cart/add-item.yaml'
   /cart/item/{itemId}:
-    $ref: './paths/cart/update-item.yaml'
+    $ref: './paths/cart/cart-item.yaml'
 
 components:
   schemas:
