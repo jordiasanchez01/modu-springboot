@@ -1,0 +1,12 @@
+type: object
+required:
+  - isPaid
+  - specialInstructions
+properties:
+  isPaid:
+    type: boolean
+    example: true
+  specialInstructions:
+    type: string
+    description: Special instructions for the order
+    example: "Please leave at the door"

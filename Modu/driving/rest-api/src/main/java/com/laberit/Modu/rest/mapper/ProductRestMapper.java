@@ -1,6 +1,6 @@
 package com.laberit.Modu.rest.mapper;
 
-import com.laberit.Modu.domain.model.PagedResult;
+import com.laberit.Modu.domain.model.response.PagedResult;
 import com.laberit.Modu.domain.model.Product;
 import com.laberit.Modu.rest.generated.model.*;
 import org.mapstruct.Mapper;

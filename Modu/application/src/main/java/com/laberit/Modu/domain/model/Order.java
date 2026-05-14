@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,7 +20,8 @@ public class Order {
     private Long userId;
     private LocalDateTime createdAt;
     private String specialInstructions;
-    private List<OrderItem> orderItems;
+    @Builder.Default
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     public Double getTotalOrderPrice(){
         return BigDecimal.valueOf(

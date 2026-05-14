@@ -7,8 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record AddOrderCommand(
-    Long userId,
     Boolean isPaid,
-    Cart cart
+    String specialInstructions
 ) {
 }

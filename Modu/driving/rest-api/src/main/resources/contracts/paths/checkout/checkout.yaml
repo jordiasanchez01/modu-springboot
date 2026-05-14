@@ -6,6 +6,12 @@ post:
   operationId: checkoutCart
   parameters:
     - $ref: '../../components/parameters/headerUID.yaml'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas/AddOrderRequest.yaml'
 
   responses:
     '200':
@@ -13,7 +19,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../../components/schemas/OrderResponse.yaml'
+            $ref: '../../components/schemas/CheckoutResponse.yaml'
     '404':
       description: Requested cart could not be found
       content:

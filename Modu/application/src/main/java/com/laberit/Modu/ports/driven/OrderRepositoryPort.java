@@ -5,6 +5,8 @@ import java.util.Optional;
 
 public interface OrderRepositoryPort {
 
+    Order saveWithoutItems(Order order);
+
     Optional<Order> findByUserId(Long userId);
 
     boolean existsByUserId(Long userId);

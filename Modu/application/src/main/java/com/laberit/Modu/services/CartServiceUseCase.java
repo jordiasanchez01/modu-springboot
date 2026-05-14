@@ -4,6 +4,8 @@ import com.laberit.Modu.domain.exceptions.CartNotFoundException;
 import com.laberit.Modu.domain.exceptions.ProductNotFoundException;
 import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
 import com.laberit.Modu.domain.model.*;
+import com.laberit.Modu.domain.model.response.GetCartResponse;
+import com.laberit.Modu.domain.model.response.ProductPriceChange;
 import com.laberit.Modu.ports.driven.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
 import com.laberit.Modu.ports.driving.command.*;
@@ -89,12 +91,6 @@ public class CartServiceUseCase implements CartServicePort {
         ));
 
         cart.setCartItems(addItemToCartItemList(cartItem, cart.getCartItems()));
-
-        cart.getCartItems().forEach(item ->
-                System.out.println("Item productVariantId: " + item.getProductVariantId() +
-                        " unitPrice: " + item.getUnitPrice() +
-                        " quantity: " + item.getQuantity()));
-        System.out.println("Total price: " + cart.getTotalPrice());
 
         cartRepositoryPort.save(cart);
 

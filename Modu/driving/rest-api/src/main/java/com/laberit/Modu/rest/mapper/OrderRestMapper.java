@@ -1,9 +1,11 @@
 package com.laberit.Modu.rest.mapper;
 
 import com.laberit.Modu.domain.model.Order;
-import com.laberit.Modu.domain.model.ProductPriceChange;
+import com.laberit.Modu.domain.model.response.ProductPriceChange;
+import com.laberit.Modu.ports.driving.command.AddOrderCommand;
 import com.laberit.Modu.ports.driving.command.AddOrderItemCommand;
 import com.laberit.Modu.rest.generated.model.AddItemRequest;
+import com.laberit.Modu.rest.generated.model.AddOrderRequest;
 import com.laberit.Modu.rest.generated.model.OrderResponse;
 import com.laberit.Modu.rest.generated.model.ProductPriceChangeResponse;
 import org.mapstruct.Mapper;
@@ -32,6 +34,10 @@ public interface OrderRestMapper {
                 addRequest.getQuantity()
         );
     };
+
+    AddOrderRequest toAddOrderRequest(AddOrderCommand command);
+
+    AddOrderCommand toAddOrderCommand(AddOrderRequest request);
 
     List<OrderResponse>  toOrderResponseList(List<Order> orders);
 

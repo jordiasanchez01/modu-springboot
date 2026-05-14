@@ -47,6 +47,12 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
     }
 
     @Override
+    public Order saveWithoutItems(Order order) {
+        OrderEntity savedOrder = orderJpaRepository.save(orderMapper.toEntity(order));
+        return orderMapper.toDomain(savedOrder);
+    }
+
+    @Override
     public Optional<Order> findByUserId(Long userId) {
         return orderJpaRepository.findByUserId(userId).map(entity -> {
             Order order = orderMapper.toDomain(entity);
