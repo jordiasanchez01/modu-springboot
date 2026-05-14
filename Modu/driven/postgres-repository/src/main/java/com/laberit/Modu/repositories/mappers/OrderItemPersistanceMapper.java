@@ -1,6 +1,7 @@
 package com.laberit.Modu.repositories.mappers;
 
 import com.laberit.Modu.domain.model.OrderItem;
+import com.laberit.Modu.repositories.models.OrderEntity;
 import com.laberit.Modu.repositories.models.OrderItemEntity;
 import com.laberit.Modu.repositories.models.ProductVariantEntity;
 import org.mapstruct.Mapper;
@@ -15,7 +16,9 @@ public interface OrderItemPersistanceMapper {
             return null;
         }
         OrderItemEntity entity = new OrderItemEntity();
-        entity.setId(orderItem.getId());
+            OrderEntity order = new OrderEntity();
+            order.setId(orderItem.getOrderId());
+        entity.setOrder(order);
             ProductVariantEntity productVariant = new ProductVariantEntity();
             productVariant.setId(orderItem.getProductVariantId());
         entity.setProductVariant(productVariant);
@@ -32,6 +35,7 @@ public interface OrderItemPersistanceMapper {
         }
         return OrderItem.builder()
                 .id(entity.getId())
+                .orderId(entity.getOrder().getId())
                 .productVariantId(entity.getProductVariant().getId())
                 .unitPrice(entity.getUnitPrice())
                 .quantity(entity.getQuantity())

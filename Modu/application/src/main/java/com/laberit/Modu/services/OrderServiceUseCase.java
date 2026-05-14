@@ -1,6 +1,7 @@
 package com.laberit.Modu.services;
 
 import com.laberit.Modu.domain.exceptions.CartNotFoundException;
+import com.laberit.Modu.domain.exceptions.OrderNotFoundException;
 import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
 import com.laberit.Modu.domain.model.Cart;
 import com.laberit.Modu.domain.model.CartItem;
@@ -33,9 +34,19 @@ import java.util.stream.Collectors;
 public class OrderServiceUseCase implements OrderServicePort {
     private final OrderRepositoryPort cartRepositoryPort;
 
+    @Override
+    public Order findOrderById(Long id) {
+        return null;
+    }
 
     @Override
     public Order findOrderByUserId(Long userId) {
+        return cartRepositoryPort.findByUserId(userId)
+                .orElseThrow(()-> new OrderNotFoundException(userId.toString()));
+    }
+
+    @Override
+    public Order addOrder(AddOrderCommand command) {
         return null;
     }
 

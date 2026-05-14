@@ -281,3 +281,18 @@ FROM (
              (3,2,88,119.99, 359.97)
      ) AS v(quantity, cartuser_id, product_variant_id, unit_price, total_price)
 WHERE NOT EXISTS (SELECT 1 FROM cart_item);
+
+INSERT INTO orders (user_id, special_instructions, total_price)
+SELECT *
+FROM (
+         VALUES
+             (2,'Wrap the items in blue wrapping paper',594.92)
+     ) AS v(user_id, special_instructions, total_price)
+WHERE NOT EXISTS (SELECT 1 FROM orders);
+
+INSERT INTO order_item (order_id, product_variant_id, unit_price, total_price, quantity)
+VALUES
+    (1, 4,  79.99,  159.98, 2),
+    (1, 81, 24.99,   74.97, 3),
+    (1, 88, 119.99, 359.97, 3)
+ON CONFLICT (order_id, product_variant_id) DO NOTHING;

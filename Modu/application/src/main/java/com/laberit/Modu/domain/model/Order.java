@@ -17,8 +17,8 @@ import java.util.List;
 public class Order {
     private Long id;
     private Long userId;
-    private String specialInstructions;
     private LocalDateTime createdAt;
+    private String specialInstructions;
     private List<OrderItem> orderItems;
 
     public Double getTotalOrderPrice(){

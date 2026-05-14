@@ -25,7 +25,7 @@ public class OrderEntity {
     @Column(name="created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "orders")
+    @OneToMany(mappedBy = "order")
     private List<OrderItemEntity> orderItems;
 
 }

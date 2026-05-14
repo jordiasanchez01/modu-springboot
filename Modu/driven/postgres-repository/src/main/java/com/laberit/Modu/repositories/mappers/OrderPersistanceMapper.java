@@ -14,13 +14,14 @@ public interface OrderPersistanceMapper {
             return null;
         }
         OrderEntity entity = new OrderEntity();
+
         entity.setId(order.getId());
         entity.setUserId(order.getUserId());
+        entity.setSpecialInstructions(order.getSpecialInstructions());
         entity.setTotalPrice(order.getTotalOrderPrice());
 
         return entity;
     }
-
 
     default Order toDomain(OrderEntity entity){
         if (entity==null){
@@ -29,10 +30,9 @@ public interface OrderPersistanceMapper {
         return Order.builder()
                 .id(entity.getId())
                 .userId(entity.getUserId())
+                .specialInstructions(entity.getSpecialInstructions())
                 .createdAt(entity.getCreatedAt())
                 .build();
-
-
     }
 
     List<Order> toDomainList(List<OrderEntity> entities);
