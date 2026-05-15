@@ -70,18 +70,12 @@ delete:
         format: int64
         example: 2
   responses:
-    '200':
+    '204':
       description: Item deleted successfully
       content:
         application/json:
           schema:
             $ref: '../../components/schemas/CartResponse.yaml'
-    '404':
-      description: Requested item is not found.
-      content:
-        application/json:
-          schema:
-            $ref: '../../components/schemas/ErrorResponse.yaml'
     '500':
       description: Internal error.
       content:

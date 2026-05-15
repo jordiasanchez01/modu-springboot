@@ -30,6 +30,8 @@ paths:
     $ref: './paths/cart/add-item.yaml'
   /cart/items/{itemId}:
     $ref: './paths/cart/cart-item.yaml'
+  /cart/items:
+    $ref: './paths/cart/cart-items.yaml'
 
 components:
   schemas:
