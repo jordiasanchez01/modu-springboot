@@ -269,7 +269,7 @@ FROM (
      ) AS v(user_id, total_price)
 WHERE NOT EXISTS (SELECT 1 FROM cart);
 
-INSERT INTO cart_item (quantity, cartuser_id, product_variant_id, unit_price, total_price)
+INSERT INTO cart_item (quantity, cart_id, product_variant_id, unit_price, total_price)
 SELECT *
 FROM (
          VALUES
@@ -279,7 +279,7 @@ FROM (
              (2,2,4,79.99,159.98),
              (3,2,81,24.99,74.97),
              (3,2,88,119.99, 359.97)
-     ) AS v(quantity, cartuser_id, product_variant_id, unit_price, total_price)
+     ) AS v(quantity, cart_id, product_variant_id, unit_price, total_price)
 WHERE NOT EXISTS (SELECT 1 FROM cart_item);
 
 INSERT INTO orders (user_id, special_instructions, total_price)
