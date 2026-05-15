@@ -80,10 +80,12 @@ public class CartServiceUseCase implements CartServicePort {
     @Transactional
     public Cart addCartItemToCart(AddCartItemCommand addCommand) {
         Cart cart = cartRepositoryPort.findByUserId(addCommand.cartId())
-            .orElseGet(() -> addCart(new AddCartCommand(
-                addCommand.cartId(),
-                new ArrayList<>()
-            )));
+                .orElseGet(() -> addCart(new AddCartCommand(
+                        addCommand.cartId(),
+                        new ArrayList<>()
+                )));
+
+        List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
 
         Optional<CartItem> existing = cartItemRepositoryPort
                 .findByCartIdAndProductVariantId(
@@ -95,17 +97,19 @@ public class CartServiceUseCase implements CartServicePort {
             CartItem item = existing.get();
             item.setQuantity(item.getQuantity() + addCommand.quantity());
             item.setCurrentStock(getProductVariant(addCommand.productVariantId()).getStock());
-            cartItemRepositoryPort.save(item);
+            CartItem savedItem = cartItemRepositoryPort.save(item);
+            cartItems.replaceAll(ci -> ci.getId().equals(savedItem.getId()) ? savedItem : ci);
         } else {
             CartItem cartItem = newCartItem(new AddCartItemCommand(
                     cart.getId(),
                     addCommand.productVariantId(),
                     addCommand.quantity()
             ));
-            cartItemRepositoryPort.save(cartItem);
+            CartItem savedItem = cartItemRepositoryPort.save(cartItem);
+            cartItems.add(savedItem);
         }
 
-        cart = findCartByUserId(addCommand.cartId()).cart();
+        cart.setCartItems(cartItems);
 
         return cartRepositoryPort.save(cart);
     }
