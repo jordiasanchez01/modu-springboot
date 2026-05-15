@@ -28,7 +28,7 @@ paths:
     $ref: './paths/cart/show-cart.yaml'
   /cart/addItem:
     $ref: './paths/cart/add-item.yaml'
-  /cart/item/{itemId}:
+  /cart/items/{itemId}:
     $ref: './paths/cart/cart-item.yaml'
 
 components:
