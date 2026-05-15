@@ -4,6 +4,7 @@ import com.laberit.Modu.domain.model.response.PagedResult;
 import com.laberit.Modu.domain.model.Product;
 import com.laberit.Modu.domain.model.ProductSearchCriteria;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
