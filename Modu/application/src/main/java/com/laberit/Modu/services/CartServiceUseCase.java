@@ -118,14 +118,6 @@ public class CartServiceUseCase implements CartServicePort {
     }
 
     @Override
-    @Transactional
-    public void deleteCart(Long userId) {
-        if (cartRepositoryPort.existsByUserId(userId)) {
-            cartRepositoryPort.deleteByUserId(userId);
-        }
-    }
-
-    @Override
     public List<ProductPriceChange> checkIfPricesChanged(List<CartItem> cartItems){
         List<ProductPriceChange> changedPricesList = new ArrayList<>();
 

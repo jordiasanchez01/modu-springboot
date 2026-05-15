@@ -19,6 +19,4 @@ public interface CartJpaRepository extends JpaRepository<CartEntity, Long>, JpaS
 
     boolean existsByUserId(Long cartId);
 
-    void deleteByUserId(Long userId);
-
 }

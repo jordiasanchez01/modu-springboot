@@ -43,11 +43,6 @@ public class CartRepositoryAdapter implements CartRepositoryPort {
     }
 
     @Override
-    public void deleteByUserId(Long userId) {
-        cartJpaRepository.deleteByUserId(userId);
-    }
-
-    @Override
     public Optional<Cart> findByUserId(Long userId) {
         return cartJpaRepository.findByUserId(userId).map(entity -> {
             Cart cart = cartMapper.toDomain(entity);

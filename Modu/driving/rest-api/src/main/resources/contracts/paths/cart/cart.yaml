@@ -20,22 +20,3 @@ get:
         application/json:
           schema:
             $ref: '../../components/schemas/ErrorResponse.yaml'
-
-delete:
-  tags:
-    - Cart
-  summary: Eliminates the user's cart
-  description: Eliminates the user's cart and contained items, if any
-  operationId: deleteCart
-  parameters:
-    - $ref: '../../components/parameters/headerUID.yaml'
-
-  responses:
-    '204':
-      description: Cart deleted successfully
-    '404':
-      description: Requested cart could not be found
-      content:
-        application/json:
-          schema:
-            $ref: '../../components/schemas/ErrorResponse.yaml'
