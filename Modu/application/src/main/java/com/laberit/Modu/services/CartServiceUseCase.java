@@ -35,38 +35,41 @@ public class CartServiceUseCase implements CartServicePort {
 
         List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
 
-        List<ProductPriceChange> changedPricesList = new ArrayList<>();
-
-        for (CartItem item : cartItems) {
-            Long varId = item.getProductVariantId();
-            ProductVariant prodVar = productVariantRepositoryPort.findById(varId)
-                    .orElseThrow(() -> new ProductVariantNotFoundException(varId.toString()));
-            Product product = productRepositoryPort.findById(prodVar.getProductId())
-                    .orElseThrow(()-> new ProductNotFoundException(prodVar.getProductId().toString()));
-
-            if (!Objects.equals(item.getUnitPrice(), product.getPrice())){
-                ProductPriceChange changedPrices = new ProductPriceChange(
-                        prodVar.getId(),
-                        item.getUnitPrice(),
-                        product.getPrice()
-                );
-                changedPricesList.add(changedPrices);
-
-                item.setUnitPrice(product.getPrice());
-            }
-        }
-
         Set<Long> variantIds = cartItems.stream()
-                                .map(CartItem::getProductVariantId)
-                                .collect(Collectors.toSet());
-        Set<ProductVariant> variants = productVariantRepositoryPort.findAllByIdIn(variantIds);
+                .map(CartItem::getProductVariantId)
+                .collect(Collectors.toSet());
+
+        Set<ProductVariant> variants = productVariantRepositoryPort.findAllByIdInSet(variantIds);
+
+        Set<Long> productIds = variants.stream()
+                .map(ProductVariant::getProductId)
+                .collect(Collectors.toSet());
+
+        Set<Product> products = productRepositoryPort.findAllByIdInSet(productIds);
 
         Map<Long, ProductVariant> variantMap = variants.stream()
                 .collect(Collectors.toMap(ProductVariant::getId, pV -> pV));
 
-        cartItems.forEach(cartItem -> cartItem.setCurrentStock(
-                variantMap.get(cartItem.getProductVariantId()).getStock()
-        ));
+        Map<Long, Product> productMap = products.stream()
+                .collect(Collectors.toMap(Product::getId, p -> p));
+
+        List<ProductPriceChange> changedPricesList = new ArrayList<>();
+
+        cartItems.forEach(cartItem -> {
+            ProductVariant variant = variantMap.get(cartItem.getProductVariantId());
+            Product product = productMap.get(variant.getProductId());
+
+            cartItem.setCurrentStock(variant.getStock());
+
+            if (!Objects.equals(cartItem.getUnitPrice(), product.getPrice())) {
+                changedPricesList.add(new ProductPriceChange(
+                        variant.getId(),
+                        cartItem.getUnitPrice(),
+                        product.getPrice()
+                ));
+                cartItem.setUnitPrice(product.getPrice());
+            }
+        });
 
         cart.setCartItems(cartItems);
 
@@ -89,13 +92,11 @@ public class CartServiceUseCase implements CartServicePort {
                 );
 
         if (existing.isPresent()) {
-            // Product already in cart — update quantity and total
             CartItem item = existing.get();
             item.setQuantity(item.getQuantity() + addCommand.quantity());
             item.setCurrentStock(getProductVariant(addCommand.productVariantId()).getStock());
-            CartItem savedItem = cartItemRepositoryPort.save(item);
+            cartItemRepositoryPort.save(item);
         } else {
-            // Product not in cart yet — insert new cart item
             CartItem cartItem = newCartItem(new AddCartItemCommand(
                     cart.getId(),
                     addCommand.productVariantId(),
@@ -103,6 +104,7 @@ public class CartServiceUseCase implements CartServicePort {
             ));
             cartItemRepositoryPort.save(cartItem);
         }
+
         cart = findCartByUserId(addCommand.cartId()).cart();
 
         return cartRepositoryPort.save(cart);
