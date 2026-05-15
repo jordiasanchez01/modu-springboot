@@ -28,19 +28,12 @@ public class CartRepositoryAdapter implements CartRepositoryPort {
 
     @Override
     public Cart save(Cart cart) {
-        System.out.println("Cart model TotalPrice: "+cart.getTotalPrice());
 
-        CartEntity entity = cartMapper.toEntity(cart);
-        System.out.println("Cart entity TotalPrice: "+entity.getTotalPrice());
-        // Save cart first to get the confirmed ID from the database
         CartEntity savedCart = cartJpaRepository.save(cartMapper.toEntity(cart));
-
-        // Now save cart items with the confirmed cart ID
         List<CartItemEntity> items = cartItemMapper.toEntityList(cart.getCartItems());
         items.forEach(item -> item.setCart(savedCart));
-        cartItemJpaRepository.saveAll(items);
 
-        // Force Hibernate to discard cached entity and re-read from database
+        cartItemJpaRepository.saveAll(items);
         entityManager.flush();
         entityManager.refresh(savedCart);
 
