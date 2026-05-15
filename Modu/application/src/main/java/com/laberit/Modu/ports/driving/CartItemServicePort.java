@@ -9,4 +9,6 @@ public interface CartItemServicePort {
 
     void deleteCartItemById(Long userId, Long cartItemId);
 
+    void deleteAllCartItems(Long userId);
+
 }
