@@ -2,27 +2,27 @@ INSERT INTO product (name, description, image_url, price, active)
 SELECT *
 FROM (
          VALUES
-             ('Classic Denim Jacket', 'A timeless blue denim jacket with a relaxed fit.', 'https://images.unsplash.com/photo-1520975922284-9e0ce8276a2f?auto=format&fit=crop&w=800&q=80', 79.99, TRUE),
-             ('Black Leather Jacket', 'Premium black leather jacket with zipper details.', 'https://images.unsplash.com/photo-1520974735194-ec8e9c1b9b4e?auto=format&fit=crop&w=800&q=80', 149.99, TRUE),
-             ('Slim Fit Jeans', 'Dark blue slim fit jeans with stretch fabric.', 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80', 59.99, TRUE),
-             ('Casual Polo Shirt', 'Cotton polo shirt perfect for everyday wear.', 'https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?auto=format&fit=crop&w=800&q=80', 29.99, TRUE),
+             ('Classic Denim Jacket', 'A timeless blue denim jacket with a relaxed fit.', 'https://images.unsplash.com/photo-1544642899-f0d6e5f6ed6f?auto=format&fit=crop&w=800&q=80', 79.99, TRUE),
+             ('Black Leather Jacket', 'Premium black leather jacket with zipper details.', 'https://images.unsplash.com/photo-1563183939-592da2dbb596?auto=format&fit=crop&w=800&q=80', 149.99, TRUE),
+             ('Slim Fit Jeans', 'Dark blue slim fit jeans with stretch fabric.', 'https://images.unsplash.com/photo-1614495039368-525273956716?auto=format&fit=crop&w=800&q=80', 59.99, TRUE),
+             ('Casual Polo Shirt', 'Cotton polo shirt perfect for everyday wear.', 'https://images.unsplash.com/photo-1563649685437-a79731028cd1?auto=format&fit=crop&w=800&q=80', 29.99, TRUE),
              ('White T-Shirt', 'Basic white t-shirt made from organic cotton.', 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80', 19.99, TRUE),
-             ('Hooded Sweatshirt', 'Comfortable hoodie with front pocket.', 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=800&q=80', 49.99, TRUE),
-             ('Chino Pants', 'Slim fit chino pants for a smart casual look.', 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=800&q=80', 54.99, TRUE),
-             ('Winter Parka', 'Warm insulated parka with faux fur hood.', 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=800&q=80', 129.99, TRUE),
-             ('Summer Shorts', 'Lightweight cotton shorts for hot days.', 'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=800&q=80', 24.99, TRUE),
-             ('Formal Blazer', 'Elegant blazer suitable for business attire.', 'https://images.unsplash.com/photo-1593032465171-8b7b63b4f1d6?auto=format&fit=crop&w=800&q=80', 119.99, TRUE),
-             ('Checked Shirt', 'Long sleeve checked shirt in soft flannel.', 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=800&q=80', 39.99, TRUE),
-             ('Sports Jacket', 'Lightweight sports jacket for outdoor activities.', 'https://images.unsplash.com/photo-1503341338985-c0477be52513?auto=format&fit=crop&w=800&q=80', 69.99, TRUE),
-             ('Cargo Pants', 'Durable cargo pants with multiple pockets.', 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=800&q=80', 64.99, TRUE),
-             ('Knitted Sweater', 'Warm knitted sweater for cold weather.', 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=800&q=80', 59.99, TRUE),
-             ('Denim Shorts', 'Casual denim shorts with frayed hem.', 'https://images.unsplash.com/photo-1520975916090-3105956dac38?auto=format&fit=crop&w=800&q=80', 34.99, TRUE),
-             ('Track Pants', 'Comfortable track pants for workouts.', 'https://images.unsplash.com/photo-1571945153237-4929e783af4a?auto=format&fit=crop&w=800&q=80', 44.99, TRUE),
-             ('Bomber Jacket', 'Trendy bomber jacket with ribbed cuffs.', 'https://images.unsplash.com/photo-1520975918318-7c6b6f9f6c4e?auto=format&fit=crop&w=800&q=80', 89.99, TRUE),
-             ('Graphic T-Shirt', 'T-shirt with modern graphic print.', 'https://images.unsplash.com/photo-1503341504253-dff4815485f1?auto=format&fit=crop&w=800&q=80', 22.99, TRUE),
-             ('Linen Shirt', 'Breathable linen shirt for summer.', 'https://images.unsplash.com/photo-1521335629791-ce4aec67dd53?auto=format&fit=crop&w=800&q=80', 45.99, TRUE),
-             ('Wool Coat', 'Elegant wool coat for winter season.', 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=800&q=80', 179.99, TRUE)
-     ) AS v(name, description, image_url, price, active)
+             ('Hooded Sweatshirt', 'Comfortable hoodie with front pocket.', 'https://images.unsplash.com/photo-1567894173760-22aff4400f21?auto=format&fit=crop&w=800&q=80', 49.99, TRUE),
+             ('Chino Pants', 'Slim fit chino pants for a smart casual look.', 'https://images.unsplash.com/photo-1581382575275-97901c2635b7?auto=format&fit=crop&w=800&q=80', 54.99, TRUE),
+             ('Winter Parka', 'Warm insulated parka with faux fur hood.', 'https://images.unsplash.com/photo-1514564652994-565a3bf3a25b?auto=format&fit=crop&w=800&q=80', 129.99, TRUE),
+             ('Summer Shorts', 'Lightweight cotton shorts for hot days.', 'https://images.unsplash.com/photo-1685539855961-9045adffe039?auto=format&fit=crop&w=800&q=80', 24.99, TRUE),
+             ('Formal Blazer', 'Elegant blazer suitable for business attire.', 'https://images.unsplash.com/photo-1593030942428-a5451dca4b42?auto=format&fit=crop&w=800&q=80', 119.99, TRUE),
+             ('Checked Shirt', 'Long sleeve checked shirt in soft flannel.', 'https://images.unsplash.com/photo-1602038704137-439ad0e51044?auto=format&fit=crop&w=800&q=80', 39.99, TRUE),
+             ('Sports Jacket', 'Lightweight sports jacket for outdoor activities.', 'https://images.unsplash.com/photo-1581961462133-ca8618e89ed3?auto=format&fit=crop&w=800&q=80', 69.99, TRUE),
+             ('Cargo Pants', 'Durable cargo pants with multiple pockets.', 'https://images.unsplash.com/flagged/photo-1572372406879-e7c93ff299fa?auto=format&fit=crop&w=800&q=80', 64.99, TRUE),
+             ('Knitted Sweater', 'Warm knitted sweater for cold weather.', 'https://images.unsplash.com/photo-1576110598658-096ae24cdb97?auto=format&fit=crop&w=800&q=80', 59.99, TRUE),
+             ('Denim Shorts', 'Casual denim shorts with frayed hem.', 'https://images.unsplash.com/photo-1596460700790-d079c2c8ade6?auto=format&fit=crop&w=800&q=80', 34.99, TRUE),
+             ('Track Pants', 'Comfortable track pants for workouts.', 'https://images.unsplash.com/photo-1513378628213-b8f36d8c2878?auto=format&fit=crop&w=800&q=80', 44.99, TRUE),
+             ('Bomber Jacket', 'Trendy bomber jacket with ribbed cuffs.', 'https://images.unsplash.com/photo-1549399239-fb3c102d3d71?auto=format&fit=crop&w=800&q=80', 89.99, TRUE),
+             ('Graphic T-Shirt', 'T-shirt with modern graphic print.', 'https://images.unsplash.com/photo-1584636633449-6135be6c4169?auto=format&fit=crop&w=800&q=80', 22.99, TRUE),
+             ('Linen Shirt', 'Breathable linen shirt for summer.', 'https://images.unsplash.com/photo-1558436223-247523d35637?auto=format&fit=crop&w=800&q=80', 45.99, TRUE),
+             ('Wool Coat', 'Elegant wool coat for winter season.', 'https://images.unsplash.com/photo-1661110546899-732bffb4cb85?auto=format&fit=crop&w=800&q=80', 179.99, TRUE)
+         ) AS v(name, description, image_url, price, active)
 WHERE NOT EXISTS (SELECT 1 FROM product);
 
 INSERT INTO category (name)
