@@ -28,6 +28,10 @@ public class CartRepositoryAdapter implements CartRepositoryPort {
 
     @Override
     public Cart save(Cart cart) {
+        System.out.println("Cart model TotalPrice: "+cart.getTotalPrice());
+
+        CartEntity entity = cartMapper.toEntity(cart);
+        System.out.println("Cart entity TotalPrice: "+entity.getTotalPrice());
         // Save cart first to get the confirmed ID from the database
         CartEntity savedCart = cartJpaRepository.save(cartMapper.toEntity(cart));
 

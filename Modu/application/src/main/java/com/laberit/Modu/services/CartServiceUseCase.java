@@ -92,13 +92,8 @@ public class CartServiceUseCase implements CartServicePort {
             // Product already in cart — update quantity and total
             CartItem item = existing.get();
             item.setQuantity(item.getQuantity() + addCommand.quantity());
-
-            System.out.println("IsPresent is called");
             item.setCurrentStock(getProductVariant(addCommand.productVariantId()).getStock());
-            System.out.println(item.toString());
             CartItem savedItem = cartItemRepositoryPort.save(item);
-            System.out.println("Save in IsPresent is called");
-            System.out.println("SavedItem: "+savedItem.toString());
         } else {
             // Product not in cart yet — insert new cart item
             CartItem cartItem = newCartItem(new AddCartItemCommand(
@@ -107,11 +102,10 @@ public class CartServiceUseCase implements CartServicePort {
                     addCommand.quantity()
             ));
             cartItemRepositoryPort.save(cartItem);
-            System.out.println("IsPresent is NOT called");
         }
+        cart = findCartByUserId(addCommand.cartId()).cart();
 
-
-        return findCartByUserId(addCommand.cartId()).cart();
+        return cartRepositoryPort.save(cart);
     }
 
     @Override
