@@ -56,6 +56,11 @@ public class CartRestAdapter implements CartApi {
         return ResponseEntity.ok(buildCartResponse(xDeviceId, isPriceAlertNeeded));
     }
 
+    @Override
+    public ResponseEntity<CartResponse> deleteCartItems(String xDeviceId) {
+        return null;
+    }
+
     private CartResponse buildCartResponse(String xDeviceId, boolean isPriceAlertNeeded) {
         GetCartResponse getCartResponse = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
         CartResponse cartResponse = cartMapper.toCartResponse(getCartResponse.cart());
