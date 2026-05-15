@@ -124,27 +124,6 @@ public class CartServiceUseCase implements CartServicePort {
 
     }
 
-    @Override
-    public List<ProductPriceChange> checkIfPricesChanged(List<CartItem> cartItems){
-        List<ProductPriceChange> changedPricesList = new ArrayList<>();
-
-        for (CartItem item : cartItems) {
-            ProductVariant prodVar = getProductVariant(item.getProductVariantId());
-            Product product = productRepositoryPort.findById(prodVar.getProductId())
-                    .orElseThrow(()-> new ProductNotFoundException(prodVar.getProductId().toString()));
-
-            if (!Objects.equals(item.getUnitPrice(), product.getPrice())){
-                ProductPriceChange changedPrices = new ProductPriceChange(
-                        prodVar.getId(),
-                        item.getUnitPrice(),
-                        product.getPrice()
-                );
-                changedPricesList.add(changedPrices);
-            }
-        }
-        return changedPricesList;
-    }
-
     private CartItem newCartItem(AddCartItemCommand command) {
         ProductVariant variant = getProductVariant(command.productVariantId());
         Product product = productRepositoryPort.findById(variant.getProductId())
