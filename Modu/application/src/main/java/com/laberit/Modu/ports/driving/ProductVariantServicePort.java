@@ -12,7 +12,9 @@ public interface ProductVariantServicePort {
 
     List<ProductVariant> findAllByProductId(Long productId);
 
-    Set<ProductVariant> findAllByIdIn(Set<Long> ids);
+    List<ProductVariant> findAllByIdIn(List<Long> ids);
+
+    Set<ProductVariant> findAllByIdInSet(Set<Long> ids);
 
     Optional<ProductVariant> findById(Long id);
 

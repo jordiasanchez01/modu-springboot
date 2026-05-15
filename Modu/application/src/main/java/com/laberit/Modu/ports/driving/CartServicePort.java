@@ -13,8 +13,6 @@ public interface CartServicePort {
 
     GetCartResponse findCartByUserId(Long userId);
 
-    List<ProductPriceChange> checkIfPricesChanged(List<CartItem> cartItems);
-
     Cart addCartItemToCart(AddCartItemCommand command);
 
     Cart updateCart(UpdateCartCommand command);

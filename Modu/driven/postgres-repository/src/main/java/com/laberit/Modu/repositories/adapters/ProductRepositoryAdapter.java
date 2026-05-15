@@ -15,8 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -56,5 +55,14 @@ public class ProductRepositoryAdapter implements ProductRepositoryPort {
                 .toList();
 
         return new PagedResult<>(products,page.getNumber(), page.getNumberOfElements(), page.hasNext());
+    }
+
+    @Override
+    public List<Product> findAllByIdIn(List<Long> productIds) {
+        return productMapper.toDomainList(productJpaRepository.findAllByIdIn(productIds));
+    }
+
+    public Set<Product> findAllByIdInSet(Set<Long> productIds) {
+        return productMapper.toDomainSet(productJpaRepository.findAllByIdIn(productIds));
     }
 }
