@@ -11,5 +11,5 @@ public interface CartRepositoryPort {
 
     Cart save(Cart cart);
 
-    void deleteById(Long cartId);
+    void deleteByUserId(Long userId);
 }
