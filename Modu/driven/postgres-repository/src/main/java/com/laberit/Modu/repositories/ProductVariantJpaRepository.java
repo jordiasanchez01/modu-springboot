@@ -15,6 +15,8 @@ public interface ProductVariantJpaRepository extends JpaRepository<ProductVarian
 
     Set<ProductVariantEntity> findAllByIdIn(Set<Long> ids);
 
+    List<ProductVariantEntity> findAllByIdIn(List<Long> ids);
+
     Optional<ProductVariantEntity> findById(Long id);
 
     Optional<ProductVariantEntity> findByName(String name);
