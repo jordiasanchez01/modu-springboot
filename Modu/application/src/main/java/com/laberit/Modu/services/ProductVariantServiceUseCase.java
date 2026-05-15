@@ -28,8 +28,13 @@ public class ProductVariantServiceUseCase implements ProductVariantServicePort {
     }
 
     @Override
-    public Set<ProductVariant> findAllByIdIn(Set<Long> ids) {
+    public List<ProductVariant> findAllByIdIn(List<Long> ids) {
         return productVariantRepositoryPort.findAllByIdIn(ids);
+    }
+
+    @Override
+    public Set<ProductVariant> findAllByIdInSet(Set<Long> ids) {
+        return productVariantRepositoryPort.findAllByIdInSet(ids);
     }
 
     @Override
