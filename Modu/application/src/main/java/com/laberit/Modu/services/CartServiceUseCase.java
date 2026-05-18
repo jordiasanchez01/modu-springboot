@@ -27,56 +27,6 @@ public class CartServiceUseCase implements CartServicePort {
     private final ProductRepositoryPort productRepositoryPort;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public CartWithPriceCheck findCartByUserId(Long userId) {
-
-        Cart cart = cartRepositoryPort.findByUserId(userId)
-                .orElseThrow(() -> new CartNotFoundException(userId.toString()));
-
-        List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
-
-        Set<Long> variantIds = cartItems.stream()
-                .map(CartItem::getProductVariantId)
-                .collect(Collectors.toSet());
-
-        Set<ProductVariant> variants = productVariantRepositoryPort.findAllByIdInSet(variantIds);
-
-        Set<Long> productIds = variants.stream()
-                .map(ProductVariant::getProductId)
-                .collect(Collectors.toSet());
-
-        Set<Product> products = productRepositoryPort.findAllByIdInSet(productIds);
-
-        Map<Long, ProductVariant> variantMap = variants.stream()
-                .collect(Collectors.toMap(ProductVariant::getId, pV -> pV));
-
-        Map<Long, Product> productMap = products.stream()
-                .collect(Collectors.toMap(Product::getId, p -> p));
-
-        List<ProductPriceChange> changedPricesList = new ArrayList<>();
-
-        cartItems.forEach(cartItem -> {
-            ProductVariant variant = variantMap.get(cartItem.getProductVariantId());
-            Product product = productMap.get(variant.getProductId());
-
-            cartItem.setCurrentStock(variant.getStock());
-
-            if (!Objects.equals(cartItem.getUnitPrice(), product.getPrice())) {
-                changedPricesList.add(new ProductPriceChange(
-                        variant.getId(),
-                        cartItem.getUnitPrice(),
-                        product.getPrice()
-                ));
-                cartItem.setUnitPrice(product.getPrice());
-            }
-        });
-
-        cart.setCartItems(cartItems);
-
-        return new CartWithPriceCheck(cart, changedPricesList);
-    }
-
-    @Override
     @Transactional
     public Cart addCartItemToCart(AddCartItemCommand addCommand) {
         Cart cart = cartRepositoryPort.findByUserId(addCommand.cartId())
@@ -124,6 +74,7 @@ public class CartServiceUseCase implements CartServicePort {
 
     }
 
+    @Transactional
     @Override
     public CartWithPriceCheck getCartWithPriceCheck(Long userId) {
         Cart cart = cartRepositoryPort.findByUserId(userId)

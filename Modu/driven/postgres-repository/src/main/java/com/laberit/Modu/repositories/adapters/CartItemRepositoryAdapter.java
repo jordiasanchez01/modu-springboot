@@ -51,4 +51,9 @@ public class CartItemRepositoryAdapter implements CartItemRepositoryPort {
     public CartItem save(CartItem cartItem) {
         return cartItemMapper.toDomain(cartItemJpaRepository.save(cartItemMapper.toEntity(cartItem)));
     }
+
+    @Override
+    public List<CartItem> saveAll(List<CartItem> cartItems) {
+        return cartItemMapper.toDomainList(cartItemJpaRepository.saveAll(cartItemMapper.toEntityList(cartItems)));
+    }
 }

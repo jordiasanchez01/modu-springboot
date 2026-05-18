@@ -1,6 +1,7 @@
 package com.laberit.Modu.rest.mapper;
 
 import com.laberit.Modu.domain.model.Cart;
+import com.laberit.Modu.domain.model.CartWithPriceCheck;
 import com.laberit.Modu.domain.model.ProductPriceChange;
 import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
 import com.laberit.Modu.rest.generated.model.AddItemRequest;
@@ -15,9 +16,15 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CartRestMapper {
 
-    CartResponse toCartResponse(Cart cart);
+    default CartResponse toCartWithPriceCheckResponse(CartWithPriceCheck cartWithPriceCheck) {
+        CartResponse response = toCartResponse(cartWithPriceCheck.cart());
+        response.setPriceChanges(toProductPriceChangeResponseList(cartWithPriceCheck.changedPrices()));
+        return response;
+    }
 
-    ProductPriceChangeResponse toProductPriceChangeResponse(ProductPriceChange priceChange);
+    List<ProductPriceChangeResponse> toProductPriceChangeResponseList(List<ProductPriceChange> prices);
+
+    CartResponse toCartResponse(Cart cart);
 
     default AddItemRequest toAddItemRequest(AddCartItemCommand addCommand) {
         return new AddItemRequest(
@@ -34,6 +41,4 @@ public interface CartRestMapper {
     };
 
     List<CartResponse>  toCartResponseList(List<Cart> carts);
-
-    List<ProductPriceChangeResponse> toProductPriceChangeResponseList(List<ProductPriceChange> prices);
 }

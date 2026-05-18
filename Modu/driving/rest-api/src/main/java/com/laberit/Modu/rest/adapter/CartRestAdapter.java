@@ -22,14 +22,8 @@ public class CartRestAdapter implements CartApi {
 
     @Override
     public ResponseEntity<CartResponse> getCart(String xDeviceId) {
-
-        CartWithPriceCheck cartWithPriceCheck = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
-
-        CartResponse cartResponse = cartMapper.toCartResponse(cartWithPriceCheck.cart());
-
-        cartResponse.setPriceChangedAlert(checkIfPricesChanged(cartWithPriceCheck.changedPrices()));
-
-        return ResponseEntity.ok(cartResponse);
+        CartWithPriceCheck result = cartServicePort.getCartWithPriceCheck(Long.valueOf(xDeviceId));
+        return ResponseEntity.ok(cartMapper.toCartWithPriceCheckResponse(result));
     }
 
     @Override
@@ -47,18 +41,5 @@ public class CartRestAdapter implements CartApi {
     @Override
     public ResponseEntity<CartResponse> updateCartItem(String xDeviceId, UpdateItemRequest updateItemRequest) {
         return null;
-    }
-
-
-    private CartResponsePriceChangedAlert checkIfPricesChanged(List<ProductPriceChange> pricesList){
-
-        CartResponsePriceChangedAlert changedAlert = new CartResponsePriceChangedAlert();
-        changedAlert.setPriceChanged(false);
-
-        if (!pricesList.isEmpty()){
-            changedAlert.setPriceChanged(true);
-            changedAlert.setCartItems(cartMapper.toProductPriceChangeResponseList(pricesList));
-        }
-        return changedAlert;
     }
 }
