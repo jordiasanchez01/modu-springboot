@@ -74,7 +74,7 @@ public class OrderServiceUseCase implements OrderServicePort {
     private Order mapOrderCommandToOrder(AddOrderCommand command, Long userId, Order order) {
 
         Cart cart = cartRepositoryPort.findByUserId(userId)
-                .orElseThrow(()-> new CartNotFoundException(userId.toString()));
+                .orElseThrow(()-> new CartNotFoundException(userId));
 
         List<OrderItem> orderItems = new ArrayList<>();
         for (CartItem cartItem: cart.getCartItems()){
