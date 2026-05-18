@@ -5,16 +5,18 @@ spring:
     url: jdbc:postgresql://localhost:5432/modu_db
     username: modu_user
     password: modu_pass
+
   jpa:
     show_sql: true
     hibernate:
-      ddl_auto: none
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true
   sql:
     init:
       mode: always
+
   jackson:
     default-property-inclusion: non_null
 
@@ -30,3 +32,4 @@ springdoc:
 logging:
   level:
     com.laberit.Modu: DEBUG
+    org.flywaydb: DEBUG

@@ -260,13 +260,13 @@ FROM (
 WHERE NOT EXISTS (SELECT 1 FROM product_variant);
 
 
-INSERT INTO cart (user_id, total_price)
+INSERT INTO cart (user_id)
 SELECT *
 FROM (
          VALUES
-             (1,429.94),
-             (2,594.92)
-     ) AS v(user_id, total_price)
+             (1),
+             (2)
+     ) AS v(user_id)
 WHERE NOT EXISTS (SELECT 1 FROM cart);
 
 INSERT INTO cart_item (quantity, cart_id, product_variant_id, unit_price, total_price)
