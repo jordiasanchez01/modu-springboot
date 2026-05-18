@@ -23,7 +23,7 @@ public class CartItemServiceUseCase implements CartItemServicePort {
     private final CartRepositoryPort cartRepositoryPort;
 
     @Override
-    public CartItem updateCartItem(Long userId, Long cartItemId, UpdateCartItemCommand command) {
+    public CartItem updateCartItemQuantity(Long userId, Long cartItemId, UpdateCartItemCommand command) {
         int requestedQuantity = command.quantity();
         Cart cart = cartRepositoryPort.findByUserId(userId).orElseThrow(
                 () -> new CartNotFoundException(userId));
@@ -34,8 +34,4 @@ public class CartItemServiceUseCase implements CartItemServicePort {
         return cartItemRepositoryPort.save(item);
     }
 
-    @Override
-    public void deleteCartItem(Long CartItemId) {
-
-    }
 }

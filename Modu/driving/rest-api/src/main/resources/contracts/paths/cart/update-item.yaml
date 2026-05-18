@@ -3,7 +3,7 @@ patch:
     - Cart
   summary: Update item´s quantity in the user´s cart
   description: Updates indicated items quantity in the user´s cart
-  operationId: updateCartItem
+  operationId: updateCartItemQuantity
   requestBody:
     required: true
     content:
