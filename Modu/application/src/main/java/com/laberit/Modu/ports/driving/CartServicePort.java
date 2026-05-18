@@ -11,4 +11,5 @@ public interface CartServicePort {
 
     CartWithPriceCheck getCartWithPriceCheck(Long userId);
 
+    Cart getCart(Long userId);
 }

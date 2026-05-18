@@ -51,6 +51,12 @@ public class CartServiceUseCase implements CartServicePort {
     }
 
     @Override
+    public Cart getCart(Long userId) {
+        return cartRepositoryPort.findByUserId(userId)
+                .orElseThrow(() -> new CartNotFoundException(userId));
+    }
+
+    @Override
     @Transactional
     public Cart addCartItemToCart(AddCartItemCommand command) {
         ProductVariant variant = getProductVariant(command.productVariantId());

@@ -26,7 +26,7 @@ public class CartItemServiceUseCase implements CartItemServicePort {
     private final ProductVariantRepositoryPort productVariantRepositoryPort;
 
     @Override
-    public Cart updateCartItemQuantity(Long userId, Long cartItemId, UpdateCartItemQuantityCommand command) {
+    public CartItem updateCartItemQuantity(Long userId, Long cartItemId, UpdateCartItemQuantityCommand command) {
         int requestedQuantity = command.quantity();
         Cart cart = cartRepositoryPort.findByUserId(userId).orElseThrow(
                 () -> new CartNotFoundException(userId));
@@ -37,18 +37,15 @@ public class CartItemServiceUseCase implements CartItemServicePort {
         productVariantServicePort.assertIsValidToPurchase(productVariant, requestedQuantity);
         item.setQuantity(requestedQuantity);
         cartItemRepositoryPort.save(item);
-        return cartRepositoryPort.findByUserId(userId).orElseThrow(
-                () -> new CartNotFoundException(userId));
+        return cartItemRepositoryPort.save(item);
     }
 
     @Override
-    public Cart deleteCartItemById(Long userId, Long itemId) {
+    public void deleteCartItemById(Long userId, Long itemId) {
         Cart cart = cartRepositoryPort.findByUserId(userId).orElseThrow(
                 () -> new CartNotFoundException(userId));
         CartItem item = cartItemRepositoryPort.findByIdAndCartId(itemId, cart.getId())
                 .orElseThrow(() -> new CartItemNotFoundException(itemId));
         cartItemRepositoryPort.deleteById(itemId);
-        return cartRepositoryPort.findByUserId(userId).orElseThrow(
-                () -> new CartNotFoundException(userId));
     }
 }
