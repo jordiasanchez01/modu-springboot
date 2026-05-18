@@ -17,14 +17,18 @@ public interface CartItemPersistanceMapper {
         }
         CartItemEntity entity = new CartItemEntity();
         entity.setId(cartItem.getId());
-            CartEntity cart = new CartEntity();
-            cart.setId(cartItem.getCartId());
+
+        CartEntity cart = new CartEntity();
+        cart.setId(cartItem.getCartId());
+
         entity.setCart(cart);
         entity.setUnitPrice(cartItem.getUnitPrice());
         entity.setQuantity(cartItem.getQuantity());
         entity.setTotalPrice(cartItem.getTotalPrice());
-            ProductVariantEntity productVariant = new ProductVariantEntity();
-            productVariant.setId(cartItem.getProductVariantId());
+
+        ProductVariantEntity productVariant = new ProductVariantEntity();
+        productVariant.setId(cartItem.getProductVariantId());
+
         entity.setProductVariant(productVariant);
 
         return entity;
@@ -42,8 +46,6 @@ public interface CartItemPersistanceMapper {
                 .unitPrice(entity.getUnitPrice())
                 .quantity(entity.getQuantity())
                 .build();
-
-
     }
 
     List<CartItem> toDomainList(List<CartItemEntity> entities);

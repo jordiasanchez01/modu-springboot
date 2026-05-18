@@ -10,6 +10,7 @@ public interface CartItemRepositoryPort {
     Optional<CartItem> findById(Long id);
 
     Optional<CartItem> findByProductVariantId(Long productVariantId);
+    Optional<CartItem> findByIdAndCartId(Long id, Long cartId);
 
     Optional<CartItem> findByCartIdAndProductVariantId(Long cartId, Long productVariantId);
 

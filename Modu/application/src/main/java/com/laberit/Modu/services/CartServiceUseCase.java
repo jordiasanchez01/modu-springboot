@@ -78,7 +78,7 @@ public class CartServiceUseCase implements CartServicePort {
     @Override
     public CartWithPriceCheck getCartWithPriceCheck(Long userId) {
         Cart cart = cartRepositoryPort.findByUserId(userId)
-                .orElseThrow(() -> new CartNotFoundException(userId.toString()));
+                .orElseThrow(() -> new CartNotFoundException(userId));
         List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
 
         Set<Long> variantIds = cartItems.stream()

@@ -1,7 +1,5 @@
 package com.laberit.Modu.rest.adapter;
 
-import com.laberit.Modu.domain.model.PagedResult;
-import com.laberit.Modu.domain.model.Product;
 import com.laberit.Modu.ports.driving.ProductServicePort;
 import com.laberit.Modu.ports.driving.command.SearchProductsCommand;
 import com.laberit.Modu.rest.generated.api.ProductsApi;
