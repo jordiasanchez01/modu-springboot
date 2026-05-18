@@ -1,11 +1,11 @@
 package com.laberit.Modu.services;
 
-import com.laberit.Modu.domain.exceptions.CartNotFoundException;
 import com.laberit.Modu.domain.exceptions.OrderNotFoundException;
 import com.laberit.Modu.domain.model.*;
-import com.laberit.Modu.domain.model.response.OrderResult;
-import com.laberit.Modu.ports.driven.CartRepositoryPort;
+import com.laberit.Modu.domain.model.response.CheckoutResult;
+import com.laberit.Modu.domain.model.response.GetCartResponse;
 import com.laberit.Modu.ports.driven.OrderRepositoryPort;
+import com.laberit.Modu.ports.driving.CartServicePort;
 import com.laberit.Modu.ports.driving.OrderServicePort;
 import com.laberit.Modu.ports.driving.command.*;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class OrderServiceUseCase implements OrderServicePort {
     private final OrderRepositoryPort orderRepositoryPort;
-    private final CartRepositoryPort cartRepositoryPort;
+    private final CartServicePort cartServicePort;
 
     @Override
     public Order findOrderById(Long id) {
@@ -37,19 +37,23 @@ public class OrderServiceUseCase implements OrderServicePort {
 
     @Override
     @Transactional
-    public Order addOrder(String deviceId, AddOrderCommand command) {
+    public CheckoutResult addOrder(String deviceId, AddOrderCommand command) {
         Order order = new Order();
         if (validateAddOrderCommand(command)) {
             Long userId = Long.valueOf(deviceId);
-            order.setUserId(userId);
-            System.out.println("This line in addOrder fires");
-            Order savedOrder = orderRepositoryPort.saveWithoutItems(order);
-            System.out.println("This line after first Save in addOrder fires");
-            order = mapOrderCommandToOrder(command, userId, savedOrder);
-            savedOrder = orderRepositoryPort.save(order);
+            GetCartResponse cartResponse = cartServicePort.findCartByUserId(userId);
 
+            if (cartResponse.changedPrices().isEmpty()) {
+                order.setUserId(userId);
+                //System.out.println("This line in addOrder fires");
+                Order savedOrder = orderRepositoryPort.saveWithoutItems(order);
+                //System.out.println("This line after first Save in addOrder fires");
+                order = mapOrderCommandToOrder(command, cartResponse.cart(), savedOrder);
+                savedOrder = orderRepositoryPort.save(order);
+                return new CheckoutResult(savedOrder, cartResponse);
+            }
 
-            return savedOrder;
+            return new CheckoutResult(order, cartResponse);
         }
         else {
             return null;
@@ -71,10 +75,11 @@ public class OrderServiceUseCase implements OrderServicePort {
 
     }
 
-    private Order mapOrderCommandToOrder(AddOrderCommand command, Long userId, Order order) {
+    private GetCartResponse checkCartForPriceChanges(Long userId){
+        return cartServicePort.findCartByUserId(userId);
+    }
 
-        Cart cart = cartRepositoryPort.findByUserId(userId)
-                .orElseThrow(()-> new CartNotFoundException(userId));
+    private Order mapOrderCommandToOrder(AddOrderCommand command, Cart cart, Order order) {
 
         List<OrderItem> orderItems = new ArrayList<>();
         for (CartItem cartItem: cart.getCartItems()){

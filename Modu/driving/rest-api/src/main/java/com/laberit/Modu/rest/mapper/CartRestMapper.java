@@ -1,6 +1,7 @@
 package com.laberit.Modu.rest.mapper;
 
 import com.laberit.Modu.domain.model.Cart;
+import com.laberit.Modu.domain.model.response.GetCartResponse;
 import com.laberit.Modu.domain.model.response.ProductPriceChange;
 import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
 import com.laberit.Modu.rest.generated.model.AddItemRequest;
@@ -14,6 +15,8 @@ import java.util.List;
 public interface CartRestMapper {
 
     CartResponse toCartResponse(Cart cart);
+
+    GetCartResponse toGetCartResponse(Cart cart);
 
     ProductPriceChangeResponse toProductPriceChangeResponse(ProductPriceChange priceChange);
 

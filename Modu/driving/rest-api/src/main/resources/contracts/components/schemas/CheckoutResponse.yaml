@@ -3,6 +3,7 @@ required:
   - ok
   - orderId
   - order
+  - cartResponse
 properties:
   ok:
     type: boolean
@@ -13,5 +14,7 @@ properties:
     example: 1
   order:
     $ref: './OrderResponse.yaml'
+  cartResponse:
+    $ref: './CartResponse.yaml'
 
 
