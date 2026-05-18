@@ -23,11 +23,11 @@ public class CartRestAdapter implements CartApi {
     @Override
     public ResponseEntity<CartResponse> getCart(String xDeviceId) {
 
-        GetCartResponse getCartResponse = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
+        CartWithPriceCheck cartWithPriceCheck = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
 
-        CartResponse cartResponse = cartMapper.toCartResponse(getCartResponse.cart());
+        CartResponse cartResponse = cartMapper.toCartResponse(cartWithPriceCheck.cart());
 
-        cartResponse.setPriceChangedAlert(checkIfPricesChanged(getCartResponse.changedPrices()));
+        cartResponse.setPriceChangedAlert(checkIfPricesChanged(cartWithPriceCheck.changedPrices()));
 
         return ResponseEntity.ok(cartResponse);
     }

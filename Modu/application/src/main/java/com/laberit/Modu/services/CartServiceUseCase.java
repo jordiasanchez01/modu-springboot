@@ -28,7 +28,7 @@ public class CartServiceUseCase implements CartServicePort {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public GetCartResponse findCartByUserId(Long userId) {
+    public CartWithPriceCheck findCartByUserId(Long userId) {
 
         Cart cart = cartRepositoryPort.findByUserId(userId)
                 .orElseThrow(() -> new CartNotFoundException(userId.toString()));
@@ -73,7 +73,7 @@ public class CartServiceUseCase implements CartServicePort {
 
         cart.setCartItems(cartItems);
 
-        return new GetCartResponse(cart, changedPricesList);
+        return new CartWithPriceCheck(cart, changedPricesList);
     }
 
     @Override
@@ -123,6 +123,74 @@ public class CartServiceUseCase implements CartServicePort {
     public void deleteCart(Long CartId) {
 
     }
+
+    @Override
+    public CartWithPriceCheck getCartWithPriceCheck(Long userId) {
+        Cart cart = cartRepositoryPort.findByUserId(userId)
+                .orElseThrow(() -> new CartNotFoundException(userId.toString()));
+        List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
+
+        Set<Long> variantIds = cartItems.stream()
+                .map(CartItem::getProductVariantId)
+                .collect(Collectors.toSet());
+        Set<ProductVariant> variants = productVariantRepositoryPort.findAllByIdInSet(variantIds);
+
+        updateCurrentStock(cartItems, variants);
+
+        List<ProductPriceChange> priceChanges = detectPriceChanges(cartItems, variants);
+        if (!priceChanges.isEmpty()) {
+            applyPriceChanges(cartItems, priceChanges);
+            cartItemRepositoryPort.saveAll(cartItems);
+        }
+        cart.setCartItems(cartItems);
+        return new CartWithPriceCheck(cart, priceChanges);
+    }
+
+    private void applyPriceChanges(List<CartItem> cartItems, List<ProductPriceChange> priceChanges) {
+        Map<Long, Double> variantsWithNewPriceMap = priceChanges.stream()
+                .collect(Collectors.toMap(ProductPriceChange::productVariantId, ProductPriceChange:: newPrice));
+        cartItems.forEach(cartItem -> {
+            if (variantsWithNewPriceMap.containsKey(cartItem.getProductVariantId())) {
+                cartItem.setUnitPrice(variantsWithNewPriceMap.get(cartItem.getProductVariantId()));
+            }
+        });
+    }
+
+    private List<ProductPriceChange> detectPriceChanges(List<CartItem> cartItems, Set<ProductVariant> variants) {
+        Set<Long> productIds = variants.stream()
+                .map(ProductVariant::getProductId)
+                .collect(Collectors.toSet());
+        Set<Product> products = productRepositoryPort.findAllByIdInSet(productIds);
+        Map<Long, Product> productMap = products.stream()
+                .collect(Collectors.toMap(Product::getId, p -> p));
+
+        Map<Long, Long> variantToProductId = variants.stream()
+                .collect(Collectors.toMap(ProductVariant::getId, ProductVariant::getProductId));
+
+        List<ProductPriceChange> changedPricesList = new ArrayList<>();
+
+        cartItems.forEach(cartItem -> {
+            Long productId =variantToProductId.get(cartItem.getProductVariantId());
+            Product product = productMap.get(productId);
+            if (!Objects.equals(cartItem.getUnitPrice(), product.getPrice())) {
+                changedPricesList.add(new ProductPriceChange(
+                        cartItem.getProductVariantId(),
+                        cartItem.getUnitPrice(),
+                        product.getPrice()
+                ));
+            }
+        });
+        return  changedPricesList;
+    }
+
+    private void updateCurrentStock(List<CartItem> cartItems, Set<ProductVariant> variants) {
+        Map<Long, ProductVariant> variantMap = variants.stream()
+                .collect(Collectors.toMap(ProductVariant::getId, v -> v));
+
+        cartItems.forEach(item -> item.setCurrentStock(
+                variantMap.get(item.getProductVariantId()).getStock()));
+    }
+
 
     private CartItem newCartItem(AddCartItemCommand command) {
         ProductVariant variant = getProductVariant(command.productVariantId());

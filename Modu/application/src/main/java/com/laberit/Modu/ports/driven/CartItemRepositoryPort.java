@@ -21,4 +21,5 @@ public interface CartItemRepositoryPort {
 
     CartItem save(CartItem cartItem);
 
+    void saveAll(List<CartItem> cartItems);
 }
