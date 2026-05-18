@@ -37,38 +37,41 @@ public class CartServiceUseCase implements CartServicePort {
 
         List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
 
-        List<ProductPriceChange> changedPricesList = new ArrayList<>();
-
-        for (CartItem item : cartItems) {
-            Long varId = item.getProductVariantId();
-            ProductVariant prodVar = productVariantRepositoryPort.findById(varId)
-                    .orElseThrow(() -> new ProductVariantNotFoundException(varId.toString()));
-            Product product = productRepositoryPort.findById(prodVar.getProductId())
-                    .orElseThrow(()-> new ProductNotFoundException(prodVar.getProductId().toString()));
-
-            if (!Objects.equals(item.getUnitPrice(), product.getPrice())){
-                ProductPriceChange changedPrices = new ProductPriceChange(
-                        prodVar.getId(),
-                        item.getUnitPrice(),
-                        product.getPrice()
-                );
-                changedPricesList.add(changedPrices);
-
-                item.setUnitPrice(product.getPrice());
-            }
-        }
-
         Set<Long> variantIds = cartItems.stream()
-                                .map(CartItem::getProductVariantId)
-                                .collect(Collectors.toSet());
-        Set<ProductVariant> variants = productVariantRepositoryPort.findAllByIdIn(variantIds);
+                .map(CartItem::getProductVariantId)
+                .collect(Collectors.toSet());
+
+        Set<ProductVariant> variants = productVariantRepositoryPort.findAllByIdInSet(variantIds);
+
+        Set<Long> productIds = variants.stream()
+                .map(ProductVariant::getProductId)
+                .collect(Collectors.toSet());
+
+        Set<Product> products = productRepositoryPort.findAllByIdInSet(productIds);
 
         Map<Long, ProductVariant> variantMap = variants.stream()
                 .collect(Collectors.toMap(ProductVariant::getId, pV -> pV));
 
-        cartItems.forEach(cartItem -> cartItem.setCurrentStock(
-                variantMap.get(cartItem.getProductVariantId()).getStock()
-        ));
+        Map<Long, Product> productMap = products.stream()
+                .collect(Collectors.toMap(Product::getId, p -> p));
+
+        List<ProductPriceChange> changedPricesList = new ArrayList<>();
+
+        cartItems.forEach(cartItem -> {
+            ProductVariant variant = variantMap.get(cartItem.getProductVariantId());
+            Product product = productMap.get(variant.getProductId());
+
+            cartItem.setCurrentStock(variant.getStock());
+
+            if (!Objects.equals(cartItem.getUnitPrice(), product.getPrice())) {
+                changedPricesList.add(new ProductPriceChange(
+                        variant.getId(),
+                        cartItem.getUnitPrice(),
+                        product.getPrice()
+                ));
+                cartItem.setUnitPrice(product.getPrice());
+            }
+        });
 
         cartItemRepositoryPort.saveAll(cartItems);
 
@@ -81,10 +84,12 @@ public class CartServiceUseCase implements CartServicePort {
     @Transactional
     public Cart addCartItemToCart(AddCartItemCommand addCommand) {
         Cart cart = cartRepositoryPort.findByUserId(addCommand.cartId())
-            .orElseGet(() -> addCart(new AddCartCommand(
-                addCommand.cartId(),
-                new ArrayList<>()
-            )));
+                .orElseGet(() -> addCart(new AddCartCommand(
+                        addCommand.cartId(),
+                        new ArrayList<>()
+                )));
+
+        List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
 
         Optional<CartItem> existing = cartItemRepositoryPort
                 .findByCartIdAndProductVariantId(
@@ -93,21 +98,22 @@ public class CartServiceUseCase implements CartServicePort {
                 );
 
         if (existing.isPresent()) {
-            // Product already in cart — update quantity and total
             CartItem item = existing.get();
             item.setQuantity(item.getQuantity() + addCommand.quantity());
             item.setCurrentStock(getProductVariant(addCommand.productVariantId()).getStock());
             CartItem savedItem = cartItemRepositoryPort.save(item);
+            cartItems.replaceAll(ci -> ci.getId().equals(savedItem.getId()) ? savedItem : ci);
         } else {
-            // Product not in cart yet — insert new cart item
             CartItem cartItem = newCartItem(new AddCartItemCommand(
                     cart.getId(),
                     addCommand.productVariantId(),
                     addCommand.quantity()
             ));
-            cartItemRepositoryPort.save(cartItem);
+            CartItem savedItem = cartItemRepositoryPort.save(cartItem);
+            cartItems.add(savedItem);
         }
-        cart = findCartByUserId(addCommand.cartId()).cart();
+
+        cart.setCartItems(cartItems);
 
         return cartRepositoryPort.save(cart);
     }
@@ -118,24 +124,8 @@ public class CartServiceUseCase implements CartServicePort {
     }
 
     @Override
-    public List<ProductPriceChange> checkIfPricesChanged(List<CartItem> cartItems){
-        List<ProductPriceChange> changedPricesList = new ArrayList<>();
+    public void deleteCart(Long CartId) {
 
-        for (CartItem item : cartItems) {
-            ProductVariant prodVar = getProductVariant(item.getProductVariantId());
-            Product product = productRepositoryPort.findById(prodVar.getProductId())
-                    .orElseThrow(()-> new ProductNotFoundException(prodVar.getProductId().toString()));
-
-            if (!Objects.equals(item.getUnitPrice(), product.getPrice())){
-                ProductPriceChange changedPrices = new ProductPriceChange(
-                        prodVar.getId(),
-                        item.getUnitPrice(),
-                        product.getPrice()
-                );
-                changedPricesList.add(changedPrices);
-            }
-        }
-        return changedPricesList;
     }
 
     private CartItem newCartItem(AddCartItemCommand command) {
