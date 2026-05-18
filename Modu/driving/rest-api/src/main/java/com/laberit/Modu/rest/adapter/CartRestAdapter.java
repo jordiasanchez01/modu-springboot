@@ -25,7 +25,6 @@ public class CartRestAdapter implements CartApi {
 
     @Override
     public ResponseEntity<CartResponse> getCart(String xDeviceId) {
-
         GetCartResponse getCartResponse = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
 
         CartResponse cartResponse = cartMapper.toCartResponse(getCartResponse.cart());
@@ -48,11 +47,22 @@ public class CartRestAdapter implements CartApi {
     }
 
     @Override
-    public ResponseEntity<CartResponse> updateCartItemQuantity(String xDeviceId, Long itemID, UpdateItemRequest updateItemRequest) {
-        cartItemServicePort.updateCartItemQuantity(Long.valueOf(xDeviceId), itemID, cartItemMapper.toCommand(updateItemRequest));
-        return getCart(xDeviceId);
+    public ResponseEntity<CartResponse> updateCartItemQuantity(String xDeviceId, Long itemId, UpdateItemRequest updateItemRequest) {
+        cartItemServicePort.updateCartItemQuantity(Long.valueOf(xDeviceId), itemId, cartItemMapper.toCommand(updateItemRequest));
+        return ResponseEntity.ok(buildCartResponse(xDeviceId));
     }
 
+    @Override
+    public ResponseEntity<CartResponse> deleteCartItem(String xDeviceId, Long itemId) {
+        cartItemServicePort.deleteCartItemById(Long.valueOf(xDeviceId), itemId);
+        return ResponseEntity.ok(buildCartResponse(xDeviceId));
+    }
+
+    private CartResponse buildCartResponse(String xDeviceId) {
+        GetCartResponse getCartResponse = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
+        CartResponse cartResponse = cartMapper.toCartResponse(getCartResponse.cart());
+        return cartResponse;
+    }
 
     private CartResponsePriceChangedAlert checkIfPricesChanged(List<ProductPriceChange> pricesList){
 

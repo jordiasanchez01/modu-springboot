@@ -53,6 +53,11 @@ public class CartItemRepositoryAdapter implements CartItemRepositoryPort {
     }
 
     @Override
+    public void deleteById(Long id) {
+        cartItemJpaRepository.deleteById(id);
+    }
+
+    @Override
     public CartItem save(CartItem cartItem) {
         return cartItemMapper.toDomain(cartItemJpaRepository.save(cartItemMapper.toEntity(cartItem)));
     }
