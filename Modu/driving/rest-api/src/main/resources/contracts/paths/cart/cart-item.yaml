@@ -41,7 +41,7 @@ patch:
           schema:
             $ref: '../../components/schemas/ErrorResponse.yaml'
     '409':
-      description: Item could not be updated due to lack of stock
+      description: Item could not be updated due to availability issues
       content:
         application/json:
           schema:
@@ -53,3 +53,38 @@ patch:
           schema:
             $ref: '../../components/schemas/ErrorResponse.yaml'
 
+delete:
+  tags:
+    - Cart
+  summary: Delete requested item from the user´s cart
+  description: Delete indicated item byt its ID from the user´s cart
+  operationId: deleteCartItem
+  parameters:
+    - $ref: '../../components/parameters/headerUID.yaml'
+    - name: itemId
+      in: path
+      required: true
+      description: CartItem ID
+      schema:
+        type: integer
+        format: int64
+        example: 2
+  responses:
+    '200':
+      description: Item deleted successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/CartResponse.yaml'
+    '404':
+      description: Requested item is not found.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '500':
+      description: Internal error.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
