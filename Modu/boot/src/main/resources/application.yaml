@@ -27,3 +27,6 @@ springdoc:
     urls:
       - name: Cars API
         url: /docs/v3/api-spec.yaml
+logging:
+  level:
+    com.laberit.Modu: DEBUG
