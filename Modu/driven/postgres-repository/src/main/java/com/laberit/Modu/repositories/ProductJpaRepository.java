@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @NullMarked
 public interface ProductJpaRepository extends JpaRepository<ProductEntity, Long>, JpaSpecificationExecutor<ProductEntity> {
@@ -21,4 +22,7 @@ public interface ProductJpaRepository extends JpaRepository<ProductEntity, Long>
 
     boolean existsByName(String name);
 
+    List<ProductEntity> findAllByIdIn(List<Long> productIds);
+
+    Set<ProductEntity> findAllByIdIn(Set<Long> productIds);
 }

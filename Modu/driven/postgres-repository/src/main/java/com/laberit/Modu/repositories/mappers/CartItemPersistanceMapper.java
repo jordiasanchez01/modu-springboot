@@ -20,8 +20,8 @@ public interface CartItemPersistanceMapper {
 
         CartEntity cart = new CartEntity();
         cart.setId(cartItem.getCartId());
-        entity.setCart(cart);
 
+        entity.setCart(cart);
         entity.setUnitPrice(cartItem.getUnitPrice());
         entity.setQuantity(cartItem.getQuantity());
         entity.setTotalPrice(cartItem.getTotalPrice());

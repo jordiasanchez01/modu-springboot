@@ -5,6 +5,7 @@ import com.laberit.Modu.repositories.models.ProductEntity;
 import org.mapstruct.Mapper;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper(componentModel="spring")
 public interface ProductPersistanceMapper {
@@ -41,4 +42,7 @@ public interface ProductPersistanceMapper {
 
     List<Product> toDomainList(List<ProductEntity> entities);
     List<ProductEntity> toEntityList(List<Product> products);
+
+    Set<Product> toDomainSet(Set<ProductEntity> products);
+    Set<ProductEntity> toEntitySet(Set<Product> products);
 }
