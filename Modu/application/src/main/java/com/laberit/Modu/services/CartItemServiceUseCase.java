@@ -7,7 +7,7 @@ import com.laberit.Modu.ports.driven.CartItemRepositoryPort;
 import com.laberit.Modu.ports.driven.CartRepositoryPort;
 import com.laberit.Modu.ports.driving.CartItemServicePort;
 import com.laberit.Modu.ports.driving.ProductVariantServicePort;
-import com.laberit.Modu.ports.driving.command.UpdateCartItemCommand;
+import com.laberit.Modu.ports.driving.command.UpdateCartItemQuantityCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class CartItemServiceUseCase implements CartItemServicePort {
     private final CartRepositoryPort cartRepositoryPort;
 
     @Override
-    public CartItem updateCartItemQuantity(Long userId, Long cartItemId, UpdateCartItemCommand command) {
+    public CartItem updateCartItemQuantity(Long userId, Long cartItemId, UpdateCartItemQuantityCommand command) {
         int requestedQuantity = command.quantity();
         Cart cart = cartRepositoryPort.findByUserId(userId).orElseThrow(
                 () -> new CartNotFoundException(userId));
