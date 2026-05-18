@@ -6,6 +6,7 @@ import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.ports.driven.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
+import com.laberit.Modu.ports.driving.ProductVariantServicePort;
 import com.laberit.Modu.ports.driving.command.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class CartServiceUseCase implements CartServicePort {
     private final CartRepositoryPort cartRepositoryPort;
     private final CartItemRepositoryPort cartItemRepositoryPort;
     private final ProductVariantRepositoryPort productVariantRepositoryPort;
+    private final ProductVariantServicePort productVariantServicePort;
     private final ProductRepositoryPort productRepositoryPort;
 
     @Override
@@ -31,7 +33,7 @@ public class CartServiceUseCase implements CartServicePort {
     public GetCartResponse findCartByUserId(Long userId) {
 
         Cart cart = cartRepositoryPort.findByUserId(userId)
-                .orElseThrow(() -> new CartNotFoundException(userId.toString()));
+                .orElseThrow(() -> new CartNotFoundException(userId));
 
         List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
 
@@ -70,6 +72,8 @@ public class CartServiceUseCase implements CartServicePort {
                 cartItem.setUnitPrice(product.getPrice());
             }
         });
+
+        cartItemRepositoryPort.saveAll(cartItems);
 
         cart.setCartItems(cartItems);
 

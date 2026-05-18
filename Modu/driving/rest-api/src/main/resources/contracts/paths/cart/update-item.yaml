@@ -3,7 +3,7 @@ patch:
     - Cart
   summary: Update item´s quantity in the user´s cart
   description: Updates indicated items quantity in the user´s cart
-  operationId: updateCartItem
+  operationId: updateCartItemQuantity
   requestBody:
     required: true
     content:
@@ -12,6 +12,14 @@ patch:
           $ref: '../../components/schemas/UpdateItemRequest.yaml'
   parameters:
     - $ref: '../../components/parameters/headerUID.yaml'
+    - name: itemId
+      in: path
+      required: true
+      description: CartItem ID
+      schema:
+        type: integer
+        format: int64
+        example: 2
 
   responses:
     '200':
@@ -27,7 +35,7 @@ patch:
           schema:
             $ref: '../../components/schemas/ErrorResponse.yaml'
     '404':
-      description: Requested item is not found
+      description: Requested item, or product variant, is not found.
       content:
         application/json:
           schema:

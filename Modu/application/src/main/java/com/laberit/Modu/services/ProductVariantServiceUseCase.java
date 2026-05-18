@@ -1,10 +1,10 @@
 package com.laberit.Modu.services;
 
+import com.laberit.Modu.domain.exceptions.ProductVariantNotAvailableException;
+import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
 import com.laberit.Modu.domain.model.ProductVariant;
 import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
 import com.laberit.Modu.ports.driving.ProductVariantServicePort;
-import com.laberit.Modu.ports.driving.command.AddProductVariantCommand;
-import com.laberit.Modu.ports.driving.command.UpdateProductVariantCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,6 +40,14 @@ public class ProductVariantServiceUseCase implements ProductVariantServicePort {
     @Override
     public Optional<ProductVariant> findById(Long id) {
         return productVariantRepositoryPort.findById(id);
+    }
+
+    @Override
+    public void assertIsValidToPurchase(Long id, Integer requiredStock) {
+        ProductVariant productVariant = productVariantRepositoryPort.findById(id)
+                .orElseThrow(() -> new ProductVariantNotFoundException(id.toString()));
+        if (!productVariant.getActive() || (productVariant.getStock() < requiredStock))
+            throw new ProductVariantNotAvailableException(id, (productVariant.getStock() < requiredStock));
     }
 
 }
