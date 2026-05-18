@@ -5,6 +5,7 @@ import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.domain.model.response.CheckoutResult;
 import com.laberit.Modu.domain.model.response.GetCartResponse;
 import com.laberit.Modu.ports.driven.OrderRepositoryPort;
+import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
 import com.laberit.Modu.ports.driving.CartServicePort;
 import com.laberit.Modu.ports.driving.OrderServicePort;
 import com.laberit.Modu.ports.driving.command.*;
@@ -15,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -23,6 +27,7 @@ import java.util.List;
 public class OrderServiceUseCase implements OrderServicePort {
     private final OrderRepositoryPort orderRepositoryPort;
     private final CartServicePort cartServicePort;
+    private final ProductVariantRepositoryPort productVariantRepositoryPort;
 
     @Override
     public Order findOrderById(Long id) {
@@ -50,6 +55,7 @@ public class OrderServiceUseCase implements OrderServicePort {
                 //System.out.println("This line after first Save in addOrder fires");
                 order = mapOrderCommandToOrder(command, cartResponse.cart(), savedOrder);
                 savedOrder = orderRepositoryPort.save(order);
+                updateProductVariantStock(savedOrder);
                 return new CheckoutResult(savedOrder, cartResponse);
             }
 
@@ -73,10 +79,6 @@ public class OrderServiceUseCase implements OrderServicePort {
     @Override
     public void deleteOrder(Long OrderId) {
 
-    }
-
-    private GetCartResponse checkCartForPriceChanges(Long userId){
-        return cartServicePort.findCartByUserId(userId);
     }
 
     private Order mapOrderCommandToOrder(AddOrderCommand command, Cart cart, Order order) {
@@ -108,5 +110,28 @@ public class OrderServiceUseCase implements OrderServicePort {
             throw new RuntimeException("null value found in AddOrderCommand.specialInstructions");
         }
         return command.isPaid();
+    }
+
+    private List<ProductVariant> updateProductVariantStock(Order order) {
+
+        Set<Long> variantIds = order.getOrderItems().stream()
+                .map(OrderItem::getProductVariantId)
+                .collect(Collectors.toSet());
+
+        Map<Long, Integer> quantityMap = order.getOrderItems().stream()
+                .collect(Collectors.toMap(
+                        OrderItem::getProductVariantId,
+                        OrderItem::getQuantity
+                ));
+
+        List<ProductVariant> variants = productVariantRepositoryPort.findAllByIdInSet(variantIds)
+                .stream()
+                .toList();
+
+        variants.forEach(variant ->
+                variant.setStock(variant.getStock() - quantityMap.get(variant.getId()))
+        );
+
+        return productVariantRepositoryPort.saveAll(variants);
     }
 }

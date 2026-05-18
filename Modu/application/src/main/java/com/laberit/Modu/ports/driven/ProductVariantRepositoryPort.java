@@ -27,4 +27,6 @@ public interface ProductVariantRepositoryPort {
     ProductVariant save(ProductVariant productVariant);
 
     void deleteById(Long id);
+
+    List<ProductVariant> saveAll(List<ProductVariant> variants);
 }
