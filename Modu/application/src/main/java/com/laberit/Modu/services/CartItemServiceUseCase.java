@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class CartItemServiceUseCase implements CartItemServicePort {
     private final CartItemRepositoryPort cartItemRepositoryPort;
     private final ProductVariantServicePort productVariantServicePort;
