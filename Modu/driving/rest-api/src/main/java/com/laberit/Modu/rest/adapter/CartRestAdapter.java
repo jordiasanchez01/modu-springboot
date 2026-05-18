@@ -61,8 +61,7 @@ public class CartRestAdapter implements CartApi {
     @Override
     public ResponseEntity<CartResponse> deleteCartItems(String xDeviceId) {
         cartItemServicePort.deleteAllCartItems(Long.valueOf(xDeviceId));
-        boolean isPriceAlertNeeded = false;
-        return ResponseEntity.ok(buildCartResponse(xDeviceId, isPriceAlertNeeded));
+        return ResponseEntity.ok(buildCartResponse(xDeviceId));
     }
 
     private CartResponse buildCartResponse(String xDeviceId) {
