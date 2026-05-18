@@ -31,7 +31,7 @@ paths:
     $ref: './paths/cart/show-cart.yaml'
   /cart/addItem:
     $ref: './paths/cart/add-item.yaml'
-  /cart/updateItem/{itemId}:
+  /cart/item/{itemId}:
     $ref: './paths/cart/update-item.yaml'
 
   /checkout:

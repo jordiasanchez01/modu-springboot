@@ -1,7 +1,7 @@
 package com.laberit.Modu.domain.exceptions;
 
 public class CartNotFoundException extends RuntimeException {
-    public CartNotFoundException(String message) {
-        super("Cart with ID: ("+message+") not found");
+    public CartNotFoundException(Long userId) {
+        super("Cart with ID: ("+userId+") not found");
     }
 }

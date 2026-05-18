@@ -1,10 +1,7 @@
 package com.laberit.Modu.rest.advice;
 
 
-import com.laberit.Modu.domain.exceptions.CartNotFoundException;
-import com.laberit.Modu.domain.exceptions.CategoryNotFoundException;
-import com.laberit.Modu.domain.exceptions.ProductNotFoundException;
-import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
+import com.laberit.Modu.domain.exceptions.*;
 import com.laberit.Modu.rest.generated.model.ErrorResponse;
 import com.laberit.Modu.rest.generated.model.ErrorResponseFieldsInner;
 import jakarta.validation.ConstraintViolationException;
@@ -48,6 +45,18 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(CategoryNotFoundException.class)
     public ErrorResponse handleCategoryNotFound(CategoryNotFoundException ex) {
         return error(ErrorType.NOT_FOUND, ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(CartItemNotFoundException.class)
+    public ErrorResponse handleCartItemNotFound(CartItemNotFoundException ex) {
+        return error(ErrorType.NOT_FOUND, ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ProductVariantNotAvailableException.class)
+    public ErrorResponse handleProductVariableNotAvailable(ProductVariantNotAvailableException ex) {
+        return error(ErrorType.CONFLICT, ex.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -6,10 +6,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CartItemRepositoryPort {
+    CartItem save(CartItem cartItem);
+    List<CartItem> saveAll(List<CartItem> cartItems);
 
     Optional<CartItem> findById(Long id);
 
     Optional<CartItem> findByProductVariantId(Long productVariantId);
+    Optional<CartItem> findByIdAndCartId(Long id, Long cartId);
 
     Optional<CartItem> findByCartIdAndProductVariantId(Long cartId, Long productVariantId);
 
@@ -18,7 +21,4 @@ public interface CartItemRepositoryPort {
     List<CartItem> findAllByProductVariantId(Long productVariantId);
 
     boolean existsByProductVariantId(Long productVariantId);
-
-    CartItem save(CartItem cartItem);
-
 }
