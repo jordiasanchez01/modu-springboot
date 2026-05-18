@@ -31,19 +31,14 @@ public class CartRestAdapter implements CartApi {
 
     @Override
     public ResponseEntity<CartResponse> addCartItem(String xDeviceId, AddItemRequest addItemRequest) {
-        AddCartItemCommand addItemCommand = cartMapper.toAddCartItemCommand(
-                Long.valueOf(xDeviceId),addItemRequest);
-
-        Cart cart = cartServicePort.addCartItemToCart(addItemCommand);
-
-        CartResponse cartResponse = cartMapper.toCartResponse(cart);
-
-        return ResponseEntity.ok(cartResponse);
+        Cart cart = cartServicePort.addCartItemToCart(cartMapper.toAddCartItemCommand(
+                Long.valueOf(xDeviceId),addItemRequest));
+        return ResponseEntity.ok(cartMapper.toCartResponse(cart));
     }
 
     @Override
     public ResponseEntity<CartResponse> updateCartItemQuantity(String xDeviceId, Long itemID, UpdateItemRequest updateItemRequest) {
-        cartItemServicePort.updateCartItemQuantity(Long.valueOf(xDeviceId), itemID, cartItemMapper.toCommand(updateItemRequest));
-        return getCart(xDeviceId);
+        Cart cart = cartItemServicePort.updateCartItemQuantity(Long.valueOf(xDeviceId), itemID, cartItemMapper.toCommand(updateItemRequest));
+        return ResponseEntity.ok(cartMapper.toCartResponse(cart));
     }
 }

@@ -43,11 +43,9 @@ public class ProductVariantServiceUseCase implements ProductVariantServicePort {
     }
 
     @Override
-    public void assertIsValidToPurchase(Long id, Integer requiredStock) {
-        ProductVariant productVariant = productVariantRepositoryPort.findById(id)
-                .orElseThrow(() -> new ProductVariantNotFoundException(id.toString()));
-        if (!productVariant.getActive() || (productVariant.getStock() < requiredStock))
-            throw new ProductVariantNotAvailableException(id, (productVariant.getStock() < requiredStock));
+    public void assertIsValidToPurchase(ProductVariant variant, Integer requiredStock) {
+        if (!variant.getActive() || (variant.getStock() < requiredStock))
+            throw new ProductVariantNotAvailableException(variant.getId(), (variant.getStock() < requiredStock));
     }
 
 }

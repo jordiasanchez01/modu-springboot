@@ -1,6 +1,6 @@
 type: object
 required:
-  - cartId
+  - userId
   - createdAt
   - total_price
   - cart_items
