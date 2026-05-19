@@ -25,4 +25,6 @@ public interface CartItemRepositoryPort {
     List<CartItem> saveAll(List<CartItem> cartItems);
 
     void deleteById(Long id);
+
+    void deleteAllByCartId(Long cartId);
 }

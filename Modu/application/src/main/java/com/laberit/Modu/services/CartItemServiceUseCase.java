@@ -48,4 +48,12 @@ public class CartItemServiceUseCase implements CartItemServicePort {
                 .orElseThrow(() -> new CartItemNotFoundException(itemId));
         cartItemRepositoryPort.deleteById(itemId);
     }
+
+    @Override
+    public void deleteAllCartItems(Long userId) {
+        Cart cart = cartRepositoryPort.findByUserId(userId).orElseThrow(() -> new CartNotFoundException(userId));
+        if (cart!=null) {
+            cartItemRepositoryPort.deleteAllByCartId(cart.getId());
+        }
+    }
 }
