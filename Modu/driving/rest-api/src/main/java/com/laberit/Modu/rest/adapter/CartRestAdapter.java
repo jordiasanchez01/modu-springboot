@@ -21,7 +21,7 @@ public class CartRestAdapter implements CartApi {
     private final CartItemRestMapper cartItemMapper;
 
     @Override
-    public ResponseEntity<CartResponse> getCart(String xDeviceId) {
+    public ResponseEntity<CartResponse> getValidatedCart(String xDeviceId) {
         CartWithPriceCheck result = cartServicePort.getCartWithPriceCheck(Long.valueOf(xDeviceId));
         return ResponseEntity.ok(cartMapper.toCartWithPriceCheckResponse(result));
     }

@@ -3,7 +3,7 @@ get:
     - Cart
   summary: Displays the user's cart
   description: Displays the user's cart details and contained items, if any
-  operationId: findCartByUserId
+  operationId: getValidatedCart
   parameters:
     - $ref: '../../components/parameters/headerUID.yaml'
 
