@@ -53,7 +53,7 @@ public class CartItemServiceUseCase implements CartItemServicePort {
 
     @Override
     public void deleteAllCartItems(Long userId) {
-        Cart cart = cartRepositoryPort.findByUserId(userId).orElse(null);
+        Cart cart = cartRepositoryPort.findByUserId(userId).orElseThrow(() -> new CartNotFoundException(userId));
         if (cart!=null) {
             cartItemRepositoryPort.deleteAllByCartId(cart.getId());
         }

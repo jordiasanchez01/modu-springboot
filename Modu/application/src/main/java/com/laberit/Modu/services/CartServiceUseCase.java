@@ -137,11 +137,6 @@ public class CartServiceUseCase implements CartServicePort {
         return null;
     }
 
-    @Override
-    public void deleteCart(Long CartId) {
-
-    }
-
     private CartItem newCartItem(AddCartItemCommand command) {
         ProductVariant variant = getProductVariant(command.productVariantId());
         Product product = productRepositoryPort.findById(variant.getProductId())
@@ -170,7 +165,6 @@ public class CartServiceUseCase implements CartServicePort {
         itemList.add(newItem);
         return itemList;
     }
-
 
     private Cart addCart(AddCartCommand command) {
         Cart newCart = Cart.builder()
