@@ -1,4 +1,4 @@
-post:
+get:
   tags:
     - Checkout
   summary: Displays Order details

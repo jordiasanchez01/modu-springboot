@@ -4,6 +4,7 @@ import com.laberit.Modu.domain.model.CartItem;
 import com.laberit.Modu.ports.driven.CartItemRepositoryPort;
 import com.laberit.Modu.repositories.CartItemJpaRepository;
 import com.laberit.Modu.repositories.mappers.CartItemPersistanceMapper;
+import com.laberit.Modu.repositories.models.CartItemEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -70,6 +71,8 @@ public class CartItemRepositoryAdapter implements CartItemRepositoryPort {
 
     @Override
     public List<CartItem> saveAll(List<CartItem> cartItems) {
-        return cartItemMapper.toDomainList(cartItemJpaRepository.saveAll(cartItemMapper.toEntityList(cartItems)));
+        List<CartItemEntity> items = cartItemJpaRepository.saveAll(cartItemMapper.toEntityList(cartItems));
+        cartItemJpaRepository.flush();
+        return cartItemMapper.toDomainList(items);
     }
 }

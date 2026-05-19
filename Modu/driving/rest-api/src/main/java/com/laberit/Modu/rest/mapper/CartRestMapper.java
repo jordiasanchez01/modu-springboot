@@ -1,14 +1,11 @@
 package com.laberit.Modu.rest.mapper;
 
 import com.laberit.Modu.domain.model.Cart;
-import com.laberit.Modu.domain.model.response.CartWithPriceCheck;
+import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
 import com.laberit.Modu.domain.model.response.InsufficientStockResult;
 import com.laberit.Modu.domain.model.response.ProductPriceChange;
 import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
-import com.laberit.Modu.rest.generated.model.AddItemRequest;
-import com.laberit.Modu.rest.generated.model.CartResponse;
-import com.laberit.Modu.rest.generated.model.InsufficientStockResponse;
-import com.laberit.Modu.rest.generated.model.ProductPriceChangeResponse;
+import com.laberit.Modu.rest.generated.model.*;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -16,13 +13,21 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CartRestMapper {
 
-    default CartResponse toCartWithPriceCheckResponse(CartWithPriceCheck cartWithPriceCheck) {
-        CartResponse response = toCartResponse(cartWithPriceCheck.cart());
-        response.setPriceChanges(toProductPriceChangeResponseList(cartWithPriceCheck.changedPrices()));
+    default CartResponse toCartWithPriceAndStockCheckResponse(CartWithPriceAndStockCheck cartWithPriceAndStockCheck) {
+        CartResponse response = toCartResponse(cartWithPriceAndStockCheck.cart());
+
+        List<ProductPriceChangeResponse> priceChangeList = toProductPriceChangeResponseList(cartWithPriceAndStockCheck.changedPrices());
+        PriceChangedAlert priceChangedAlert = new PriceChangedAlert();
+        priceChangedAlert.setCartItems(priceChangeList);
+        response.setPriceChangedAlert(priceChangedAlert);
+
+        List<InsufficientStockResponse> insufficientStockList = toInsufficientStockResponseList(cartWithPriceAndStockCheck.insufficientStock());
+        InsufficientStockAlert insufficientStockAlert = new InsufficientStockAlert();
+        insufficientStockAlert.setCartItems(insufficientStockList);
+        response.setInsufficientStockAlert(insufficientStockAlert);
+
         return response;
     }
-
-    List<ProductPriceChangeResponse> toProductPriceChangeResponseList(List<ProductPriceChange> prices);
 
     CartResponse toCartResponse(Cart cart);
 

@@ -6,7 +6,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record CartWithPriceCheck(
+public record CartWithPriceAndStockCheck(
         Cart cart,
         List<ProductPriceChange> changedPrices,
         List<InsufficientStockResult> insufficientStock
