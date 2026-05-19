@@ -48,7 +48,7 @@ public class OrderServiceUseCase implements OrderServicePort {
             Long userId = Long.valueOf(deviceId);
             GetCartResponse cartResponse = cartServicePort.findCartByUserId(userId);
 
-            if (cartResponse.changedPrices().isEmpty()) {
+            if (cartResponse.changedPrices().isEmpty() && cartResponse.insufficientStock().isEmpty()) {
                 order.setUserId(userId);
                 //System.out.println("This line in addOrder fires");
                 Order savedOrder = orderRepositoryPort.saveWithoutItems(order);

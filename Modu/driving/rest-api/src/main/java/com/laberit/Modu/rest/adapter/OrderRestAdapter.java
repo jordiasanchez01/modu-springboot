@@ -31,7 +31,7 @@ public class OrderRestAdapter implements CheckoutApi {
         CheckoutResult result = orderServicePort.addOrder(xDeviceId, command);
 
         CheckoutResponse response = new CheckoutResponse();
-        if (result.cartResponse().changedPrices().isEmpty()){
+        if (result.cartResponse().changedPrices().isEmpty() && result.cartResponse().insufficientStock().isEmpty()) {
             response.ok(true);
             response.orderId(result.order().getId());
             response.order(
@@ -39,20 +39,32 @@ public class OrderRestAdapter implements CheckoutApi {
             );
             return ResponseEntity.ok(response);
         } else {
-            System.out.println("Checkout failed, prices changed: "+result.cartResponse().changedPrices());
-            if (!result.cartResponse().changedPrices().isEmpty() && result.cartResponse().cart() != null) {
-                response.ok(false);
-                response.orderId(null);
-                response.order(null);
+
+            response.ok(false);
+            response.orderId(null);
+            response.order(null);
+
+            if (result.cartResponse().cart() != null) {
                 CartResponse cartResponse = cartMapper.toCartResponse(result.cartResponse().cart());
-                CartResponsePriceChangedAlert priceChangedAlert = new CartResponsePriceChangedAlert(
-                        true,
-                        cartMapper.toProductPriceChangeResponseList(result.cartResponse().changedPrices())
-                );
-                cartResponse.setPriceChangedAlert(priceChangedAlert);
+
+                if (!result.cartResponse().changedPrices().isEmpty()) {
+                    PriceChangedAlert priceChangedAlert = new PriceChangedAlert(
+                            true,
+                            cartMapper.toProductPriceChangeResponseList(result.cartResponse().changedPrices())
+                    );
+                    cartResponse.setPriceChangedAlert(priceChangedAlert);
+                    System.out.println("Checkout failed, prices changed: "+result.cartResponse().changedPrices());
+                }
+                if (!result.cartResponse().insufficientStock().isEmpty()) {
+                    InsufficientStockAlert insufficientStockAlert = new InsufficientStockAlert(
+                            cartMapper.toInsufficientStockResponseList(result.cartResponse().insufficientStock())
+                    );
+                    cartResponse.setInsufficientStockAlert(insufficientStockAlert);
+                    System.out.println("Checkout failed, insufficient stocks: "+result.cartResponse().insufficientStock());
+                }
+
 
                 response.cartResponse(cartResponse);
-
             }
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }

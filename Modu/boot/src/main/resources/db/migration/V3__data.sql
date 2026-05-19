@@ -2,26 +2,45 @@ INSERT INTO product (name, description, image_url, price, active)
 SELECT *
 FROM (
          VALUES
-             ('Classic Denim Jacket', 'A timeless blue denim jacket with a relaxed fit.', 'https://images.unsplash.com/photo-1544642899-f0d6e5f6ed6f?auto=format&fit=crop&w=800&q=80', 79.99, TRUE),
-             ('Black Leather Jacket', 'Premium black leather jacket with zipper details.', 'https://images.unsplash.com/photo-1563183939-592da2dbb596?auto=format&fit=crop&w=800&q=80', 149.99, TRUE),
-             ('Slim Fit Jeans', 'Dark blue slim fit jeans with stretch fabric.', 'https://images.unsplash.com/photo-1614495039368-525273956716?auto=format&fit=crop&w=800&q=80', 59.99, TRUE),
-             ('Casual Polo Shirt', 'Cotton polo shirt perfect for everyday wear.', 'https://images.unsplash.com/photo-1563649685437-a79731028cd1?auto=format&fit=crop&w=800&q=80', 29.99, TRUE),
-             ('White T-Shirt', 'Basic white t-shirt made from organic cotton.', 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80', 19.99, TRUE),
-             ('Hooded Sweatshirt', 'Comfortable hoodie with front pocket.', 'https://images.unsplash.com/photo-1567894173760-22aff4400f21?auto=format&fit=crop&w=800&q=80', 49.99, TRUE),
-             ('Chino Pants', 'Slim fit chino pants for a smart casual look.', 'https://images.unsplash.com/photo-1581382575275-97901c2635b7?auto=format&fit=crop&w=800&q=80', 54.99, TRUE),
-             ('Winter Parka', 'Warm insulated parka with faux fur hood.', 'https://images.unsplash.com/photo-1514564652994-565a3bf3a25b?auto=format&fit=crop&w=800&q=80', 129.99, TRUE),
-             ('Summer Shorts', 'Lightweight cotton shorts for hot days.', 'https://images.unsplash.com/photo-1685539855961-9045adffe039?auto=format&fit=crop&w=800&q=80', 24.99, TRUE),
-             ('Formal Blazer', 'Elegant blazer suitable for business attire.', 'https://images.unsplash.com/photo-1593030942428-a5451dca4b42?auto=format&fit=crop&w=800&q=80', 119.99, TRUE),
-             ('Checked Shirt', 'Long sleeve checked shirt in soft flannel.', 'https://images.unsplash.com/photo-1602038704137-439ad0e51044?auto=format&fit=crop&w=800&q=80', 39.99, TRUE),
-             ('Sports Jacket', 'Lightweight sports jacket for outdoor activities.', 'https://images.unsplash.com/photo-1581961462133-ca8618e89ed3?auto=format&fit=crop&w=800&q=80', 69.99, TRUE),
-             ('Cargo Pants', 'Durable cargo pants with multiple pockets.', 'https://images.unsplash.com/flagged/photo-1572372406879-e7c93ff299fa?auto=format&fit=crop&w=800&q=80', 64.99, TRUE),
-             ('Knitted Sweater', 'Warm knitted sweater for cold weather.', 'https://images.unsplash.com/photo-1576110598658-096ae24cdb97?auto=format&fit=crop&w=800&q=80', 59.99, TRUE),
-             ('Denim Shorts', 'Casual denim shorts with frayed hem.', 'https://images.unsplash.com/photo-1596460700790-d079c2c8ade6?auto=format&fit=crop&w=800&q=80', 34.99, TRUE),
-             ('Track Pants', 'Comfortable track pants for workouts.', 'https://images.unsplash.com/photo-1513378628213-b8f36d8c2878?auto=format&fit=crop&w=800&q=80', 44.99, TRUE),
-             ('Bomber Jacket', 'Trendy bomber jacket with ribbed cuffs.', 'https://images.unsplash.com/photo-1549399239-fb3c102d3d71?auto=format&fit=crop&w=800&q=80', 89.99, TRUE),
-             ('Graphic T-Shirt', 'T-shirt with modern graphic print.', 'https://images.unsplash.com/photo-1584636633449-6135be6c4169?auto=format&fit=crop&w=800&q=80', 22.99, TRUE),
-             ('Linen Shirt', 'Breathable linen shirt for summer.', 'https://images.unsplash.com/photo-1558436223-247523d35637?auto=format&fit=crop&w=800&q=80', 45.99, TRUE),
-             ('Wool Coat', 'Elegant wool coat for winter season.', 'https://images.unsplash.com/photo-1661110546899-732bffb4cb85?auto=format&fit=crop&w=800&q=80', 179.99, TRUE)
+             ('Classic Denim Jacket', 'A timeless blue denim jacket with a relaxed fit, designed for everyday comfort and effortless layering. Features durable stitching, classic button closures, and versatile styling that pairs perfectly with casual outfits throughout every season.', 'https://images.unsplash.com/photo-1544642899-f0d6e5f6ed6f?auto=format&fit=crop&w=800&q=80', 79.99, TRUE),
+
+             ('Black Leather Jacket', 'Premium black leather jacket with stylish zipper details and a modern tailored fit. Crafted for durability and comfort, this jacket adds a bold, refined edge to both casual streetwear and evening outfits.', 'https://images.unsplash.com/photo-1563183939-592da2dbb596?auto=format&fit=crop&w=800&q=80', 149.99, TRUE),
+
+             ('Slim Fit Jeans', 'Dark blue slim fit jeans made with flexible stretch fabric for all-day comfort and movement. Designed with a sleek modern silhouette, these jeans work well with sneakers, boots, or smart casual attire.', 'https://images.unsplash.com/photo-1614495039368-525273956716?auto=format&fit=crop&w=800&q=80', 59.99, TRUE),
+
+             ('Casual Polo Shirt', 'Soft cotton polo shirt perfect for everyday wear, offering a clean and comfortable look. Features a breathable fabric blend, classic collar, and versatile design suitable for work, weekends, or relaxed outings.', 'https://images.unsplash.com/photo-1563649685437-a79731028cd1?auto=format&fit=crop&w=800&q=80', 29.99, TRUE),
+
+             ('White T-Shirt', 'Basic white t-shirt made from high-quality organic cotton with a lightweight and breathable feel. Ideal for layering or wearing on its own, this wardrobe essential delivers comfort, simplicity, and timeless casual style.', 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80', 19.99, TRUE),
+
+             ('Hooded Sweatshirt', 'Comfortable hooded sweatshirt featuring a spacious front pocket and soft interior lining for extra warmth. Designed for relaxed everyday wear, it combines casual style with cozy comfort during cooler weather conditions.', 'https://images.unsplash.com/photo-1567894173760-22aff4400f21?auto=format&fit=crop&w=800&q=80', 49.99, TRUE),
+
+             ('Chino Pants', 'Slim fit chino pants designed for a polished smart casual appearance with lasting comfort. Made from durable yet lightweight fabric, these versatile pants transition easily from office settings to casual weekend occasions.', 'https://images.unsplash.com/photo-1581382575275-97901c2635b7?auto=format&fit=crop&w=800&q=80', 54.99, TRUE),
+
+             ('Winter Parka', 'Warm insulated parka with a faux fur trimmed hood, built to handle cold winter temperatures. Features protective outer fabric, practical storage pockets, and a comfortable fit ideal for outdoor wear and travel.', 'https://images.unsplash.com/photo-1514564652994-565a3bf3a25b?auto=format&fit=crop&w=800&q=80', 129.99, TRUE),
+
+             ('Summer Shorts', 'Lightweight cotton shorts designed to keep you cool and comfortable during hot summer days. Featuring a relaxed fit and breathable fabric, these shorts are perfect for vacations, beach trips, or casual outdoor activities.', 'https://images.unsplash.com/photo-1685539855961-9045adffe039?auto=format&fit=crop&w=800&q=80', 24.99, TRUE),
+
+             ('Formal Blazer', 'Elegant formal blazer tailored for professional business attire and special occasions. Designed with clean lines and premium materials, it provides a sophisticated appearance while remaining comfortable for extended daily wear.', 'https://images.unsplash.com/photo-1593030942428-a5451dca4b42?auto=format&fit=crop&w=800&q=80', 119.99, TRUE),
+
+             ('Checked Shirt', 'Long sleeve checked shirt crafted from soft flannel fabric for warmth and comfort. Its timeless plaid pattern and relaxed fit make it an ideal choice for casual layering during cooler seasons and weekend outings.', 'https://images.unsplash.com/photo-1602038704137-439ad0e51044?auto=format&fit=crop&w=800&q=80', 39.99, TRUE),
+
+             ('Sports Jacket', 'Lightweight sports jacket created for outdoor activities, travel, and active lifestyles. Designed with breathable materials and a flexible fit, it offers reliable comfort and mobility while maintaining a clean athletic appearance.', 'https://images.unsplash.com/photo-1581961462133-ca8618e89ed3?auto=format&fit=crop&w=800&q=80', 69.99, TRUE),
+
+             ('Cargo Pants', 'Durable cargo pants featuring multiple utility pockets and a rugged yet comfortable design. Built for practicality and everyday versatility, these pants are suitable for outdoor adventures, travel, or relaxed casual styling.', 'https://images.unsplash.com/flagged/photo-1572372406879-e7c93ff299fa?auto=format&fit=crop&w=800&q=80', 64.99, TRUE),
+
+             ('Knitted Sweater', 'Warm knitted sweater designed to provide comfort and insulation during colder weather conditions. Made with soft textured fabric and a classic fit, it pairs effortlessly with jeans, trousers, or layered winter outfits.', 'https://images.unsplash.com/photo-1576110598658-096ae24cdb97?auto=format&fit=crop&w=800&q=80', 59.99, TRUE),
+
+             ('Denim Shorts', 'Casual denim shorts with a stylish frayed hem and comfortable everyday fit. Crafted from durable denim fabric, these shorts bring a relaxed summer vibe that works perfectly with t-shirts, tanks, or lightweight shirts.', 'https://images.unsplash.com/photo-1596460700790-d079c2c8ade6?auto=format&fit=crop&w=800&q=80', 34.99, TRUE),
+
+             ('Track Pants', 'Comfortable track pants designed for workouts, running, and relaxed casual wear. Featuring lightweight fabric and an adjustable fit, they provide flexibility, breathability, and all-day comfort during active routines or downtime.', 'https://images.unsplash.com/photo-1513378628213-b8f36d8c2878?auto=format&fit=crop&w=800&q=80', 44.99, TRUE),
+
+             ('Bomber Jacket', 'Trendy bomber jacket with ribbed cuffs and a modern streetwear-inspired silhouette. Combining lightweight comfort with versatile styling, this jacket works well for casual evenings, transitional weather, and everyday fashion looks.', 'https://images.unsplash.com/photo-1549399239-fb3c102d3d71?auto=format&fit=crop&w=800&q=80', 89.99, TRUE),
+
+             ('Graphic T-Shirt', 'Modern graphic t-shirt featuring a bold printed design and soft breathable fabric for daily comfort. Perfect for casual outfits, this versatile tee adds personality and contemporary style to your everyday wardrobe collection.', 'https://images.unsplash.com/photo-1584636633449-6135be6c4169?auto=format&fit=crop&w=800&q=80', 22.99, TRUE),
+
+             ('Linen Shirt', 'Breathable linen shirt created for warm summer weather and relaxed casual styling. Its lightweight natural fabric provides exceptional airflow and comfort, making it ideal for holidays, outdoor dining, and sunny daytime occasions.', 'https://images.unsplash.com/photo-1558436223-247523d35637?auto=format&fit=crop&w=800&q=80', 45.99, TRUE),
+
+             ('Wool Coat', 'Elegant wool coat designed for the winter season with a refined and timeless appearance. Crafted from warm premium materials, it delivers both comfort and sophistication for formal events, workdays, and cold-weather outings.', 'https://images.unsplash.com/photo-1661110546899-732bffb4cb85?auto=format&fit=crop&w=800&q=80', 179.99, TRUE)
          ) AS v(name, description, image_url, price, active)
 WHERE NOT EXISTS (SELECT 1 FROM product);
 
@@ -265,21 +284,26 @@ SELECT *
 FROM (
          VALUES
              (1),
-             (2)
+             (2),
+             (3)
      ) AS v(user_id)
 WHERE NOT EXISTS (SELECT 1 FROM cart);
 
-INSERT INTO cart_item (quantity, cart_id, product_variant_id, unit_price, total_price)
+INSERT INTO cart_item (quantity, cart_id, product_variant_id, unit_price)
 SELECT *
 FROM (
          VALUES
-             (1,1,10,149.99,149.99),
-             (3,1,4,75.00,225.00),
-             (2,1,45,19.99,39.98),
-             (2,2,4,79.99,159.98),
-             (3,2,81,24.99,74.97),
-             (3,2,88,119.99, 359.97)
-     ) AS v(quantity, cart_id, product_variant_id, unit_price, total_price)
+             (1,1,10,149.99),
+             (3,1,4,75.00),
+             (2,1,45,19.99),
+             (2,2,4,79.99),
+             (3,2,81,24.99),
+             (13,2,88,119.99),
+             (12,3,4,79.99),
+             (21,3,81,24.99),
+             (3,3,88,109.99)
+
+     ) AS v(quantity, cart_id, product_variant_id, unit_price)
 WHERE NOT EXISTS (SELECT 1 FROM cart_item);
 
 INSERT INTO orders (user_id, special_instructions, total_price)

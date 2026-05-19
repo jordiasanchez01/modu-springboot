@@ -1,0 +1,16 @@
+type: object
+required:
+    - productVariantId
+    - requestedQuantity
+    - availableStock
+properties:
+  productVariantId:
+    type: integer
+    format: int64
+    example: 1
+  requestedQuantity:
+    type: integer
+    example: 5
+  availableStock:
+    type: integer
+    example: 3

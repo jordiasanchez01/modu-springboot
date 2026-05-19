@@ -3,6 +3,8 @@ package com.laberit.Modu.services;
 import com.laberit.Modu.domain.exceptions.*;
 import com.laberit.Modu.domain.model.Cart;
 import com.laberit.Modu.domain.model.CartItem;
+import com.laberit.Modu.domain.model.ProductVariant;
+import com.laberit.Modu.domain.model.response.InsufficientStockResult;
 import com.laberit.Modu.ports.driven.CartItemRepositoryPort;
 import com.laberit.Modu.ports.driven.CartRepositoryPort;
 import com.laberit.Modu.ports.driving.CartItemServicePort;
@@ -12,6 +14,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -49,5 +57,39 @@ public class CartItemServiceUseCase implements CartItemServicePort {
         if (cart!=null) {
             cartItemRepositoryPort.deleteAllByCartId(cart.getId());
         }
+    }
+
+    @Override
+    public Set<InsufficientStockResult> checkStockOfCartItems(Set<CartItem> cartItems) {
+        Set<Long> variantIds = cartItems.stream()
+                .map(CartItem::getProductVariantId)
+                .collect(Collectors.toSet());
+
+        Map<Long, Integer> quantityMap = cartItems.stream()
+                .collect(Collectors.toMap(
+                        CartItem::getProductVariantId,
+                        CartItem::getQuantity
+                ));
+
+        List<ProductVariant> variants = productVariantServicePort.findAllByIdInSet(variantIds)
+                .stream()
+                .toList();
+
+        Set<InsufficientStockResult> insufficientStockResults = new HashSet<>();
+
+        variants.forEach(variant -> {
+                    int stockResult = (variant.getStock() - quantityMap.get(variant.getId()));
+                    if (stockResult < 0) {
+                        InsufficientStockResult result = new InsufficientStockResult(
+                                variant.getId(),
+                                quantityMap.get(variant.getId()),
+                                variant.getStock()
+                        );
+                        insufficientStockResults.add(result);
+                    }
+                }
+        );
+
+        return insufficientStockResults;
     }
 }

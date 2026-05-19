@@ -5,6 +5,7 @@ import com.laberit.Modu.domain.exceptions.ProductNotFoundException;
 import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.domain.model.response.GetCartResponse;
+import com.laberit.Modu.domain.model.response.InsufficientStockResult;
 import com.laberit.Modu.domain.model.response.ProductPriceChange;
 import com.laberit.Modu.ports.driven.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
@@ -59,6 +60,8 @@ public class CartServiceUseCase implements CartServicePort {
 
         List<ProductPriceChange> changedPricesList = new ArrayList<>();
 
+        List<InsufficientStockResult> insufficientStockList = new ArrayList<>();
+
         cartItems.forEach(cartItem -> {
             ProductVariant variant = variantMap.get(cartItem.getProductVariantId());
             Product product = productMap.get(variant.getProductId());
@@ -73,13 +76,22 @@ public class CartServiceUseCase implements CartServicePort {
                 ));
                 cartItem.setUnitPrice(product.getPrice());
             }
+            if (cartItem.getQuantity() > cartItem.getCurrentStock()) {
+                insufficientStockList.add(new InsufficientStockResult(
+                        variant.getId(),
+                        cartItem.getQuantity(),
+                        cartItem.getCurrentStock()
+                ));
+                cartItem.setQuantity(cartItem.getCurrentStock());
+            }
+
         });
 
         cartItemRepositoryPort.saveAll(cartItems);
 
         cart.setCartItems(cartItems);
 
-        return new GetCartResponse(cart, changedPricesList);
+        return new GetCartResponse(cart, changedPricesList, insufficientStockList);
     }
 
     @Override

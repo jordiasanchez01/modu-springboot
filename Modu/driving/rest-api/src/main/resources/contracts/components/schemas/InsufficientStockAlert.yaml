@@ -1,0 +1,8 @@
+type: object
+required:
+  - cartItems
+properties:
+  cartItems:
+    type: array
+    items:
+      $ref: './InsufficientStockResponse.yaml'

@@ -22,17 +22,8 @@ properties:
     items:
       $ref: './CartItemResponse.yaml'
   price_changed_alert:
-    type: object
-    required:
-      - price_changed
-      - cartItems
-    properties:
-      price_changed:
-        type: boolean
-        example: true
-      cartItems:
-        type: array
-        items:
-          $ref: './ProductPriceChangeResponse.yaml'
+    $ref: './PriceChangedAlert.yaml'
+  insufficient_stock_alert:
+    $ref: './InsufficientStockAlert.yaml'
 
 

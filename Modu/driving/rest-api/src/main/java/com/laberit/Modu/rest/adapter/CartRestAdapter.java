@@ -1,5 +1,6 @@
 package com.laberit.Modu.rest.adapter;
 
+import com.laberit.Modu.domain.model.response.InsufficientStockResult;
 import com.laberit.Modu.ports.driving.CartItemServicePort;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.domain.model.response.GetCartResponse;
@@ -33,6 +34,8 @@ public class CartRestAdapter implements CartApi {
 
         cartResponse.setPriceChangedAlert(checkIfPricesChanged(getCartResponse.changedPrices()));
 
+        cartResponse.setInsufficientStockAlert(checkIfInsufficientStock(getCartResponse.insufficientStock()));
+
         return ResponseEntity.ok(cartResponse);
     }
 
@@ -60,15 +63,19 @@ public class CartRestAdapter implements CartApi {
         return ResponseEntity.ok(buildCartResponse(xDeviceId));
     }
 
-    private CartResponse buildCartResponse(String xDeviceId) {
-        GetCartResponse getCartResponse = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
-        CartResponse cartResponse = cartMapper.toCartResponse(getCartResponse.cart());
-        return cartResponse;
+    @Override
+    public ResponseEntity<CartResponse> deleteCartItems(String xDeviceId) {
+        return null;
     }
 
-    private CartResponsePriceChangedAlert checkIfPricesChanged(List<ProductPriceChange> pricesList){
+    private CartResponse buildCartResponse(String xDeviceId) {
+        GetCartResponse getCartResponse = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
+        return cartMapper.toCartResponse(getCartResponse.cart());
+    }
 
-        CartResponsePriceChangedAlert changedAlert = new CartResponsePriceChangedAlert();
+    private PriceChangedAlert checkIfPricesChanged(List<ProductPriceChange> pricesList){
+
+        PriceChangedAlert changedAlert = new PriceChangedAlert();
         changedAlert.setPriceChanged(false);
 
         if (!pricesList.isEmpty()){
@@ -76,5 +83,15 @@ public class CartRestAdapter implements CartApi {
             changedAlert.setCartItems(cartMapper.toProductPriceChangeResponseList(pricesList));
         }
         return changedAlert;
+    }
+
+    private InsufficientStockAlert checkIfInsufficientStock(List<InsufficientStockResult> stockList){
+
+        InsufficientStockAlert  insufficientStockAlert = new InsufficientStockAlert();
+
+        if (!stockList.isEmpty()){
+            insufficientStockAlert.setCartItems(cartMapper.toInsufficientStockResponseList(stockList));
+        }
+        return insufficientStockAlert;
     }
 }
