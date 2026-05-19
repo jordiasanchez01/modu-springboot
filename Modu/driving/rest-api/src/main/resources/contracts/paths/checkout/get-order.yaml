@@ -1,0 +1,22 @@
+post:
+  tags:
+    - Checkout
+  summary: Displays Order details
+  description: Displays the details of an approved order
+  operationId: getOrder
+  parameters:
+    - $ref: '../../components/parameters/headerUID.yaml'
+
+  responses:
+    '200':
+      description: Order retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/OrderResponse.yaml'
+    '404':
+      description: Requested order could not be found
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'

@@ -44,7 +44,8 @@ public interface ProductVariantPersistanceMapper {
                 .build();
     }
 
-    List<ProductVariant> toDomainList(List<ProductVariantEntity> entities);
+    List<ProductVariant> toDomainList(List<ProductVariantEntity> entitiesList);
+    List<ProductVariantEntity> toEntityList(List<ProductVariant> variantsList);
 
     Set<ProductVariant> toDomainSet(Set<ProductVariantEntity> entities);
 }

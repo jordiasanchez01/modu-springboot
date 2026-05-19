@@ -5,23 +5,23 @@ import com.laberit.Modu.domain.exceptions.*;
 import com.laberit.Modu.rest.generated.model.ErrorResponse;
 import com.laberit.Modu.rest.generated.model.ErrorResponseFieldsInner;
 import jakarta.validation.ConstraintViolationException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 @RestControllerAdvice
 public class GlobalControllerAdvice {
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(CartItemNotFoundException.class)
+    public ErrorResponse handleCartItemNotFound(CartItemNotFoundException ex) {
+        return error(ErrorType.NOT_FOUND, ex.getMessage());
+    }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(CartNotFoundException.class)
@@ -29,16 +29,10 @@ public class GlobalControllerAdvice {
         return error(ErrorType.NOT_FOUND, ex.getMessage());
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ErrorResponse handleProductNotFound(ProductNotFoundException ex) {
-        return error(ErrorType.NOT_FOUND, ex.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(ProductVariantNotFoundException.class)
-    public ErrorResponse handleProductVariantNotFound(ProductVariantNotFoundException ex) {
-        return error(ErrorType.NOT_FOUND, ex.getMessage());
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(CategoryAlreadyExistsException.class)
+    public ErrorResponse handleCategoryAlreadyExists(CategoryAlreadyExistsException ex) {
+        return error(ErrorType.CONFLICT, ex.getMessage());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -48,8 +42,20 @@ public class GlobalControllerAdvice {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(CartItemNotFoundException.class)
-    public ErrorResponse handleCartItemNotFound(CartItemNotFoundException ex) {
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ErrorResponse handleOrderNotFound(OrderNotFoundException ex) {
+        return error(ErrorType.NOT_FOUND, ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(OrderNotPaidException.class)
+    public ErrorResponse handleOrderNotPaid(OrderNotPaidException ex) {
+        return error(ErrorType.CONFLICT, ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ErrorResponse handleProductNotFound(ProductNotFoundException ex) {
         return error(ErrorType.NOT_FOUND, ex.getMessage());
     }
 
@@ -57,6 +63,12 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(ProductVariantNotAvailableException.class)
     public ErrorResponse handleProductVariableNotAvailable(ProductVariantNotAvailableException ex) {
         return error(ErrorType.CONFLICT, ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ProductVariantNotFoundException.class)
+    public ErrorResponse handleProductVariableNotFound(ProductVariantNotFoundException ex) {
+        return error(ErrorType.NOT_FOUND, ex.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
