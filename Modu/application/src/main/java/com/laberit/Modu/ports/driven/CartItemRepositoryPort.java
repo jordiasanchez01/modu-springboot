@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CartItemRepositoryPort {
-    CartItem save(CartItem cartItem);
-    List<CartItem> saveAll(List<CartItem> cartItems);
 
     Optional<CartItem> findById(Long id);
 
@@ -21,6 +19,10 @@ public interface CartItemRepositoryPort {
     List<CartItem> findAllByProductVariantId(Long productVariantId);
 
     boolean existsByProductVariantId(Long productVariantId);
+
+    CartItem save(CartItem cartItem);
+
+    List<CartItem> saveAll(List<CartItem> cartItems);
 
     void deleteById(Long id);
 

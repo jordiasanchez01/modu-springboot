@@ -26,4 +26,3 @@ properties:
   insufficient_stock_alert:
     $ref: './InsufficientStockAlert.yaml'
 
-

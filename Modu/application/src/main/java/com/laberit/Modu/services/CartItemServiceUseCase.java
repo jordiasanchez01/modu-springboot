@@ -7,6 +7,7 @@ import com.laberit.Modu.domain.model.ProductVariant;
 import com.laberit.Modu.domain.model.response.InsufficientStockResult;
 import com.laberit.Modu.ports.driven.CartItemRepositoryPort;
 import com.laberit.Modu.ports.driven.CartRepositoryPort;
+import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
 import com.laberit.Modu.ports.driving.CartItemServicePort;
 import com.laberit.Modu.ports.driving.ProductVariantServicePort;
 import com.laberit.Modu.ports.driving.command.UpdateCartItemQuantityCommand;
@@ -29,6 +30,7 @@ public class CartItemServiceUseCase implements CartItemServicePort {
     private final CartItemRepositoryPort cartItemRepositoryPort;
     private final ProductVariantServicePort productVariantServicePort;
     private final CartRepositoryPort cartRepositoryPort;
+    private final ProductVariantRepositoryPort productVariantRepositoryPort;
 
     @Override
     public CartItem updateCartItemQuantity(Long userId, Long cartItemId, UpdateCartItemQuantityCommand command) {
@@ -37,8 +39,11 @@ public class CartItemServiceUseCase implements CartItemServicePort {
                 () -> new CartNotFoundException(userId));
         CartItem item = cartItemRepositoryPort.findByIdAndCartId(cartItemId, cart.getId())
                 .orElseThrow(() -> new CartItemNotFoundException(cartItemId));
-        productVariantServicePort.assertIsValidToPurchase(item.getProductVariantId(), requestedQuantity);
+        ProductVariant productVariant = productVariantRepositoryPort.findById(item.getProductVariantId())
+                .orElseThrow(() -> new ProductVariantNotFoundException(item.getProductVariantId().toString()));
+        productVariantServicePort.assertIsValidToPurchase(productVariant, requestedQuantity);
         item.setQuantity(requestedQuantity);
+        cartItemRepositoryPort.save(item);
         return cartItemRepositoryPort.save(item);
     }
 

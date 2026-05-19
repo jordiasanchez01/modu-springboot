@@ -2,7 +2,6 @@ package com.laberit.Modu.rest.adapter;
 
 import com.laberit.Modu.domain.model.Order;
 import com.laberit.Modu.domain.model.response.CheckoutResult;
-import com.laberit.Modu.domain.model.response.GetCartResponse;
 import com.laberit.Modu.ports.driving.OrderServicePort;
 import com.laberit.Modu.ports.driving.command.AddOrderCommand;
 import com.laberit.Modu.rest.generated.api.CheckoutApi;

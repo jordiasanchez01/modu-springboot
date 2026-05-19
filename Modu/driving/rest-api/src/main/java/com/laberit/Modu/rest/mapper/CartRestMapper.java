@@ -1,7 +1,7 @@
 package com.laberit.Modu.rest.mapper;
 
 import com.laberit.Modu.domain.model.Cart;
-import com.laberit.Modu.domain.model.response.GetCartResponse;
+import com.laberit.Modu.domain.model.response.CartWithPriceCheck;
 import com.laberit.Modu.domain.model.response.InsufficientStockResult;
 import com.laberit.Modu.domain.model.response.ProductPriceChange;
 import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
@@ -16,15 +16,17 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CartRestMapper {
 
+    default CartResponse toCartWithPriceCheckResponse(CartWithPriceCheck cartWithPriceCheck) {
+        CartResponse response = toCartResponse(cartWithPriceCheck.cart());
+        response.setPriceChanges(toProductPriceChangeResponseList(cartWithPriceCheck.changedPrices()));
+        return response;
+    }
+
+    List<ProductPriceChangeResponse> toProductPriceChangeResponseList(List<ProductPriceChange> prices);
+
     CartResponse toCartResponse(Cart cart);
 
-    GetCartResponse toGetCartResponse(Cart cart);
-
-    ProductPriceChangeResponse toProductPriceChangeResponse(ProductPriceChange priceChange);
-
-    InsufficientStockResponse toInsufficientStockResponse(InsufficientStockResult insufficientStockResult);
-
-    default AddItemRequest toAddItemRequest(AddCartItemCommand addCommand) {
+        default AddItemRequest toAddItemRequest(AddCartItemCommand addCommand) {
         return new AddItemRequest(
                 addCommand.productVariantId(),
                 addCommand.quantity());

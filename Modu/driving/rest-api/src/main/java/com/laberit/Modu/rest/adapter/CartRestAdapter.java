@@ -1,12 +1,10 @@
 package com.laberit.Modu.rest.adapter;
 
 import com.laberit.Modu.domain.model.response.InsufficientStockResult;
+import com.laberit.Modu.domain.model.response.CartWithPriceCheck;
 import com.laberit.Modu.ports.driving.CartItemServicePort;
 import com.laberit.Modu.domain.model.*;
-import com.laberit.Modu.domain.model.response.GetCartResponse;
-import com.laberit.Modu.domain.model.response.ProductPriceChange;
 import com.laberit.Modu.ports.driving.CartServicePort;
-import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
 import com.laberit.Modu.rest.generated.api.CartApi;
 import com.laberit.Modu.rest.generated.model.*;
 import com.laberit.Modu.rest.mapper.CartItemRestMapper;
@@ -14,8 +12,6 @@ import com.laberit.Modu.rest.mapper.CartRestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 
 @RestController
@@ -27,51 +23,34 @@ public class CartRestAdapter implements CartApi {
     private final CartItemRestMapper cartItemMapper;
 
     @Override
-    public ResponseEntity<CartResponse> getCart(String xDeviceId) {
-        GetCartResponse getCartResponse = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
-
-        CartResponse cartResponse = cartMapper.toCartResponse(getCartResponse.cart());
-
-        cartResponse.setPriceChangedAlert(checkIfPricesChanged(getCartResponse.changedPrices()));
-
-        cartResponse.setInsufficientStockAlert(checkIfInsufficientStock(getCartResponse.insufficientStock()));
-
-        return ResponseEntity.ok(cartResponse);
+    public ResponseEntity<CartResponse> getValidatedCart(String xDeviceId) {
+        CartWithPriceCheck result = cartServicePort.getCartWithPriceCheck(Long.valueOf(xDeviceId));
+        return ResponseEntity.ok(cartMapper.toCartWithPriceCheckResponse(result));
     }
 
     @Override
     public ResponseEntity<CartResponse> addCartItem(String xDeviceId, AddItemRequest addItemRequest) {
-        AddCartItemCommand addItemCommand = cartMapper.toAddCartItemCommand(
-                Long.valueOf(xDeviceId),addItemRequest);
-
-        Cart cart = cartServicePort.addCartItemToCart(addItemCommand);
-
-        CartResponse cartResponse = cartMapper.toCartResponse(cart);
-
-        return ResponseEntity.ok(cartResponse);
+        Cart cart = cartServicePort.addCartItemToCart(cartMapper.toAddCartItemCommand(
+                Long.valueOf(xDeviceId),addItemRequest));
+        return ResponseEntity.ok(cartMapper.toCartResponse(cart));
     }
 
     @Override
-    public ResponseEntity<CartResponse> updateCartItemQuantity(String xDeviceId, Long itemId, UpdateItemRequest updateItemRequest) {
-        cartItemServicePort.updateCartItemQuantity(Long.valueOf(xDeviceId), itemId, cartItemMapper.toCommand(updateItemRequest));
-        return ResponseEntity.ok(buildCartResponse(xDeviceId));
+    public ResponseEntity<CartResponse> updateCartItemQuantity(String xDeviceId, Long itemID, UpdateItemRequest updateItemRequest) {
+        cartItemServicePort.updateCartItemQuantity(Long.valueOf(xDeviceId), itemID, cartItemMapper.toCommand(updateItemRequest));
+        return ResponseEntity.ok(cartMapper.toCartResponse(cartServicePort.findCartByUserId(Long.valueOf(xDeviceId))));
     }
 
     @Override
     public ResponseEntity<CartResponse> deleteCartItem(String xDeviceId, Long itemId) {
         cartItemServicePort.deleteCartItemById(Long.valueOf(xDeviceId), itemId);
-        return ResponseEntity.ok(buildCartResponse(xDeviceId));
+        return ResponseEntity.ok(cartMapper.toCartResponse(cartServicePort.findCartByUserId(Long.valueOf(xDeviceId))));
     }
 
     @Override
     public ResponseEntity<CartResponse> deleteCartItems(String xDeviceId) {
         cartItemServicePort.deleteAllCartItems(Long.valueOf(xDeviceId));
-        return ResponseEntity.ok(buildCartResponse(xDeviceId));
-    }
-
-    private CartResponse buildCartResponse(String xDeviceId) {
-        GetCartResponse getCartResponse = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
-        return cartMapper.toCartResponse(getCartResponse.cart());
+        return ResponseEntity.ok(cartMapper.toCartResponse(cartServicePort.findCartByUserId(Long.valueOf(xDeviceId))));
     }
 
     private PriceChangedAlert checkIfPricesChanged(List<ProductPriceChange> pricesList){

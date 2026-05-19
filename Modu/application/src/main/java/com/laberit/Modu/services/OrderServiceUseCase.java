@@ -3,9 +3,8 @@ package com.laberit.Modu.services;
 import com.laberit.Modu.domain.exceptions.OrderNotFoundException;
 import com.laberit.Modu.domain.exceptions.OrderNotPaidException;
 import com.laberit.Modu.domain.model.*;
+import com.laberit.Modu.domain.model.response.CartWithPriceCheck;
 import com.laberit.Modu.domain.model.response.CheckoutResult;
-import com.laberit.Modu.domain.model.response.GetCartResponse;
-import com.laberit.Modu.ports.driven.CartItemRepositoryPort;
 import com.laberit.Modu.ports.driven.OrderRepositoryPort;
 import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
 import com.laberit.Modu.ports.driving.CartItemServicePort;
@@ -50,7 +49,7 @@ public class OrderServiceUseCase implements OrderServicePort {
         Order order = new Order();
         if (validateAddOrderCommand(command)) {
             Long userId = Long.valueOf(deviceId);
-            GetCartResponse cartResponse = cartServicePort.findCartByUserId(userId);
+            CartWithPriceCheck cartResponse = cartServicePort.getCartWithPriceCheck(userId);
 
             if (cartResponse.changedPrices().isEmpty() && cartResponse.insufficientStock().isEmpty()) {
                 order.setUserId(userId);
