@@ -28,7 +28,6 @@ public interface OrderItemPersistanceMapper {
         return entity;
     }
 
-
     default OrderItem toDomain(OrderItemEntity entity){
         if (entity==null){
             return null;
