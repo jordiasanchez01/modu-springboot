@@ -1,6 +1,6 @@
 package com.laberit.Modu.ports.driving.command;
 
-public record UpdateCartItemCommand(
+public record UpdateCartItemQuantityCommand(
         Integer quantity
 ) {
 }

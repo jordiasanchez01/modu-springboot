@@ -1,4 +1,4 @@
-package com.laberit.Modu.domain.model;
+package com.laberit.Modu.domain.model.response;
 
 import java.util.List;
 

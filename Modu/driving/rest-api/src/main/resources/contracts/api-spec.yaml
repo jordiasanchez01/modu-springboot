@@ -15,6 +15,9 @@ tags:
     description: read operation to get categories
   - name: Cart
     description: operations related to cart handling (add item, modify quantity, validate)
+  - name: Checkout
+    description: operations related to order handling (add cart to order, check order, validate)
+
 paths:
   /products:
     $ref: './paths/products/products.yaml'
@@ -33,7 +36,14 @@ paths:
   /cart/items:
     $ref: './paths/cart/cart-items.yaml'
 
+  /checkout:
+    $ref: './paths/checkout/checkout.yaml'
+  /get_order:
+    $ref: './paths/checkout/get-order.yaml'
+
 components:
   schemas:
     ProductResponse:
       $ref: './components/schemas/ProductPageResponse.yaml'
+    CartResponse:
+      $ref: './components/schemas/CartResponse.yaml'

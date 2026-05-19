@@ -67,4 +67,9 @@ public class ProductVariantRepositoryAdapter implements ProductVariantRepository
     public void deleteById(Long id) {
         repository.deleteById(id);
     }
+
+    @Override
+    public List<ProductVariant> saveAll(List<ProductVariant> variants) {
+        return mapper.toDomainList(repository.saveAll(mapper.toEntityList(variants)));
+    }
 }

@@ -2,6 +2,8 @@ package com.laberit.Modu.rest.adapter;
 
 import com.laberit.Modu.ports.driving.CartItemServicePort;
 import com.laberit.Modu.domain.model.*;
+import com.laberit.Modu.domain.model.response.GetCartResponse;
+import com.laberit.Modu.domain.model.response.ProductPriceChange;
 import com.laberit.Modu.ports.driving.CartServicePort;
 import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
 import com.laberit.Modu.rest.generated.api.CartApi;
@@ -13,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 
 @RestController
@@ -26,42 +27,42 @@ public class CartRestAdapter implements CartApi {
 
     @Override
     public ResponseEntity<CartResponse> getCart(String xDeviceId) {
-        boolean isPriceAlertNeeded = true;
-        return ResponseEntity.ok(buildCartResponse(xDeviceId, isPriceAlertNeeded));
+        GetCartResponse getCartResponse = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
+
+        CartResponse cartResponse = cartMapper.toCartResponse(getCartResponse.cart());
+
+        cartResponse.setPriceChangedAlert(checkIfPricesChanged(getCartResponse.changedPrices()));
+
+        return ResponseEntity.ok(cartResponse);
     }
 
     @Override
     public ResponseEntity<CartResponse> addCartItem(String xDeviceId, AddItemRequest addItemRequest) {
-        boolean isPriceAlertNeeded = false;
-        return ResponseEntity.ok(buildCartResponse(xDeviceId, isPriceAlertNeeded));
+        AddCartItemCommand addItemCommand = cartMapper.toAddCartItemCommand(
+                Long.valueOf(xDeviceId),addItemRequest);
+
+        Cart cart = cartServicePort.addCartItemToCart(addItemCommand);
+
+        CartResponse cartResponse = cartMapper.toCartResponse(cart);
+
+        return ResponseEntity.ok(cartResponse);
     }
 
     @Override
-    public ResponseEntity<CartResponse> updateCartItem(String xDeviceId, Long itemId, UpdateItemRequest updateItemRequest) {
-        cartItemServicePort.updateCartItem(Long.valueOf(xDeviceId), itemId, cartItemMapper.toCommand(updateItemRequest));
-        boolean isPriceAlertNeeded = true;
-        return ResponseEntity.ok(buildCartResponse(xDeviceId, isPriceAlertNeeded));
+    public ResponseEntity<CartResponse> updateCartItemQuantity(String xDeviceId, Long itemId, UpdateItemRequest updateItemRequest) {
+        cartItemServicePort.updateCartItemQuantity(Long.valueOf(xDeviceId), itemId, cartItemMapper.toCommand(updateItemRequest));
+        return ResponseEntity.ok(buildCartResponse(xDeviceId));
     }
 
     @Override
     public ResponseEntity<CartResponse> deleteCartItem(String xDeviceId, Long itemId) {
         cartItemServicePort.deleteCartItemById(Long.valueOf(xDeviceId), itemId);
-        boolean isPriceAlertNeeded = true;
-        return ResponseEntity.ok(buildCartResponse(xDeviceId, isPriceAlertNeeded));
+        return ResponseEntity.ok(buildCartResponse(xDeviceId));
     }
 
-    @Override
-    public ResponseEntity<CartResponse> deleteCartItems(String xDeviceId) {
-        cartItemServicePort.deleteAllCartItems(Long.valueOf(xDeviceId));
-        boolean isPriceAlertNeeded = false;
-        return ResponseEntity.ok(buildCartResponse(xDeviceId, isPriceAlertNeeded));
-    }
-
-    private CartResponse buildCartResponse(String xDeviceId, boolean isPriceAlertNeeded) {
+    private CartResponse buildCartResponse(String xDeviceId) {
         GetCartResponse getCartResponse = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
         CartResponse cartResponse = cartMapper.toCartResponse(getCartResponse.cart());
-        if (isPriceAlertNeeded) cartResponse.setPriceChangedAlert(
-                checkIfPricesChanged(getCartResponse.changedPrices()));
         return cartResponse;
     }
 

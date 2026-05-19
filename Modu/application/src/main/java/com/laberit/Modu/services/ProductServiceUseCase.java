@@ -2,7 +2,7 @@ package com.laberit.Modu.services;
 
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.domain.exceptions.ProductNotFoundException;
-import com.laberit.Modu.domain.model.*;
+import com.laberit.Modu.domain.model.response.PagedResult;
 import com.laberit.Modu.ports.driven.CategoryRepositoryPort;
 import com.laberit.Modu.ports.driven.ProductCategoryRepositoryPort;
 import com.laberit.Modu.ports.driven.ProductRepositoryPort;
@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
