@@ -26,18 +26,14 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
     private final OrderItemPersistanceMapper orderItemMapper;
     private final EntityManager entityManager;
 
-
     @Override
     public Order save(Order order) {
-        // Save order first to get the confirmed ID from the database
         OrderEntity savedOrder = orderJpaRepository.save(orderMapper.toEntity(order));
 
-        // Now save order items with the confirmed order ID
         List<OrderItemEntity> items = orderItemMapper.toEntityList(order.getOrderItems());
         items.forEach(item -> item.setOrder(savedOrder));
         orderItemJpaRepository.saveAll(items);
 
-        // Force Hibernate to discard cached entity and re-read from database
         entityManager.flush();
         entityManager.refresh(savedOrder);
 
