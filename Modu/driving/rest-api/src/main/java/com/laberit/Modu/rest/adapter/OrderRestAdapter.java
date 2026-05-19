@@ -49,7 +49,6 @@ public class OrderRestAdapter implements CheckoutApi {
 
                 if (!result.cartResponse().changedPrices().isEmpty()) {
                     PriceChangedAlert priceChangedAlert = new PriceChangedAlert(
-                            true,
                             cartMapper.toProductPriceChangeResponseList(result.cartResponse().changedPrices())
                     );
                     cartResponse.setPriceChangedAlert(priceChangedAlert);

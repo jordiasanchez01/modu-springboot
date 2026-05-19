@@ -77,10 +77,7 @@ public class CartRestAdapter implements CartApi {
     private PriceChangedAlert checkIfPricesChanged(List<ProductPriceChange> pricesList){
 
         PriceChangedAlert changedAlert = new PriceChangedAlert();
-        changedAlert.setPriceChanged(false);
-
         if (!pricesList.isEmpty()){
-            changedAlert.setPriceChanged(true);
             changedAlert.setCartItems(cartMapper.toProductPriceChangeResponseList(pricesList));
         }
         return changedAlert;

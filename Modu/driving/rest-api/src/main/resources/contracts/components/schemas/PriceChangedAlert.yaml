@@ -1,11 +1,7 @@
 type: object
 required:
-  - price_changed
   - cartItems
 properties:
-  price_changed:
-    type: boolean
-    example: true
   cartItems:
     type: array
     items:

@@ -5,8 +5,10 @@ import com.laberit.Modu.domain.exceptions.OrderNotPaidException;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.domain.model.response.CheckoutResult;
 import com.laberit.Modu.domain.model.response.GetCartResponse;
+import com.laberit.Modu.ports.driven.CartItemRepositoryPort;
 import com.laberit.Modu.ports.driven.OrderRepositoryPort;
 import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
+import com.laberit.Modu.ports.driving.CartItemServicePort;
 import com.laberit.Modu.ports.driving.CartServicePort;
 import com.laberit.Modu.ports.driving.OrderServicePort;
 import com.laberit.Modu.ports.driving.command.*;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 public class OrderServiceUseCase implements OrderServicePort {
     private final OrderRepositoryPort orderRepositoryPort;
     private final CartServicePort cartServicePort;
+    private final CartItemServicePort cartItemServicePort;
     private final ProductVariantRepositoryPort productVariantRepositoryPort;
 
     @Override
@@ -55,6 +58,7 @@ public class OrderServiceUseCase implements OrderServicePort {
                 order = mapOrderCommandToOrder(command, cartResponse.cart(), savedOrder);
                 savedOrder = orderRepositoryPort.save(order);
                 updateProductVariantStock(savedOrder);
+                cartItemServicePort.deleteAllCartItems(cartResponse.cart().getUserId());
                 return new CheckoutResult(savedOrder, cartResponse);
             }
 

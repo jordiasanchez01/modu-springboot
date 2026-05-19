@@ -17,5 +17,4 @@ public interface CartServicePort {
 
     Cart updateCart(UpdateCartCommand command);
 
-    void deleteCart(Long CartId);
 }
