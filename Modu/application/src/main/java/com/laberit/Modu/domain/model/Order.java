@@ -5,7 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -15,13 +18,17 @@ import java.util.List;
 public class Order {
     private Long id;
     private Long userId;
+    private LocalDateTime createdAt;
     private String specialInstructions;
-    private Date createdAt;
-    private List<OrderItem> orderItems;
+    @Builder.Default
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     public Double getTotalOrderPrice(){
-        return orderItems.stream()
-                .mapToDouble(OrderItem::getTotalPrice)
-                .sum();
+        return BigDecimal.valueOf(
+                        orderItems.stream()
+                                .mapToDouble(OrderItem::getTotalPrice)
+                                .sum())
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
     }
 }

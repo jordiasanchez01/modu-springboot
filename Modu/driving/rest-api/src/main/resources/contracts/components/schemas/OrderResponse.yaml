@@ -1,0 +1,34 @@
+type: object
+required:
+  - id
+  - userId
+  - createdAt
+  - specialInstructions
+  - totalPrice
+  - order_items
+properties:
+  id:
+    type: integer
+    format: int64
+    example: 1
+  userId:
+    type: integer
+    format: int64
+    example: 1
+  createdAt:
+    type: string
+    format: date-time
+    example: "2026-01-15T10:30:00"
+  specialInstructions:
+    type: string
+    example: 'Wrap each jean individually in red giftwrap'
+  totalPrice:
+    type: number
+    format: double
+    example: 123.56
+  order_items:
+    type: array
+    items:
+      $ref: './OrderItemResponse.yaml'
+
+

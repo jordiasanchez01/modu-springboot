@@ -2,6 +2,8 @@ package com.laberit.Modu.rest.adapter;
 
 import com.laberit.Modu.ports.driving.CartItemServicePort;
 import com.laberit.Modu.domain.model.*;
+import com.laberit.Modu.domain.model.response.GetCartResponse;
+import com.laberit.Modu.domain.model.response.ProductPriceChange;
 import com.laberit.Modu.ports.driving.CartServicePort;
 import com.laberit.Modu.rest.generated.api.CartApi;
 import com.laberit.Modu.rest.generated.model.*;

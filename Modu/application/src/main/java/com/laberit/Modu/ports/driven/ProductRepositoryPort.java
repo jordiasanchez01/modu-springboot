@@ -1,6 +1,6 @@
 package com.laberit.Modu.ports.driven;
 
-import com.laberit.Modu.domain.model.PagedResult;
+import com.laberit.Modu.domain.model.response.PagedResult;
 import com.laberit.Modu.domain.model.Product;
 import com.laberit.Modu.domain.model.ProductSearchCriteria;
 
