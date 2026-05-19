@@ -16,5 +16,5 @@ public interface ProductVariantServicePort {
 
     Optional<ProductVariant> findById(Long id);
 
-    void assertIsValidToPurchase(Long id, Integer requiredStock);
+    void assertIsValidToPurchase(ProductVariant variant, Integer requiredStock);
 }

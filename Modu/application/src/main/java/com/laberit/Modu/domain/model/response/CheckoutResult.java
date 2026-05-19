@@ -6,6 +6,6 @@ import lombok.Builder;
 @Builder
 public record CheckoutResult(
         Order order,
-        GetCartResponse cartResponse
+        CartWithPriceCheck cartResponse
 ) {
 }

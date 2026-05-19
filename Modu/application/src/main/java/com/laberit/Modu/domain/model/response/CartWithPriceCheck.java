@@ -6,7 +6,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record GetCartResponse(
+public record CartWithPriceCheck(
         Cart cart,
         List<ProductPriceChange> changedPrices
 ) {
