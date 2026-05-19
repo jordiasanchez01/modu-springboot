@@ -28,11 +28,13 @@ paths:
     $ref: './paths/categories.yaml'
 
   /cart:
-    $ref: './paths/cart/show-cart.yaml'
+    $ref: './paths/cart/cart.yaml'
   /cart/addItem:
     $ref: './paths/cart/add-item.yaml'
   /cart/items/{itemId}:
     $ref: './paths/cart/cart-item.yaml'
+  /cart/items:
+    $ref: './paths/cart/cart-items.yaml'
 
   /checkout:
     $ref: './paths/checkout/checkout.yaml'

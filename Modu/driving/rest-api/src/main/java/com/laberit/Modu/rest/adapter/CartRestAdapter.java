@@ -60,6 +60,12 @@ public class CartRestAdapter implements CartApi {
         return ResponseEntity.ok(buildCartResponse(xDeviceId));
     }
 
+    @Override
+    public ResponseEntity<CartResponse> deleteCartItems(String xDeviceId) {
+        cartItemServicePort.deleteAllCartItems(Long.valueOf(xDeviceId));
+        return ResponseEntity.ok(buildCartResponse(xDeviceId));
+    }
+
     private CartResponse buildCartResponse(String xDeviceId) {
         GetCartResponse getCartResponse = cartServicePort.findCartByUserId(Long.valueOf(xDeviceId));
         CartResponse cartResponse = cartMapper.toCartResponse(getCartResponse.cart());

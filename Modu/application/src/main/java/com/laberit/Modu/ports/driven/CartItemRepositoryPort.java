@@ -23,4 +23,6 @@ public interface CartItemRepositoryPort {
     boolean existsByProductVariantId(Long productVariantId);
 
     void deleteById(Long id);
+
+    void deleteAllByCartId(Long cartId);
 }
