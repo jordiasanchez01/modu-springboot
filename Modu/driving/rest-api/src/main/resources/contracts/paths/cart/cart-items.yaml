@@ -1,0 +1,21 @@
+delete:
+  tags:
+    - Cart
+  summary: Delete all items from the user´s cart
+  description: Delete all items from the user´s cart. In case the cart has no related items, no error returned.
+  operationId: deleteCartItems
+  parameters:
+    - $ref: '../../components/parameters/headerUID.yaml'
+  responses:
+    '200':
+      description: Items deleted successfully. Empty cart returned.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/CartResponse.yaml'
+    '500':
+      description: Internal error.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
