@@ -1,8 +1,8 @@
 type: object
 required:
-  - cartId
+  - userId
   - createdAt
-  - total_price
+  - updatedAt
   - cart_items
 properties:
   userId:
@@ -13,10 +13,10 @@ properties:
     type: string
     format: date-time
     example: "2026-01-15T10:30:00"
-  total_price:
-    type: number
-    format: double
-    example: 86.95
+  updatedAt:
+    type: string
+    format: date-time
+    example: "2026-01-15T10:42:15"
   cart_items:
     type: array
     items:
