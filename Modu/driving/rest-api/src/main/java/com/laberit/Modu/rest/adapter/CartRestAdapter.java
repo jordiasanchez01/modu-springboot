@@ -3,7 +3,6 @@ package com.laberit.Modu.rest.adapter;
 import com.laberit.Modu.ports.driving.CartItemServicePort;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
-import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
 import com.laberit.Modu.rest.generated.api.CartApi;
 import com.laberit.Modu.rest.generated.model.*;
 import com.laberit.Modu.rest.mapper.CartItemRestMapper;
@@ -11,8 +10,6 @@ import com.laberit.Modu.rest.mapper.CartRestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 
 @RestController
@@ -39,12 +36,12 @@ public class CartRestAdapter implements CartApi {
     @Override
     public ResponseEntity<CartResponse> deleteCartItem(String xDeviceId, Long itemId) {
         cartItemServicePort.deleteCartItemById(Long.valueOf(xDeviceId), itemId);
-        return ResponseEntity.ok(cartMapper.toCartResponse(cartServicePort.getCart(Long.valueOf(xDeviceId))));
+        return ResponseEntity.ok(cartMapper.toCartResponse(cartServicePort.findCartByUserId(Long.valueOf(xDeviceId))));
     }
 
     @Override
     public ResponseEntity<CartResponse> updateCartItemQuantity(String xDeviceId, Long itemID, UpdateItemRequest updateItemRequest) {
         cartItemServicePort.updateCartItemQuantity(Long.valueOf(xDeviceId), itemID, cartItemMapper.toCommand(updateItemRequest));
-        return ResponseEntity.ok(cartMapper.toCartResponse(cartServicePort.getCart(Long.valueOf(xDeviceId))));
+        return ResponseEntity.ok(cartMapper.toCartResponse(cartServicePort.findCartByUserId(Long.valueOf(xDeviceId))));
     }
 }
