@@ -4,7 +4,8 @@ import com.laberit.Modu.domain.exceptions.CartNotFoundException;
 import com.laberit.Modu.domain.exceptions.ProductNotFoundException;
 import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
 import com.laberit.Modu.domain.model.*;
-import com.laberit.Modu.domain.model.response.GetCartResponse;
+
+import com.laberit.Modu.domain.model.response.CartWithPriceCheck;
 import com.laberit.Modu.domain.model.response.ProductPriceChange;
 import com.laberit.Modu.ports.driven.*;
 import com.laberit.Modu.ports.driving.CartServicePort;

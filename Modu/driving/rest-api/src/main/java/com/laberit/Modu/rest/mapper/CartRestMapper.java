@@ -1,8 +1,8 @@
 package com.laberit.Modu.rest.mapper;
 
 import com.laberit.Modu.domain.model.Cart;
-import com.laberit.Modu.domain.model.CartWithPriceCheck;
-import com.laberit.Modu.domain.model.ProductPriceChange;
+import com.laberit.Modu.domain.model.response.CartWithPriceCheck;
+import com.laberit.Modu.domain.model.response.ProductPriceChange;
 import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
 import com.laberit.Modu.rest.generated.model.AddItemRequest;
 import com.laberit.Modu.rest.generated.model.CartResponse;

@@ -2,7 +2,6 @@ package com.laberit.Modu.rest.adapter;
 
 import com.laberit.Modu.domain.model.Order;
 import com.laberit.Modu.domain.model.response.CheckoutResult;
-import com.laberit.Modu.domain.model.response.GetCartResponse;
 import com.laberit.Modu.ports.driving.OrderServicePort;
 import com.laberit.Modu.ports.driving.command.AddOrderCommand;
 import com.laberit.Modu.rest.generated.api.CheckoutApi;
@@ -44,13 +43,7 @@ public class OrderRestAdapter implements CheckoutApi {
                 response.ok(false);
                 response.orderId(null);
                 response.order(null);
-                CartResponse cartResponse = cartMapper.toCartResponse(result.cartResponse().cart());
-                CartResponsePriceChangedAlert priceChangedAlert = new CartResponsePriceChangedAlert(
-                        true,
-                        cartMapper.toProductPriceChangeResponseList(result.cartResponse().changedPrices())
-                );
-                cartResponse.setPriceChangedAlert(priceChangedAlert);
-
+                CartResponse cartResponse = cartMapper.toCartWithPriceCheckResponse(result.cartResponse());
                 response.cartResponse(cartResponse);
 
             }
