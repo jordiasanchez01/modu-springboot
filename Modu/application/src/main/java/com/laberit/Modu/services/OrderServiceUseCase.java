@@ -49,6 +49,9 @@ public class OrderServiceUseCase implements OrderServicePort {
         Order order = new Order();
         if (validateAddOrderCommand(command)) {
             Long userId = Long.valueOf(deviceId);
+
+            cartServicePort.updateCart(command.cartToOrder());
+
             CartWithPriceAndStockCheck cartResponse = cartServicePort.getCartWithPriceAndStockCheck(userId);
 
             if (cartResponse.changedPrices().isEmpty() && cartResponse.insufficientStock().isEmpty()) {
