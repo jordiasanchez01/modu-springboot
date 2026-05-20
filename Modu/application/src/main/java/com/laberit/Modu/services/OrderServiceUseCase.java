@@ -3,10 +3,11 @@ package com.laberit.Modu.services;
 import com.laberit.Modu.domain.exceptions.OrderNotFoundException;
 import com.laberit.Modu.domain.exceptions.OrderNotPaidException;
 import com.laberit.Modu.domain.model.*;
-import com.laberit.Modu.domain.model.response.CartWithPriceCheck;
+import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
 import com.laberit.Modu.domain.model.response.CheckoutResult;
 import com.laberit.Modu.ports.driven.OrderRepositoryPort;
 import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
+import com.laberit.Modu.ports.driving.CartItemServicePort;
 import com.laberit.Modu.ports.driving.CartServicePort;
 import com.laberit.Modu.ports.driving.OrderServicePort;
 import com.laberit.Modu.ports.driving.command.*;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 public class OrderServiceUseCase implements OrderServicePort {
     private final OrderRepositoryPort orderRepositoryPort;
     private final CartServicePort cartServicePort;
+    private final CartItemServicePort cartItemServicePort;
     private final ProductVariantRepositoryPort productVariantRepositoryPort;
 
     @Override
@@ -47,14 +49,15 @@ public class OrderServiceUseCase implements OrderServicePort {
         Order order = new Order();
         if (validateAddOrderCommand(command)) {
             Long userId = Long.valueOf(deviceId);
-            CartWithPriceCheck cartResponse = cartServicePort.getCartWithPriceCheck(userId);
+            CartWithPriceAndStockCheck cartResponse = cartServicePort.getCartWithPriceAndStockCheck(userId);
 
-            if (cartResponse.changedPrices().isEmpty()) {
+            if (cartResponse.changedPrices().isEmpty() && cartResponse.insufficientStock().isEmpty()) {
                 order.setUserId(userId);
                 Order savedOrder = orderRepositoryPort.saveWithoutItems(order);
                 order = mapOrderCommandToOrder(command, cartResponse.cart(), savedOrder);
                 savedOrder = orderRepositoryPort.save(order);
                 updateProductVariantStock(savedOrder);
+                cartItemServicePort.deleteAllCartItems(cartResponse.cart().getUserId());
                 return new CheckoutResult(savedOrder, cartResponse);
             }
 

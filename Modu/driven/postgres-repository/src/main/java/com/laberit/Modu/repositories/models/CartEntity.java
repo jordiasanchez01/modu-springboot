@@ -20,8 +20,8 @@ public class CartEntity {
     
     @Column(name="created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
-    @Column(name="total_price")
-    private Double totalPrice;
+    @Column(name="updated_at", insertable = false, updatable = false)
+    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "cart")
     private List<CartItemEntity> cartItems;

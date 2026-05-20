@@ -1,6 +1,8 @@
 package com.laberit.Modu.rest.adapter;
 
-import com.laberit.Modu.domain.model.response.CartWithPriceCheck;
+import com.laberit.Modu.domain.model.response.InsufficientStockResult;
+import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
+import com.laberit.Modu.domain.model.response.ProductPriceChange;
 import com.laberit.Modu.ports.driving.CartItemServicePort;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
@@ -11,6 +13,8 @@ import com.laberit.Modu.rest.mapper.CartRestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 @RestController
@@ -23,8 +27,8 @@ public class CartRestAdapter implements CartApi {
 
     @Override
     public ResponseEntity<CartResponse> getValidatedCart(String xDeviceId) {
-        CartWithPriceCheck result = cartServicePort.getCartWithPriceCheck(Long.valueOf(xDeviceId));
-        return ResponseEntity.ok(cartMapper.toCartWithPriceCheckResponse(result));
+        CartWithPriceAndStockCheck result = cartServicePort.getCartWithPriceAndStockCheck(Long.valueOf(xDeviceId));
+        return ResponseEntity.ok(cartMapper.toCartWithPriceAndStockCheckResponse(result));
     }
 
     @Override
@@ -52,4 +56,22 @@ public class CartRestAdapter implements CartApi {
         return ResponseEntity.ok(cartMapper.toCartResponse(cartServicePort.findCartByUserId(Long.valueOf(xDeviceId))));
     }
 
+    private PriceChangedAlert checkIfPricesChanged(List<ProductPriceChange> pricesList){
+
+        PriceChangedAlert changedAlert = new PriceChangedAlert();
+        if (!pricesList.isEmpty()){
+            changedAlert.setCartItems(cartMapper.toProductPriceChangeResponseList(pricesList));
+        }
+        return changedAlert;
+    }
+
+    private InsufficientStockAlert checkIfInsufficientStock(List<InsufficientStockResult> stockList){
+
+        InsufficientStockAlert  insufficientStockAlert = new InsufficientStockAlert();
+
+        if (!stockList.isEmpty()){
+            insufficientStockAlert.setCartItems(cartMapper.toInsufficientStockResponseList(stockList));
+        }
+        return insufficientStockAlert;
+    }
 }

@@ -4,8 +4,8 @@ import com.laberit.Modu.domain.exceptions.CartNotFoundException;
 import com.laberit.Modu.domain.exceptions.ProductNotFoundException;
 import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
 import com.laberit.Modu.domain.model.*;
-
-import com.laberit.Modu.domain.model.response.CartWithPriceCheck;
+import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
+import com.laberit.Modu.domain.model.response.InsufficientStockResult;
 import com.laberit.Modu.domain.model.response.ProductPriceChange;
 import com.laberit.Modu.ports.driven.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
@@ -31,8 +31,7 @@ public class CartServiceUseCase implements CartServicePort {
     private final ProductVariantServicePort productVariantServicePort;
 
     @Transactional
-    @Override
-    public CartWithPriceCheck getCartWithPriceCheck(Long userId) {
+    public CartWithPriceAndStockCheck getCartWithPriceAndStockCheck(Long userId) {
         Cart cart = cartRepositoryPort.findByUserId(userId)
                 .orElseThrow(() -> new CartNotFoundException(userId));
         List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
@@ -45,12 +44,20 @@ public class CartServiceUseCase implements CartServicePort {
         updateCurrentStock(cartItems, variants);
 
         List<ProductPriceChange> priceChanges = detectPriceChanges(cartItems, variants);
+
+        List<InsufficientStockResult> insufficientStock = detectInsufficientStock(cartItems);
+
         if (!priceChanges.isEmpty()) {
             applyPriceChanges(cartItems, priceChanges);
             cartItemRepositoryPort.saveAll(cartItems);
         }
+        if (!insufficientStock.isEmpty()) {
+            applyQuantityChanges(cartItems, insufficientStock);
+            cartItemRepositoryPort.saveAll(cartItems);
+        }
+
         cart.setCartItems(cartItems);
-        return new CartWithPriceCheck(cart, priceChanges);
+        return new CartWithPriceAndStockCheck(cart, priceChanges, insufficientStock);
     }
 
     @Override
@@ -86,9 +93,13 @@ public class CartServiceUseCase implements CartServicePort {
         return cart;
     }
 
-    private CartItem buildCartItem(Optional<CartItem> existing, Cart cart,
-                                   AddCartItemCommand command, Product product,
-                                   ProductVariant variant) {
+    private CartItem buildCartItem(
+            Optional<CartItem> existing,
+            Cart cart,
+            AddCartItemCommand command,
+            Product product,
+            ProductVariant variant
+    ) {
         if (existing.isPresent()) {
             CartItem item = existing.get();
             item.setQuantity(item.getQuantity() + command.quantity());
@@ -120,6 +131,16 @@ public class CartServiceUseCase implements CartServicePort {
         });
     }
 
+    private void applyQuantityChanges(List<CartItem> cartItems, List<InsufficientStockResult> stockDifferences) {
+        Map<Long, Integer> itemsWithInsufficientStock = stockDifferences.stream()
+                .collect(Collectors.toMap(InsufficientStockResult::productVariantId, InsufficientStockResult::availableStock));
+        cartItems.forEach(cartItem -> {
+            if (itemsWithInsufficientStock.containsKey(cartItem.getProductVariantId())) {
+                cartItem.setQuantity(itemsWithInsufficientStock.get(cartItem.getProductVariantId()));
+            }
+        });
+    }
+
     private List<ProductPriceChange> detectPriceChanges(List<CartItem> cartItems, Set<ProductVariant> variants) {
         Set<Long> productIds = variants.stream()
                 .map(ProductVariant::getProductId)
@@ -145,6 +166,22 @@ public class CartServiceUseCase implements CartServicePort {
             }
         });
         return  changedPricesList;
+    }
+
+    private List<InsufficientStockResult> detectInsufficientStock(List<CartItem> cartItems) {
+
+        List<InsufficientStockResult> insufficientStockList = new ArrayList<>();
+
+        cartItems.forEach(cartItem -> {
+            if (cartItem.getQuantity() > cartItem.getCurrentStock()) {
+                insufficientStockList.add(new InsufficientStockResult(
+                        cartItem.getProductVariantId(),
+                        cartItem.getQuantity(),
+                        cartItem.getCurrentStock()
+                ));
+            }
+        });
+        return insufficientStockList;
     }
 
     private void updateCurrentStock(List<CartItem> cartItems, Set<ProductVariant> variants) {

@@ -13,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -30,7 +28,7 @@ public class OrderRestAdapter implements CheckoutApi {
         CheckoutResult result = orderServicePort.addOrder(xDeviceId, command);
 
         CheckoutResponse response = new CheckoutResponse();
-        if (result.cartResponse().changedPrices().isEmpty()){
+        if (result.cartResponse().changedPrices().isEmpty() && result.cartResponse().insufficientStock().isEmpty()) {
             response.ok(true);
             response.orderId(result.order().getId());
             response.order(
@@ -38,18 +36,30 @@ public class OrderRestAdapter implements CheckoutApi {
             );
             return ResponseEntity.ok(response);
         } else {
-            System.out.println("Checkout failed, prices changed: "+result.cartResponse().changedPrices());
-            if (!result.cartResponse().changedPrices().isEmpty() && result.cartResponse().cart() != null) {
-                response.ok(false);
-                response.orderId(null);
-                response.order(null);
-                CartResponse cartResponse = cartMapper.toCartWithPriceCheckResponse(result.cartResponse());
-                response.cartResponse(cartResponse);
 
+            response.ok(false);
+            response.orderId(null);
+            response.order(null);
+
+            if (result.cartResponse().cart() != null) {
+                CartResponse cartResponse = cartMapper.toCartResponse(result.cartResponse().cart());
+
+                if (!result.cartResponse().changedPrices().isEmpty()) {
+                    PriceChangedAlert priceChangedAlert = new PriceChangedAlert(
+                            cartMapper.toProductPriceChangeResponseList(result.cartResponse().changedPrices())
+                    );
+                    cartResponse.setPriceChangedAlert(priceChangedAlert);
+                }
+                if (!result.cartResponse().insufficientStock().isEmpty()) {
+                    InsufficientStockAlert insufficientStockAlert = new InsufficientStockAlert(
+                            cartMapper.toInsufficientStockResponseList(result.cartResponse().insufficientStock())
+                    );
+                    cartResponse.setInsufficientStockAlert(insufficientStockAlert);
+                }
+                response.cartResponse(cartResponse);
             }
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
-
     }
 
     @Override
@@ -61,5 +71,4 @@ public class OrderRestAdapter implements CheckoutApi {
 
         return ResponseEntity.ok(orderResponse);
     }
-
 }

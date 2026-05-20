@@ -19,6 +19,7 @@ public class Cart {
     private Long id;
     private Long userId;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     @Builder.Default
     private List<CartItem> cartItems = new ArrayList<>();
 
