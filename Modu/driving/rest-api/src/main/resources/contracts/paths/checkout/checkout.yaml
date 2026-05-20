@@ -4,8 +4,8 @@ post:
   summary: Places the user's cart contents as an Order
   description: Displays the user's cart details and contained items, receives Special Instructions if any
   operationId: checkoutCart
-  parameters:
-    - $ref: '../../components/parameters/headerUID.yaml'
+  security:
+    - deviceAuth: []
   requestBody:
     required: true
     content:

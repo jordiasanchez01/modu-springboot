@@ -4,8 +4,8 @@ delete:
   summary: Delete all items from the user´s cart
   description: Delete all items from the user´s cart. In case the cart has no related items, no error returned.
   operationId: deleteCartItems
-  parameters:
-    - $ref: '../../components/parameters/headerUID.yaml'
+  security:
+    - deviceAuth: []
   responses:
     '200':
       description: Items deleted successfully. Empty cart returned.

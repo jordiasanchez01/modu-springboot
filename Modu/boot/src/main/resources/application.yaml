@@ -27,7 +27,7 @@ springdoc:
   swagger-ui:
     disable-swagger-default-url: true
     urls:
-      - name: Cars API
+      - name: MODU API
         url: /docs/v3/api-spec.yaml
 logging:
   level:

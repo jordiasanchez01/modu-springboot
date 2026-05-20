@@ -56,22 +56,4 @@ public class CartRestAdapter implements CartApi {
         return ResponseEntity.ok(cartMapper.toCartResponse(cartServicePort.findCartByUserId(Long.valueOf(xDeviceId))));
     }
 
-    private PriceChangedAlert checkIfPricesChanged(List<ProductPriceChange> pricesList){
-
-        PriceChangedAlert changedAlert = new PriceChangedAlert();
-        if (!pricesList.isEmpty()){
-            changedAlert.setCartItems(cartMapper.toProductPriceChangeResponseList(pricesList));
-        }
-        return changedAlert;
-    }
-
-    private InsufficientStockAlert checkIfInsufficientStock(List<InsufficientStockResult> stockList){
-
-        InsufficientStockAlert  insufficientStockAlert = new InsufficientStockAlert();
-
-        if (!stockList.isEmpty()){
-            insufficientStockAlert.setCartItems(cartMapper.toInsufficientStockResponseList(stockList));
-        }
-        return insufficientStockAlert;
-    }
 }

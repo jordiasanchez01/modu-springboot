@@ -4,6 +4,8 @@ patch:
   summary: Update item´s quantity in the user´s cart
   description: Updates indicated items quantity in the user´s cart
   operationId: updateCartItemQuantity
+  security:
+    - deviceAuth: []
   requestBody:
     required: true
     content:
@@ -11,7 +13,6 @@ patch:
         schema:
           $ref: '../../components/schemas/UpdateItemRequest.yaml'
   parameters:
-    - $ref: '../../components/parameters/headerUID.yaml'
     - name: itemId
       in: path
       required: true
@@ -59,8 +60,9 @@ delete:
   summary: Delete requested item from the user´s cart
   description: Delete indicated item byt its ID from the user´s cart
   operationId: deleteCartItem
+  security:
+    - deviceAuth: []
   parameters:
-    - $ref: '../../components/parameters/headerUID.yaml'
     - name: itemId
       in: path
       required: true
