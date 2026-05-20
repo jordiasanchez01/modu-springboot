@@ -14,6 +14,12 @@ get:
         application/json:
           schema:
             $ref: '../../components/schemas/CartResponse.yaml'
+    '400':
+      description: Invalid request. Check the fields for more details.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
     '401':
       description: User authentication by device IMEI is missing.
       content:

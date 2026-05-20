@@ -21,7 +21,7 @@ post:
           schema:
             $ref: '../../components/schemas/CartResponse.yaml'
     '400':
-      description: Invalid request body. Check the fields for more details.
+      description: Invalid request. Check the fields for more details.
       content:
         application/json:
           schema:

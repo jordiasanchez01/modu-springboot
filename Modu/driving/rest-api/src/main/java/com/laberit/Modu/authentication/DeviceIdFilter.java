@@ -3,6 +3,7 @@ package com.laberit.Modu.authentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.laberit.Modu.rest.advice.ErrorType;
 import com.laberit.Modu.rest.generated.model.ErrorResponse;
+import com.laberit.Modu.rest.generated.model.ErrorResponseFieldsInner;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -24,6 +26,19 @@ public class DeviceIdFilter extends OncePerRequestFilter {
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("DeviceId ")) {
             String deviceId = header.substring(9);
+            if (!deviceId.matches("\\d{15}")) {
+                ErrorType errorType = ErrorType.VALIDATION_ERROR;
+
+                ErrorResponseFieldsInner field = new ErrorResponseFieldsInner();
+                field.setField("Authorization");
+                field.setMessage("Invalid IMEI format. Expected 15 digits.");
+
+                ErrorResponse body = new ErrorResponse()
+                        .type(errorType.name())
+                        .message(errorType.getMessage())
+                        .fields(List.of(field));
+                return;
+            }
             request.setAttribute("deviceId", deviceId);
         } else {
             ErrorType errorType = ErrorType.AUTHENTIFICATION_NEEDED;
