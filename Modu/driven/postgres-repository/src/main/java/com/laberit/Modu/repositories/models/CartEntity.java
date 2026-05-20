@@ -16,7 +16,7 @@ public class CartEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false, name="user_id")
-    private Long userId;
+    private String deviceId;
     
     @Column(name="created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;

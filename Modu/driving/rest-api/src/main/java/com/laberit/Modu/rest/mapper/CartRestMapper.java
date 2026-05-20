@@ -37,9 +37,9 @@ public interface CartRestMapper {
                 addCommand.quantity());
     };
 
-    default AddCartItemCommand toAddCartItemCommand(Long userId, AddItemRequest addRequest) {
+    default AddCartItemCommand toAddCartItemCommand(String deviceId, AddItemRequest addRequest) {
         return new AddCartItemCommand(
-                userId,
+                deviceId,
                 addRequest.getVariantId(),
                 addRequest.getQuantity()
         );

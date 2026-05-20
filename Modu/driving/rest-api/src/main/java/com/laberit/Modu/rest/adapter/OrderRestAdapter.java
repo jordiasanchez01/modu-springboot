@@ -76,7 +76,7 @@ public class OrderRestAdapter implements CheckoutApi {
     public ResponseEntity<OrderResponse> getOrder() {
         String deviceId = (String) request.getAttribute("deviceId");
 
-        Order order = orderServicePort.findOrderByUserId(Long.valueOf(deviceId));
+        Order order = orderServicePort.findOrderByDeviceId(deviceId);
 
         OrderResponse orderResponse = orderMapper.toOrderResponse(order);
 

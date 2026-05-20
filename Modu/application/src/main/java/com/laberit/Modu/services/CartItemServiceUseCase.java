@@ -33,10 +33,10 @@ public class CartItemServiceUseCase implements CartItemServicePort {
     private final ProductVariantRepositoryPort productVariantRepositoryPort;
 
     @Override
-    public CartItem updateCartItemQuantity(Long userId, Long cartItemId, UpdateCartItemQuantityCommand command) {
+    public CartItem updateCartItemQuantity(String deviceId, Long cartItemId, UpdateCartItemQuantityCommand command) {
         int requestedQuantity = command.quantity();
-        Cart cart = cartRepositoryPort.findByUserId(userId).orElseThrow(
-                () -> new CartNotFoundException(userId));
+        Cart cart = cartRepositoryPort.findByDeviceId(deviceId).orElseThrow(
+                () -> new CartNotFoundException(deviceId));
         CartItem item = cartItemRepositoryPort.findByIdAndCartId(cartItemId, cart.getId())
                 .orElseThrow(() -> new CartItemNotFoundException(cartItemId));
         ProductVariant productVariant = productVariantRepositoryPort.findById(item.getProductVariantId())
@@ -48,17 +48,17 @@ public class CartItemServiceUseCase implements CartItemServicePort {
     }
 
     @Override
-    public void deleteCartItemById(Long userId, Long itemId) {
-        Cart cart = cartRepositoryPort.findByUserId(userId).orElseThrow(
-                () -> new CartNotFoundException(userId));
+    public void deleteCartItemById(String deviceId, Long itemId) {
+        Cart cart = cartRepositoryPort.findByDeviceId(deviceId).orElseThrow(
+                () -> new CartNotFoundException(deviceId));
         CartItem item = cartItemRepositoryPort.findByIdAndCartId(itemId, cart.getId())
                 .orElseThrow(() -> new CartItemNotFoundException(itemId));
         cartItemRepositoryPort.deleteById(itemId);
     }
 
     @Override
-    public void deleteAllCartItems(Long userId) {
-        Cart cart = cartRepositoryPort.findByUserId(userId).orElseThrow(() -> new CartNotFoundException(userId));
+    public void deleteAllCartItems(String deviceId) {
+        Cart cart = cartRepositoryPort.findByDeviceId(deviceId).orElseThrow(() -> new CartNotFoundException(deviceId));
         if (cart!=null) {
             cartItemRepositoryPort.deleteAllByCartId(cart.getId());
         }

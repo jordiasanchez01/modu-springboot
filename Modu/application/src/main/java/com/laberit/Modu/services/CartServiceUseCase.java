@@ -31,9 +31,9 @@ public class CartServiceUseCase implements CartServicePort {
     private final ProductVariantServicePort productVariantServicePort;
 
     @Transactional
-    public CartWithPriceAndStockCheck getCartWithPriceAndStockCheck(Long userId) {
-        Cart cart = cartRepositoryPort.findByUserId(userId)
-                .orElseThrow(() -> new CartNotFoundException(userId));
+    public CartWithPriceAndStockCheck getCartWithPriceAndStockCheck(String deviceId) {
+        Cart cart = cartRepositoryPort.findByDeviceId(deviceId)
+                .orElseThrow(() -> new CartNotFoundException(deviceId));
         List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
 
         Set<Long> variantIds = cartItems.stream()
@@ -61,9 +61,9 @@ public class CartServiceUseCase implements CartServicePort {
     }
 
     @Override
-    public Cart findCartByUserId(Long userId) {
-        return cartRepositoryPort.findByUserId(userId)
-                .orElseThrow(() -> new CartNotFoundException(userId));
+    public Cart findCartByDeviceId(String deviceId) {
+        return cartRepositoryPort.findByDeviceId(deviceId)
+                .orElseThrow(() -> new CartNotFoundException(deviceId));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class CartServiceUseCase implements CartServicePort {
         ProductVariant variant = getProductVariant(command.productVariantId());
         Product product = getProduct(variant.getProductId());
 
-        Optional<Cart> existingCart = cartRepositoryPort.findByUserId(command.userId());
+        Optional<Cart> existingCart = cartRepositoryPort.findByDeviceId(command.deviceId());
 
         Optional<CartItem> existingItem = existingCart.flatMap(cart ->
                 cartItemRepositoryPort.findByCartIdAndProductVariantId(cart.getId(), command.productVariantId()));
@@ -83,7 +83,7 @@ public class CartServiceUseCase implements CartServicePort {
         productVariantServicePort.assertIsValidToPurchase(variant, totalQuantity);
 
         Cart cart = existingCart.orElseGet(() -> cartRepositoryPort.save(
-                Cart.builder().userId(command.userId()).cartItems(new ArrayList<>()).build()));
+                Cart.builder().deviceId(command.deviceId()).cartItems(new ArrayList<>()).build()));
 
         CartItem item = buildCartItem(existingItem, cart, command, product, variant);
         cartItemRepositoryPort.save(item);

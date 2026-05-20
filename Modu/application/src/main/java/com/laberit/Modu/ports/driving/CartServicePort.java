@@ -8,7 +8,7 @@ public interface CartServicePort {
 
     Cart addCartItemToCart(AddCartItemCommand command);
 
-    CartWithPriceAndStockCheck getCartWithPriceAndStockCheck(Long userId);
+    CartWithPriceAndStockCheck getCartWithPriceAndStockCheck(String deviceId);
 
-    Cart findCartByUserId(Long userId);
+    Cart findCartByDeviceId(String deviceId);
 }

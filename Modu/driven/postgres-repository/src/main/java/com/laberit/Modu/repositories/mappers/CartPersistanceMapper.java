@@ -15,7 +15,7 @@ public interface CartPersistanceMapper {
         }
         CartEntity entity = new CartEntity();
         entity.setId(cart.getId());
-        entity.setUserId(cart.getUserId());
+        entity.setDeviceId(cart.getDeviceId());
 
         return entity;
     }
@@ -27,7 +27,7 @@ public interface CartPersistanceMapper {
         }
         return Cart.builder()
                 .id(entity.getId())
-                .userId(entity.getUserId())
+                .deviceId(entity.getDeviceId())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();

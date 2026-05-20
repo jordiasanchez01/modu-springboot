@@ -7,9 +7,9 @@ public interface OrderRepositoryPort {
 
     Order saveWithoutItems(Order order);
 
-    Optional<Order> findByUserId(Long userId);
+    Optional<Order> findByDeviceId(String deviceId);
 
-    boolean existsByUserId(Long userId);
+    boolean existsByDeviceId(String deviceId);
 
     Order save(Order order);
 }
