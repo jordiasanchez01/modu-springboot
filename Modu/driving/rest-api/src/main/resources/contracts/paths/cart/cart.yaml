@@ -2,7 +2,7 @@ get:
   tags:
     - Cart
   summary: Displays the user's cart
-  description: Displays the user's cart details and contained items, if any
+  description: Displays the user's cart details and contained items, if any. Authentication is needed in Authorization header (user´s device IMEI)
   operationId: getValidatedCart
   security:
     - deviceAuth: []

@@ -2,7 +2,7 @@ post:
   tags:
     - Checkout
   summary: Places the user's cart contents as an Order
-  description: Displays the user's cart details and contained items, receives Special Instructions if any
+  description: Displays the user's cart details and contained items, receives Special Instructions if any. Authentication is needed in Authorization header (user´s device IMEI)
   operationId: checkoutCart
   security:
     - deviceAuth: []
@@ -20,6 +20,12 @@ post:
         application/json:
           schema:
             $ref: '../../components/schemas/CheckoutResponse.yaml'
+    '401':
+      description: User authentication by device IMEI is missing.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
     '404':
       description: Requested cart could not be found
       content:

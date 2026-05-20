@@ -1,4 +1,4 @@
-package com.laberit.Modu.authentification;
+package com.laberit.Modu.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.laberit.Modu.rest.advice.ErrorType;
@@ -46,7 +46,6 @@ public class DeviceIdFilter extends OncePerRequestFilter {
                 || path.startsWith("/docs/v3")
                 || path.startsWith("/v3/api-docs")
                 || path.startsWith(("/product"))
-                || path.equals("/favicon.ico")
                 || path.startsWith("/categories");
     }
 }

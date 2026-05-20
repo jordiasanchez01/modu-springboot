@@ -1,7 +1,0 @@
-name: X-Device-Id
-in: header
-required: true
-description: UID of user´s device
-schema:
-  type: string
-  minLength: 1 #IMEI format applied

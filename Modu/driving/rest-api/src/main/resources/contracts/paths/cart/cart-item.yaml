@@ -2,7 +2,7 @@ patch:
   tags:
     - Cart
   summary: Update item´s quantity in the user´s cart
-  description: Updates indicated items quantity in the user´s cart
+  description: Updates indicated items quantity in the user´s cart. Authentication is needed in Authorization header (user´s device IMEI)
   operationId: updateCartItemQuantity
   security:
     - deviceAuth: []
@@ -64,7 +64,7 @@ delete:
   tags:
     - Cart
   summary: Delete requested item from the user´s cart
-  description: Delete indicated item byt its ID from the user´s cart
+  description: Delete indicated item byt its ID from the user´s cart. Authentication is needed in Authorization header (user´s device IMEI)
   operationId: deleteCartItem
   security:
     - deviceAuth: []
