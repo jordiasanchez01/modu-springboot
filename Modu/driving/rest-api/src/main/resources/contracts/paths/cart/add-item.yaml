@@ -2,7 +2,7 @@ post:
   tags:
     - Cart
   summary: Add item (product + quantity) to the user´s cart
-  description: Adds item (product + quantity) to the user´s cart, if the user does not have its cart yet, creates the cart first. If item is already in the cart, the request quantity will be added to the existing quantity
+  description: Adds item (product + quantity) to the user´s cart, if the user does not have its cart yet, creates the cart first. If item is already in the cart, the request quantity will be added to the existing quantity. Authentication is needed in Authorization header (user´s device IMEI)
   operationId: addCartItem
   security:
     - deviceAuth: []
@@ -26,6 +26,12 @@ post:
         application/json:
           schema:
             $ref: '../../components/schemas/ErrorResponse.yaml'
+    '401':
+        description: User authentication by device IMEI is missing.
+        content:
+          application/json:
+            schema:
+              $ref: '../../components/schemas/ErrorResponse.yaml'
     '404':
       description: Requested product is not found
       content:

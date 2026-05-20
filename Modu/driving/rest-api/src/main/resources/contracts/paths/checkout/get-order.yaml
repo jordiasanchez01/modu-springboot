@@ -6,7 +6,7 @@ get:
   operationId: getOrder
   security:
     - deviceAuth: []
-  
+
   responses:
     '200':
       description: Order retrieved successfully
