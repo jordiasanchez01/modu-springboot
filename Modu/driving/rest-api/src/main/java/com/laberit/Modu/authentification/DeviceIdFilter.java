@@ -45,7 +45,8 @@ public class DeviceIdFilter extends OncePerRequestFilter {
         return path.startsWith("/swagger-ui")
                 || path.startsWith("/docs/v3")
                 || path.startsWith("/v3/api-docs")
-                || path.startsWith(("/products"))
+                || path.startsWith(("/product"))
+                || path.equals("/favicon.ico")
                 || path.startsWith("/categories");
     }
 }

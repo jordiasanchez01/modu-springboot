@@ -45,7 +45,7 @@ public class ProductRepositoryAdapter implements ProductRepositoryPort {
         Specification<ProductEntity> specification = Specification
                 .where(ProductSpecification.hasTitle(searchCriteria.title()))
                 .and(ProductSpecification.hasMaxPrice(searchCriteria.maxPrice()))
-                .and(ProductSpecification.hasCategories(searchCriteria.categoryIds()));
+                .and(ProductSpecification.hasCategories(searchCriteria.categories()));
 
         Page<ProductEntity> page = productJpaRepository.findAll(specification, pageRequest);
 
