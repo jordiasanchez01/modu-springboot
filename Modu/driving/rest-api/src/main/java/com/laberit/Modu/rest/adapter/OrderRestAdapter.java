@@ -14,8 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -54,22 +52,17 @@ public class OrderRestAdapter implements CheckoutApi {
                             cartMapper.toProductPriceChangeResponseList(result.cartResponse().changedPrices())
                     );
                     cartResponse.setPriceChangedAlert(priceChangedAlert);
-                    System.out.println("Checkout failed, prices changed: "+result.cartResponse().changedPrices());
                 }
                 if (!result.cartResponse().insufficientStock().isEmpty()) {
                     InsufficientStockAlert insufficientStockAlert = new InsufficientStockAlert(
                             cartMapper.toInsufficientStockResponseList(result.cartResponse().insufficientStock())
                     );
                     cartResponse.setInsufficientStockAlert(insufficientStockAlert);
-                    System.out.println("Checkout failed, insufficient stocks: "+result.cartResponse().insufficientStock());
                 }
-
-
                 response.cartResponse(cartResponse);
             }
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
-
     }
 
     @Override
@@ -82,5 +75,4 @@ public class OrderRestAdapter implements CheckoutApi {
 
         return ResponseEntity.ok(orderResponse);
     }
-
 }
