@@ -44,6 +44,7 @@ public class DeviceIdFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         return path.startsWith("/swagger-ui")
                 || path.startsWith("/docs/v3")
+                || path.startsWith("/v3/api-docs")
                 || path.startsWith(("/products"))
                 || path.startsWith("/categories");
     }

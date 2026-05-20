@@ -10,6 +10,7 @@ import com.laberit.Modu.rest.generated.api.CartApi;
 import com.laberit.Modu.rest.generated.model.*;
 import com.laberit.Modu.rest.mapper.CartItemRestMapper;
 import com.laberit.Modu.rest.mapper.CartRestMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,36 +25,42 @@ public class CartRestAdapter implements CartApi {
     private final CartRestMapper cartMapper;
     private final CartItemServicePort cartItemServicePort;
     private final CartItemRestMapper cartItemMapper;
+    private final HttpServletRequest request;
 
     @Override
-    public ResponseEntity<CartResponse> getValidatedCart(String xDeviceId) {
-        CartWithPriceAndStockCheck result = cartServicePort.getCartWithPriceAndStockCheck(Long.valueOf(xDeviceId));
+    public ResponseEntity<CartResponse> getValidatedCart() {
+        String deviceId = (String) request.getAttribute("deviceId");
+        CartWithPriceAndStockCheck result = cartServicePort.getCartWithPriceAndStockCheck(Long.valueOf(deviceId));
         return ResponseEntity.ok(cartMapper.toCartWithPriceAndStockCheckResponse(result));
     }
 
     @Override
-    public ResponseEntity<CartResponse> addCartItem(String xDeviceId, AddItemRequest addItemRequest) {
+    public ResponseEntity<CartResponse> addCartItem(AddItemRequest addItemRequest) {
+        String deviceId = (String) request.getAttribute("deviceId");
         Cart cart = cartServicePort.addCartItemToCart(cartMapper.toAddCartItemCommand(
-                Long.valueOf(xDeviceId),addItemRequest));
+                Long.valueOf(deviceId),addItemRequest));
         return ResponseEntity.ok(cartMapper.toCartResponse(cart));
     }
 
     @Override
-    public ResponseEntity<CartResponse> updateCartItemQuantity(String xDeviceId, Long itemID, UpdateItemRequest updateItemRequest) {
-        cartItemServicePort.updateCartItemQuantity(Long.valueOf(xDeviceId), itemID, cartItemMapper.toCommand(updateItemRequest));
-        return ResponseEntity.ok(cartMapper.toCartResponse(cartServicePort.findCartByUserId(Long.valueOf(xDeviceId))));
+    public ResponseEntity<CartResponse> updateCartItemQuantity(Long itemID, UpdateItemRequest updateItemRequest) {
+        String deviceId = (String) request.getAttribute("deviceId");
+        cartItemServicePort.updateCartItemQuantity(Long.valueOf(deviceId), itemID, cartItemMapper.toCommand(updateItemRequest));
+        return ResponseEntity.ok(cartMapper.toCartResponse(cartServicePort.findCartByUserId(Long.valueOf(deviceId))));
     }
 
     @Override
-    public ResponseEntity<CartResponse> deleteCartItem(String xDeviceId, Long itemId) {
-        cartItemServicePort.deleteCartItemById(Long.valueOf(xDeviceId), itemId);
-        return ResponseEntity.ok(cartMapper.toCartResponse(cartServicePort.findCartByUserId(Long.valueOf(xDeviceId))));
+    public ResponseEntity<CartResponse> deleteCartItem(Long itemId) {
+        String deviceId = (String) request.getAttribute("deviceId");
+        cartItemServicePort.deleteCartItemById(Long.valueOf(deviceId), itemId);
+        return ResponseEntity.ok(cartMapper.toCartResponse(cartServicePort.findCartByUserId(Long.valueOf(deviceId))));
     }
 
     @Override
-    public ResponseEntity<CartResponse> deleteCartItems(String xDeviceId) {
-        cartItemServicePort.deleteAllCartItems(Long.valueOf(xDeviceId));
-        return ResponseEntity.ok(cartMapper.toCartResponse(cartServicePort.findCartByUserId(Long.valueOf(xDeviceId))));
+    public ResponseEntity<CartResponse> deleteCartItems() {
+        String deviceId = (String) request.getAttribute("deviceId");
+        cartItemServicePort.deleteAllCartItems(Long.valueOf(deviceId));
+        return ResponseEntity.ok(cartMapper.toCartResponse(cartServicePort.findCartByUserId(Long.valueOf(deviceId))));
     }
 
 }
