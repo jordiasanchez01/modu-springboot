@@ -15,7 +15,7 @@ public class OrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, name="user_id")
+    @Column(nullable = false, name="device_id")
     private String deviceId;
 
     @Column(name="special_instructions")
