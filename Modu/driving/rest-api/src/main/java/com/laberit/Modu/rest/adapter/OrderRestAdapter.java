@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -26,7 +27,7 @@ public class OrderRestAdapter implements CheckoutApi {
 
     @Override
     public ResponseEntity<CheckoutResponse> checkoutCart(AddOrderRequest addOrderRequest) {
-        String deviceId = (String) request.getAttribute("deviceId");
+        String deviceId = currentDeviceId();
         AddOrderCommand command = orderMapper.toAddOrderCommand(addOrderRequest);
         CheckoutResult result = orderServicePort.addOrder(deviceId, command);
 
@@ -67,12 +68,16 @@ public class OrderRestAdapter implements CheckoutApi {
 
     @Override
     public ResponseEntity<OrderResponse> getOrder() {
-        String deviceId = (String) request.getAttribute("deviceId");
+        String deviceId = currentDeviceId();
 
         Order order = orderServicePort.findOrderByDeviceId(deviceId);
 
         OrderResponse orderResponse = orderMapper.toOrderResponse(order);
 
         return ResponseEntity.ok(orderResponse);
+    }
+
+    private String currentDeviceId() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }
