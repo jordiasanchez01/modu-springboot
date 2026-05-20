@@ -16,11 +16,9 @@ public interface CartItemPersistanceMapper {
             return null;
         }
         CartItemEntity entity = new CartItemEntity();
-        entity.setId(cartItem.getId());
 
-        CartEntity cart = new CartEntity();
-        cart.setId(cartItem.getCartId());
-        entity.setCart(cart);
+        entity.setId(cartItem.getId());
+        entity.setCartId(cartItem.getCartId());
 
         entity.setUnitPrice(cartItem.getUnitPrice());
         entity.setQuantity(cartItem.getQuantity());
@@ -40,7 +38,7 @@ public interface CartItemPersistanceMapper {
         }
         return CartItem.builder()
                 .id(entity.getId())
-                .cartId(entity.getCart().getId())
+                .cartId(entity.getCartId())
                 .productVariantId(entity.getProductVariant().getId())
                 .unitPrice(entity.getUnitPrice())
                 .quantity(entity.getQuantity())

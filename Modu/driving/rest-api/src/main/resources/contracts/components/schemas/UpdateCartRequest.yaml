@@ -1,0 +1,13 @@
+type: object
+required:
+  - userId
+  - cart_items
+properties:
+  userId:
+    type: integer
+    format: int64
+    example: 1
+  cart_items:
+    type: array
+    items:
+      $ref: './CartItemResponse.yaml'

@@ -62,8 +62,13 @@ public class CartServiceUseCase implements CartServicePort {
 
     @Override
     public Cart findCartByUserId(Long userId) {
-        return cartRepositoryPort.findByUserId(userId)
+        Cart cart = cartRepositoryPort.findByUserId(userId)
                 .orElseThrow(() -> new CartNotFoundException(userId));
+        List<CartItem> cartItems = retrieveFullCartItems(cart.getId());
+
+        cart.setCartItems(cartItems);
+
+        return cart;
     }
 
     @Override
@@ -82,7 +87,7 @@ public class CartServiceUseCase implements CartServicePort {
 
         productVariantServicePort.assertIsValidToPurchase(variant, totalQuantity);
 
-        Cart cart = existingCart.orElseGet(() -> cartRepositoryPort.save(
+        Cart cart = existingCart.orElseGet(() -> cartRepositoryPort.saveAndFlush(
                 Cart.builder().userId(command.userId()).cartItems(new ArrayList<>()).build()));
 
         CartItem item = buildCartItem(existingItem, cart, command, product, variant);
@@ -91,6 +96,47 @@ public class CartServiceUseCase implements CartServicePort {
         List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
         cart.setCartItems(cartItems);
         return cart;
+    }
+
+    @Transactional
+    @Override
+    public Cart updateCart(CartDTO cartDTO) {
+
+        Cart cart = findCartByUserId(cartDTO.userId());
+        List<CartItem> cartItems = new ArrayList<>();
+
+        log.debug("Update cart {}", cart);
+
+
+        if (cartDTO.cartItems() != null && !cartDTO.cartItems().isEmpty()) {
+            cartItems = cartDTO.cartItems();
+            for (CartItem cartItem : cartItems) {
+                cartItem.setCartId(cart.getId());
+            }
+            log.debug("Cart items: {}", cartItems);
+            cartItemRepositoryPort.saveAll(cartItems);
+        }
+
+        cartItems.forEach(item ->
+                System.out.println("CartItem cartId: " + item.getCartId() +
+                        " variantId: " + item.getProductVariantId()));
+
+        List<CartItem> updatedItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
+        cart.setCartItems(updatedItems);
+        return cartRepositoryPort.save(cart);
+    }
+
+    private List<CartItem> retrieveFullCartItems(Long cartId) {
+        List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cartId);
+
+        Set<Long> variantIds = cartItems.stream()
+                .map(CartItem::getProductVariantId)
+                .collect(Collectors.toSet());
+        Set<ProductVariant> variants = productVariantRepositoryPort.findAllByIdInSet(variantIds);
+
+        updateCurrentStock(cartItems, variants);
+
+        return cartItems;
     }
 
     private CartItem buildCartItem(

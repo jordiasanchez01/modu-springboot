@@ -1,8 +1,11 @@
 type: object
 required:
   - id
-  - cartItemId
+  - productVariantId
+  - currentStock
   - quantity
+  - unitPrice
+  - totalPrice
 properties:
   id:
     type: integer
@@ -12,16 +15,16 @@ properties:
     type: integer
     format: int64
     example: 1
+  currentStock:
+    type: integer
+    example: 25
+  quantity:
+    type: integer
+    example: 13
   unitPrice:
     type: number
     format: double
     example: 3.50
-  quantity:
-    type: integer
-    example: 13
-  currentStock:
-    type: integer
-    example: 25
   totalPrice:
     type: number
     format: double

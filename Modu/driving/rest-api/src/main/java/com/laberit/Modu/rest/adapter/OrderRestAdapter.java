@@ -36,7 +36,7 @@ public class OrderRestAdapter implements CheckoutApi {
             response.order(
                     orderMapper.toOrderResponse(result.order())
             );
-            return ResponseEntity.ok(response);
+            return ResponseEntity.status(201).body(response);
         } else {
 
             response.ok(false);

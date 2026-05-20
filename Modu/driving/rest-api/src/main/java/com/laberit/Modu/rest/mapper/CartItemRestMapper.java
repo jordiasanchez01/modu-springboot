@@ -16,4 +16,6 @@ public interface CartItemRestMapper {
     List<CartItemResponse>  toCartItemResponseList(List<CartItem> cartItemList);
 
     UpdateCartItemQuantityCommand toCommand(UpdateItemRequest updateItemRequest);
+
+    List<CartItem> toCartItemList(List<CartItemResponse> cartItemResponses);
 }

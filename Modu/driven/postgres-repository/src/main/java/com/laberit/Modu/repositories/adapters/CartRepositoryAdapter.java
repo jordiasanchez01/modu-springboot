@@ -31,7 +31,7 @@ public class CartRepositoryAdapter implements CartRepositoryPort {
 
         CartEntity savedCart = cartJpaRepository.save(cartMapper.toEntity(cart));
         List<CartItemEntity> items = cartItemMapper.toEntityList(cart.getCartItems());
-        items.forEach(item -> item.setCart(savedCart));
+        items.forEach(item -> item.setCartId(savedCart.getId()));
 
         cartItemJpaRepository.saveAll(items);
         entityManager.flush();
@@ -40,6 +40,13 @@ public class CartRepositoryAdapter implements CartRepositoryPort {
         Cart result = cartMapper.toDomain(savedCart);
         result.setCartItems(cartItemMapper.toDomainList(savedCart.getCartItems()));
         return result;
+    }
+
+    @Override
+    public Cart saveAndFlush(Cart cart) {
+        CartEntity entity = cartMapper.toEntity(cart);
+        CartEntity saved = cartJpaRepository.saveAndFlush(entity);
+        return cartMapper.toDomain(saved);
     }
 
     @Override
