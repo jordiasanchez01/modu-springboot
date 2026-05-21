@@ -8,11 +8,11 @@ import java.util.Set;
 
 public interface CartItemServicePort {
 
-    CartItem updateCartItemQuantity(Long userId, Long cartItemId, UpdateCartItemQuantityCommand command);
+    CartItem updateCartItemQuantity(String deviceId, Long cartItemId, UpdateCartItemQuantityCommand command);
 
-    void deleteCartItemById(Long userId, Long cartItemId);
+    void deleteCartItemById(String deviceId, Long cartItemId);
 
-    void deleteAllCartItems(Long userId);
+    void deleteAllCartItems(String deviceId);
 
     Set<InsufficientStockResult> checkStockOfCartItems(Set<CartItem> cartItems);
 }

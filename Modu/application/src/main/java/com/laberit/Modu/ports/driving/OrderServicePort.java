@@ -10,7 +10,7 @@ public interface OrderServicePort {
 
     Order findOrderById(Long id);
 
-    Order findOrderByUserId(Long userId);
+    Order findOrderByDeviceId(String deviceId);
 
     CheckoutResult addOrder(String deviceId, AddOrderCommand command);
 

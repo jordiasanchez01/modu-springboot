@@ -84,7 +84,7 @@ public class ProductServiceUseCase implements ProductServicePort {
                 sortField,
                 sortDirection,
                 command.maxPrice(),
-                command.categoryIds(),
+                command.categories(),
                 command.page(),
                 command.size()
         );

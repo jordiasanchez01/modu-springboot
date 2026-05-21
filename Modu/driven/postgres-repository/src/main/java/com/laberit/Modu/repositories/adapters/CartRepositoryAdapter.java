@@ -43,8 +43,8 @@ public class CartRepositoryAdapter implements CartRepositoryPort {
     }
 
     @Override
-    public Optional<Cart> findByUserId(Long userId) {
-        return cartJpaRepository.findByUserId(userId).map(entity -> {
+    public Optional<Cart> findByDeviceId(String deviceId) {
+        return cartJpaRepository.findByDeviceId(deviceId).map(entity -> {
             Cart cart = cartMapper.toDomain(entity);
             cart.setCartItems(cartItemMapper.toDomainList(entity.getCartItems()));
             return cart;
@@ -52,7 +52,7 @@ public class CartRepositoryAdapter implements CartRepositoryPort {
     }
 
     @Override
-    public boolean existsByUserId(Long userId) {
-        return cartJpaRepository.existsByUserId(userId);
+    public boolean existsByDeviceId(String deviceId) {
+        return cartJpaRepository.existsByDeviceId(deviceId);
     }
 }

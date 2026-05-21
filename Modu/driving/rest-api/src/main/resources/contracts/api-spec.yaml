@@ -42,6 +42,12 @@ paths:
     $ref: './paths/checkout/get-order.yaml'
 
 components:
+  securitySchemes:
+    deviceAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: "Device ID authentication. Format: DeviceId <device-IMEI>"
   schemas:
     ProductResponse:
       $ref: './components/schemas/ProductPageResponse.yaml'

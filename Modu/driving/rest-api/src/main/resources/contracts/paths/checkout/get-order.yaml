@@ -2,10 +2,10 @@ get:
   tags:
     - Checkout
   summary: Displays Order details
-  description: Displays the details of an approved order
+  description: Displays the details of an approved order. Authentication is needed in Authorization header (user´s device IMEI)
   operationId: getOrder
-  parameters:
-    - $ref: '../../components/parameters/headerUID.yaml'
+  security:
+    - deviceAuth: []
 
   responses:
     '200':
@@ -14,6 +14,18 @@ get:
         application/json:
           schema:
             $ref: '../../components/schemas/OrderResponse.yaml'
+    '400':
+      description: Invalid request. Check the fields for more details.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '401':
+      description: User authentication by device IMEI is missing.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
     '404':
       description: Requested order could not be found
       content:

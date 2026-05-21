@@ -2,10 +2,10 @@ get:
   tags:
     - Cart
   summary: Displays the user's cart
-  description: Displays the user's cart details and contained items, if any
+  description: Displays the user's cart details and contained items, if any. Authentication is needed in Authorization header (user´s device IMEI)
   operationId: getValidatedCart
-  parameters:
-    - $ref: '../../components/parameters/headerUID.yaml'
+  security:
+    - deviceAuth: []
 
   responses:
     '200':
@@ -14,6 +14,18 @@ get:
         application/json:
           schema:
             $ref: '../../components/schemas/CartResponse.yaml'
+    '400':
+      description: Invalid request. Check the fields for more details.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '401':
+      description: User authentication by device IMEI is missing.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
     '404':
       description: Requested cart could not be found
       content:

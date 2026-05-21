@@ -12,10 +12,10 @@ public interface OrderJpaRepository extends JpaRepository<OrderEntity, Long>, Jp
 
     Optional<OrderEntity> findById(Long id);
 
-    Optional<OrderEntity> findByUserId(Long userId);
+    Optional<OrderEntity> findByDeviceId(String deviceId);
 
     boolean existsById(Long id);
 
-    boolean existsByUserId(Long orderId);
+    boolean existsByDeviceId(String deviceId);
 
 }

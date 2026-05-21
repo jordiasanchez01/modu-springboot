@@ -25,13 +25,13 @@ public class ProductSpecification {
         };
     }
 
-    public static Specification<ProductEntity> hasCategories(List<Integer> categoryIds) {
+    public static Specification<ProductEntity> hasCategories(List<String> categories) {
         return (root, query, criteriaBuilder) -> {
-            if (categoryIds == null || categoryIds.isEmpty()) return criteriaBuilder.conjunction();
+            if (categories == null || categories.isEmpty()) return criteriaBuilder.conjunction();
             List<Predicate> predicates = new ArrayList<>();
-            for (Integer categoryId : categoryIds) {
+            for (String category : categories) {
                 Join<ProductEntity, CategoryEntity> join = root.join("categoriesSet");
-                predicates.add(criteriaBuilder.equal(join.get("id"), categoryId));
+                predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(join.get("name")), category.toLowerCase()));
             }
             if (Long.class != query.getResultType()) {
                 query.distinct(true);

@@ -29,7 +29,7 @@ public class ProductRestAdapter implements ProductsApi {
     }
 
     @Override
-    public ResponseEntity<ProductPageResponse> getProducts(Integer page, Integer size, @Nullable String title, @Nullable String orderByPrice, @Nullable Integer maxPrice, @Nullable List<Integer> category) {
+    public ResponseEntity<ProductPageResponse> getProducts(Integer page, Integer size, @Nullable String title, @Nullable String orderByPrice, @Nullable Integer maxPrice, @Nullable List<String> category) {
         SearchProductsCommand command = new SearchProductsCommand(title, orderByPrice, maxPrice, category, page,size);
         return ResponseEntity.ok(mapper.toProductPageResponse(productServicePort.search(command)));
     }

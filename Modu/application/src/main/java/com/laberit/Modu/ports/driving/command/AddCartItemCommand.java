@@ -1,7 +1,7 @@
 package com.laberit.Modu.ports.driving.command;
 
 public record AddCartItemCommand(
-        Long userId,
+        String deviceId,
         Long productVariantId,
         Integer quantity
 ) {
