@@ -1,15 +1,13 @@
 package com.laberit.Modu.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.laberit.Modu.rest.advice.ErrorType;
 import com.laberit.Modu.rest.advice.RestAuthenticationEntryPoint;
-import com.laberit.Modu.rest.generated.model.ErrorResponse;
-import com.laberit.Modu.rest.generated.model.ErrorResponseFieldsInner;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DeviceIdFilter extends OncePerRequestFilter {
@@ -44,8 +43,9 @@ public class DeviceIdFilter extends OncePerRequestFilter {
                 return;
             }
 
-            filterChain.doFilter(request, response);
+
         }
+        filterChain.doFilter(request, response);
     }
 
 }
