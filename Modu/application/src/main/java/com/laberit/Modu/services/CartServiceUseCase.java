@@ -88,15 +88,16 @@ public class CartServiceUseCase implements CartServicePort {
 
         productVariantServicePort.assertIsValidToPurchase(variant, totalQuantity);
 
-        Cart cart = existingCart.orElseGet(() -> cartRepositoryPort.saveAndFlush(
+        Cart cart = existingCart.orElseGet(() -> cartRepositoryPort.save(
                 Cart.builder().deviceId(command.deviceId()).cartItems(new ArrayList<>()).build()));
 
         CartItem item = buildCartItem(existingItem, cart, command, product, variant);
         cartItemRepositoryPort.save(item);
 
         List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
+
         cart.setCartItems(cartItems);
-        return cart;
+        return cartRepositoryPort.findByDeviceId(command.deviceId()).orElseThrow(() -> new CartNotFoundException(command.deviceId()));
     }
 
     @Transactional
