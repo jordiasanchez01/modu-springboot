@@ -21,6 +21,7 @@ properties:
   quantity:
     type: integer
     example: 13
+    minimum: 1
   unitPrice:
     type: number
     format: double

@@ -105,21 +105,13 @@ public class CartServiceUseCase implements CartServicePort {
         Cart cart = findCartByUserId(cartDTO.userId());
         List<CartItem> cartItems = new ArrayList<>();
 
-        log.debug("Update cart {}", cart);
-
-
         if (cartDTO.cartItems() != null && !cartDTO.cartItems().isEmpty()) {
             cartItems = cartDTO.cartItems();
             for (CartItem cartItem : cartItems) {
                 cartItem.setCartId(cart.getId());
             }
-            log.debug("Cart items: {}", cartItems);
             cartItemRepositoryPort.saveAll(cartItems);
         }
-
-        cartItems.forEach(item ->
-                System.out.println("CartItem cartId: " + item.getCartId() +
-                        " variantId: " + item.getProductVariantId()));
 
         List<CartItem> updatedItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
         cart.setCartItems(updatedItems);

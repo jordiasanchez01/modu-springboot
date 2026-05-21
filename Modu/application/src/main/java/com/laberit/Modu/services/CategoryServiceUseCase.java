@@ -22,7 +22,6 @@ public class CategoryServiceUseCase implements CategoryServicePort {
 
     @Override
     public List<Category> findAll() {
-        log.debug("Fetching all Product Categories");
         return categoryRepositoryPort.findAll();
     }
 
