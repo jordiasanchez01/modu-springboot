@@ -39,9 +39,9 @@ public class OrderServiceUseCase implements OrderServicePort {
     }
 
     @Override
-    public Order findOrderByUserId(Long userId) {
-        return orderRepositoryPort.findByUserId(userId)
-                .orElseThrow(()-> new OrderNotFoundException(userId.toString()));
+    public Order findOrderByDeviceId(String deviceId) {
+        return orderRepositoryPort.findByDeviceId(deviceId)
+                .orElseThrow(()-> new OrderNotFoundException(deviceId));
     }
 
     @Override
@@ -53,15 +53,15 @@ public class OrderServiceUseCase implements OrderServicePort {
 
             cartServicePort.updateCart(command.cartToOrder());
 
-            CartWithPriceAndStockCheck cartResponse = cartServicePort.getCartWithPriceAndStockCheck(userId);
+            CartWithPriceAndStockCheck cartResponse = cartServicePort.getCartWithPriceAndStockCheck(deviceId);
 
             if (cartResponse.changedPrices().isEmpty() && cartResponse.insufficientStock().isEmpty()) {
-                order.setUserId(userId);
+                order.setDeviceId(deviceId);
                 Order savedOrder = orderRepositoryPort.saveWithoutItems(order);
                 order = mapOrderCommandToOrder(command, cartResponse.cart(), savedOrder);
                 savedOrder = orderRepositoryPort.save(order);
                 updateProductVariantStock(savedOrder);
-                cartItemServicePort.deleteAllCartItems(cartResponse.cart().getUserId());
+                cartItemServicePort.deleteAllCartItems(cartResponse.cart().getDeviceId());
                 return new CheckoutResult(savedOrder, cartResponse);
             }
 
@@ -101,7 +101,7 @@ public class OrderServiceUseCase implements OrderServicePort {
             orderItems.add(item);
         }
 
-        order.setUserId(cart.getUserId());
+        order.setDeviceId(cart.getDeviceId());
         order.setSpecialInstructions(command.specialInstructions());
         order.setOrderItems(orderItems);
 

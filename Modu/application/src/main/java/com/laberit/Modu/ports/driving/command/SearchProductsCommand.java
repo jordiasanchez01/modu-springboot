@@ -6,7 +6,7 @@ public record SearchProductsCommand(
         String title,
         String orderByPrice,
         Integer maxPrice,
-        List<Integer> categoryIds,
+        List<String> categories,
         Integer page,
         Integer size) {
     }

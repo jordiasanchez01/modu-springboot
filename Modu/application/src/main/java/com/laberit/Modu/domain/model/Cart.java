@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Cart {
     private Long id;
-    private Long userId;
+    private String deviceId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     @Builder.Default

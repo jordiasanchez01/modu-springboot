@@ -16,7 +16,7 @@ public interface OrderPersistanceMapper {
         OrderEntity entity = new OrderEntity();
 
         entity.setId(order.getId());
-        entity.setUserId(order.getUserId());
+        entity.setDeviceId(order.getDeviceId());
         entity.setSpecialInstructions(order.getSpecialInstructions());
         entity.setTotalPrice(order.getTotalOrderPrice());
 
@@ -29,7 +29,7 @@ public interface OrderPersistanceMapper {
         }
         return Order.builder()
                 .id(entity.getId())
-                .userId(entity.getUserId())
+                .deviceId(entity.getDeviceId())
                 .specialInstructions(entity.getSpecialInstructions())
                 .createdAt(entity.getCreatedAt())
                 .build();

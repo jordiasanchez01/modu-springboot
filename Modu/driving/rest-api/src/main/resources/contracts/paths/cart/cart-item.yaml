@@ -2,8 +2,10 @@ patch:
   tags:
     - Cart
   summary: Update item´s quantity in the user´s cart
-  description: Updates indicated items quantity in the user´s cart
+  description: Updates indicated items quantity in the user´s cart. Authentication is needed in Authorization header (user´s device IMEI)
   operationId: updateCartItemQuantity
+  security:
+    - deviceAuth: []
   requestBody:
     required: true
     content:
@@ -11,7 +13,6 @@ patch:
         schema:
           $ref: '../../components/schemas/UpdateItemRequest.yaml'
   parameters:
-    - $ref: '../../components/parameters/headerUID.yaml'
     - name: itemId
       in: path
       required: true
@@ -29,7 +30,13 @@ patch:
           schema:
             $ref: '../../components/schemas/CartResponse.yaml'
     '400':
-      description: Invalid request body. Check the fields for more details.
+      description: Invalid request. Check the fields for more details.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '401':
+      description: User authentication by device IMEI is missing.
       content:
         application/json:
           schema:
@@ -57,10 +64,11 @@ delete:
   tags:
     - Cart
   summary: Delete requested item from the user´s cart
-  description: Delete indicated item byt its ID from the user´s cart
+  description: Delete indicated item byt its ID from the user´s cart. Authentication is needed in Authorization header (user´s device IMEI)
   operationId: deleteCartItem
+  security:
+    - deviceAuth: []
   parameters:
-    - $ref: '../../components/parameters/headerUID.yaml'
     - name: itemId
       in: path
       required: true
@@ -76,6 +84,18 @@ delete:
         application/json:
           schema:
             $ref: '../../components/schemas/CartResponse.yaml'
+    '400':
+      description: Invalid request. Check the fields for more details.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '401':
+      description: User authentication by device IMEI is missing.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
     '500':
       description: Internal error.
       content:

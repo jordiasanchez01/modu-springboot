@@ -49,8 +49,8 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
     }
 
     @Override
-    public Optional<Order> findByUserId(Long userId) {
-        return orderJpaRepository.findByUserId(userId).map(entity -> {
+    public Optional<Order> findByDeviceId(String deviceId) {
+        return orderJpaRepository.findByDeviceId(deviceId).map(entity -> {
             Order order = orderMapper.toDomain(entity);
             order.setOrderItems(orderItemMapper.toDomainList(entity.getOrderItems()));
             return order;
@@ -67,7 +67,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
     }
 
     @Override
-    public boolean existsByUserId(Long userId) {
-        return orderJpaRepository.existsByUserId(userId);
+    public boolean existsByDeviceId(String deviceId) {
+        return orderJpaRepository.existsByDeviceId(deviceId);
     }
 }

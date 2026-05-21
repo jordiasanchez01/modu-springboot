@@ -5,9 +5,9 @@ import java.util.Optional;
 
 public interface CartRepositoryPort {
 
-    Optional<Cart> findByUserId(Long userId);
+    Optional<Cart> findByDeviceId(String deviceId);
 
-    boolean existsByUserId(Long userId);
+    boolean existsByDeviceId(String deviceId);
 
     Cart save(Cart cart);
 

@@ -2,6 +2,7 @@ package com.laberit.Modu.ports.driving;
 
 import com.laberit.Modu.domain.model.Cart;
 import com.laberit.Modu.domain.model.CartDTO;
+import com.laberit.Modu.domain.model.CartDTO;
 import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
 import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,10 +11,9 @@ public interface CartServicePort {
 
     Cart addCartItemToCart(AddCartItemCommand command);
 
-    CartWithPriceAndStockCheck getCartWithPriceAndStockCheck(Long userId);
+    CartWithPriceAndStockCheck getCartWithPriceAndStockCheck(String deviceId);
 
-    Cart findCartByUserId(Long userId);
+    Cart findCartByDeviceId(String deviceId);
 
-    @Transactional
     Cart updateCart(CartDTO cartDTO);
 }

@@ -13,10 +13,10 @@ public interface CartJpaRepository extends JpaRepository<CartEntity, Long>, JpaS
 
     Optional<CartEntity> findById(Long id);
 
-    Optional<CartEntity> findByUserId(Long userId);
+    Optional<CartEntity> findByDeviceId(String deviceId);
 
     boolean existsById(Long id);
 
-    boolean existsByUserId(Long cartId);
+    boolean existsByDeviceId(String deviceId);
 
 }

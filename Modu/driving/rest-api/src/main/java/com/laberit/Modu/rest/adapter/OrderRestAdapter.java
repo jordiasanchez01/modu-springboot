@@ -8,9 +8,11 @@ import com.laberit.Modu.rest.generated.api.CheckoutApi;
 import com.laberit.Modu.rest.generated.model.*;
 import com.laberit.Modu.rest.mapper.CartRestMapper;
 import com.laberit.Modu.rest.mapper.OrderRestMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -20,12 +22,14 @@ public class OrderRestAdapter implements CheckoutApi {
     private final OrderServicePort orderServicePort;
     private final OrderRestMapper orderMapper;
     private final CartRestMapper cartMapper;
+    private final HttpServletRequest request;
 
 
     @Override
-    public ResponseEntity<CheckoutResponse> checkoutCart(String xDeviceId, AddOrderRequest addOrderRequest) {
+    public ResponseEntity<CheckoutResponse> checkoutCart(AddOrderRequest addOrderRequest) {
+        String deviceId = currentDeviceId();
         AddOrderCommand command = orderMapper.toAddOrderCommand(addOrderRequest);
-        CheckoutResult result = orderServicePort.addOrder(xDeviceId, command);
+        CheckoutResult result = orderServicePort.addOrder(deviceId, command);
 
         CheckoutResponse response = new CheckoutResponse();
         if (result.cartResponse().changedPrices().isEmpty() && result.cartResponse().insufficientStock().isEmpty()) {
@@ -63,12 +67,17 @@ public class OrderRestAdapter implements CheckoutApi {
     }
 
     @Override
-    public ResponseEntity<OrderResponse> getOrder(Long orderId) {
+    public ResponseEntity<OrderResponse> getOrder() {
+        String deviceId = currentDeviceId();
 
-        Order order = orderServicePort.findOrderById(orderId);
+        Order order = orderServicePort.findOrderByDeviceId(deviceId);
 
         OrderResponse orderResponse = orderMapper.toOrderResponse(order);
 
         return ResponseEntity.ok(orderResponse);
+    }
+
+    private String currentDeviceId() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

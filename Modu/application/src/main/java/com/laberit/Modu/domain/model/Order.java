@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Order {
     private Long id;
-    private Long userId;
+    private String deviceId;
     private LocalDateTime createdAt;
     private String specialInstructions;
     @Builder.Default

@@ -54,8 +54,8 @@ get:
         type: array
         maxItems: 10
         items:
-          type: integer
-          example: 1
+          type: string
+          example: "activewear"
 
 
   responses:

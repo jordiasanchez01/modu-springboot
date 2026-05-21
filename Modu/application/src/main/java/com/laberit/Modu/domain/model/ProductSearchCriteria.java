@@ -7,7 +7,7 @@ public record ProductSearchCriteria(
         ProductSortField sortField,
         SortDirection sortDirection,
         Integer maxPrice,
-        List<Integer> categoryIds,
+        List<String> categories,
         Integer page,
         Integer size
 ) {
