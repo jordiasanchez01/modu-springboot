@@ -58,6 +58,15 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
     }
 
     @Override
+    public Optional<Order> findByOrderId(Long orderId) {
+        return orderJpaRepository.findById(orderId).map(entity -> {
+            Order order = orderMapper.toDomain(entity);
+            order.setOrderItems(orderItemMapper.toDomainList(entity.getOrderItems()));
+            return order;
+        });
+    }
+
+    @Override
     public boolean existsByUserId(Long userId) {
         return orderJpaRepository.existsByUserId(userId);
     }

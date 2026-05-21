@@ -9,6 +9,8 @@ public interface OrderRepositoryPort {
 
     Optional<Order> findByUserId(Long userId);
 
+    Optional<Order> findByOrderId(Long orderId);
+
     boolean existsByUserId(Long userId);
 
     Order save(Order order);

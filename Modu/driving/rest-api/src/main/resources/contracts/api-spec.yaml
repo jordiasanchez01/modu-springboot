@@ -40,7 +40,7 @@ paths:
 
   /checkout:
     $ref: './paths/checkout/checkout.yaml'
-  /get_order:
+  /get_order/{orderId}:
     $ref: './paths/checkout/get-order.yaml'
 
 components:

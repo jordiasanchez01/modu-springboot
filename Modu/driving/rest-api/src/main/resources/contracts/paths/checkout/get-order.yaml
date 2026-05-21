@@ -5,8 +5,14 @@ get:
   description: Displays the details of an approved order
   operationId: getOrder
   parameters:
-    - $ref: '../../components/parameters/headerUID.yaml'
-
+    - name: orderId
+      in: path
+      required: true
+      description: Order ID (Long)
+      schema:
+        type: integer
+        format: int64
+        example: 2
   responses:
     '200':
       description: Order retrieved successfully

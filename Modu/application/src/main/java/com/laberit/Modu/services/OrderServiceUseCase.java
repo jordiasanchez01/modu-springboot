@@ -34,7 +34,8 @@ public class OrderServiceUseCase implements OrderServicePort {
 
     @Override
     public Order findOrderById(Long id) {
-        return null;
+        return orderRepositoryPort.findByOrderId(id)
+                .orElseThrow(()-> new OrderNotFoundException(id.toString()));
     }
 
     @Override
