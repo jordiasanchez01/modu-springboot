@@ -27,7 +27,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/v3/api-docs/**", "/docs/**", "/swagger-ui/**","/swagger-ui.html",
                                 "/swagger-resources/**",
-                                "/product/**", "/products/**").permitAll()
+                                "/product/**", "/products/**",
+                                "/categories").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(deviceIdFilter, UsernamePasswordAuthenticationFilter.class);

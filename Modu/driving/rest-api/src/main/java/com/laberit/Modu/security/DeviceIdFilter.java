@@ -43,7 +43,6 @@ public class DeviceIdFilter extends OncePerRequestFilter {
                 return;
             }
 
-
         }
         filterChain.doFilter(request, response);
     }
