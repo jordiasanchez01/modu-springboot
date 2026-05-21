@@ -103,7 +103,7 @@ public class CartServiceUseCase implements CartServicePort {
     @Override
     public Cart updateCart(CartDTO cartDTO) {
 
-        Cart cart = findCartByDeviceId(String.valueOf(cartDTO.userId()));
+        Cart cart = findCartByDeviceId(cartDTO.deviceId());
         List<CartItem> cartItems = new ArrayList<>();
 
         if (cartDTO.cartItems() != null && !cartDTO.cartItems().isEmpty()) {

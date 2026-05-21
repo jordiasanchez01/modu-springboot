@@ -49,7 +49,6 @@ public class OrderServiceUseCase implements OrderServicePort {
     public CheckoutResult addOrder(String deviceId, AddOrderCommand command) {
         Order order = new Order();
         if (validateAddOrderCommand(command)) {
-            Long userId = Long.valueOf(deviceId);
 
             cartServicePort.updateCart(command.cartToOrder());
 

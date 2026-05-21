@@ -1,11 +1,12 @@
 type: object
 required:
-  - userId
+  - deviceId
   - createdAt
   - updatedAt
+  - totalPrice
   - cart_items
 properties:
-  userId:
+  deviceId:
     type: integer
     format: int64
     example: 1

@@ -12,4 +12,4 @@ properties:
     description: Special instructions for the order
     example: "Please leave at the door"
   cartToOrder:
-    $ref: './CartResponse.yaml'
+    $ref: './CartToOrder.yaml'

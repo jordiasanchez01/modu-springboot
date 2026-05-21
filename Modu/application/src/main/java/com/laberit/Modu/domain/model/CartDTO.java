@@ -8,9 +8,7 @@ import java.util.List;
 
 @Builder
 public record CartDTO (
-        Long userId,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt,
+        String deviceId,
         List<CartItem> cartItems
     ){}
 

@@ -46,11 +46,9 @@ public interface CartRestMapper {
         );
     };
 
-    default CartDTO toCartDTO(UpdateCartRequest cart) {
+    default CartDTO toCartDTO(UpdateCartRequest updateCartRequest) {
         return CartDTO.builder()
-                .userId(cart.getUserId())
-                .createdAt(null)
-                .updatedAt(null)
+                .deviceId(updateCartRequest.getDeviceId())
                 .cartItems(null)
                 .build();
     }

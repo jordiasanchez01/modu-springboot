@@ -31,7 +31,7 @@ public class CartRepositoryAdapter implements CartRepositoryPort {
 
         CartEntity savedCart = cartJpaRepository.save(cartMapper.toEntity(cart));
         List<CartItemEntity> items = cartItemMapper.toEntityList(cart.getCartItems());
-        items.forEach(item -> item.setCart(savedCart));
+        items.forEach(item -> item.setCartId(savedCart.getId()));
 
         cartItemJpaRepository.saveAll(items);
         entityManager.flush();
@@ -52,6 +52,7 @@ public class CartRepositoryAdapter implements CartRepositoryPort {
     @Override
     public Optional<Cart> findByDeviceId(String deviceId) {
         return cartJpaRepository.findByDeviceId(deviceId).map(entity -> {
+            entityManager.refresh(entity);
             Cart cart = cartMapper.toDomain(entity);
             cart.setCartItems(cartItemMapper.toDomainList(entity.getCartItems()));
             return cart;

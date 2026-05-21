@@ -51,7 +51,7 @@ components:
       name: Authorization
       description: "Device ID authentication. Format: DeviceId <device-IMEI>"
   schemas:
-    ProductResponse:
+    ProductPagedResponse:
       $ref: './components/schemas/ProductPageResponse.yaml'
     CartResponse:
       $ref: './components/schemas/CartResponse.yaml'

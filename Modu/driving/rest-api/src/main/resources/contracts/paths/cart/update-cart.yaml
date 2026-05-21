@@ -4,14 +4,14 @@ patch:
   summary: Updates the user's cart in the database
   description: Updates the user´s cart in the database, if it exists.
   operationId: updateCart
+  security:
+    - deviceAuth: [ ]
   requestBody:
     required: true
     content:
       application/json:
         schema:
           $ref: '../../components/schemas/UpdateCartRequest.yaml'
-  parameters:
-    - $ref: '../../components/parameters/headerUID.yaml'
 
   responses:
     '200':

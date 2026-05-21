@@ -5,6 +5,7 @@ import com.laberit.Modu.ports.driving.command.UpdateCartItemQuantityCommand;
 import com.laberit.Modu.rest.generated.model.CartItemResponse;
 import com.laberit.Modu.rest.generated.model.UpdateItemRequest;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
