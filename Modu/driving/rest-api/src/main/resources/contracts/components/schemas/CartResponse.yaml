@@ -21,7 +21,7 @@ properties:
   cart_items:
     type: array
     items:
-      $ref: './CartItemResponse.yaml'
+      $ref: './CartItemForCartResponse.yaml'
   price_changed_alert:
     $ref: './PriceChangedAlert.yaml'
   insufficient_stock_alert:
