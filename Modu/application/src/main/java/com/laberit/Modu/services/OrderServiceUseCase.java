@@ -1,5 +1,6 @@
 package com.laberit.Modu.services;
 
+import com.laberit.Modu.domain.exceptions.CartEmptyException;
 import com.laberit.Modu.domain.exceptions.OrderNotFoundException;
 import com.laberit.Modu.domain.exceptions.OrderNotPaidException;
 import com.laberit.Modu.domain.model.*;
@@ -34,7 +35,8 @@ public class OrderServiceUseCase implements OrderServicePort {
 
     @Override
     public Order findOrderById(Long id) {
-        return null;
+        return orderRepositoryPort.findByOrderId(id)
+                .orElseThrow(()-> new OrderNotFoundException(id.toString()));
     }
 
     @Override
@@ -48,8 +50,14 @@ public class OrderServiceUseCase implements OrderServicePort {
     public CheckoutResult addOrder(String deviceId, AddOrderCommand command) {
         Order order = new Order();
         if (validateAddOrderCommand(command)) {
-            Long userId = Long.valueOf(deviceId);
+
+            cartServicePort.updateCart(command.cartToOrder());
+
             CartWithPriceAndStockCheck cartResponse = cartServicePort.getCartWithPriceAndStockCheck(deviceId);
+
+            if (cartResponse.cart().getCartItems().isEmpty()) {
+                throw new CartEmptyException(deviceId);
+            }
 
             if (cartResponse.changedPrices().isEmpty() && cartResponse.insufficientStock().isEmpty()) {
                 order.setDeviceId(deviceId);

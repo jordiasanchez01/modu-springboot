@@ -6,7 +6,15 @@ get:
   operationId: getOrder
   security:
     - deviceAuth: []
-
+  parameters:
+    - name: orderId
+      in: path
+      required: true
+      description: Order ID (Long)
+      schema:
+        type: integer
+        format: int64
+        example: 2
   responses:
     '200':
       description: Order retrieved successfully

@@ -10,4 +10,6 @@ public interface CartRepositoryPort {
     boolean existsByDeviceId(String deviceId);
 
     Cart save(Cart cart);
+
+    Cart saveAndFlush(Cart cart);
 }

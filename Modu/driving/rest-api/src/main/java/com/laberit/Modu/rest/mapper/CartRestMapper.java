@@ -1,6 +1,7 @@
 package com.laberit.Modu.rest.mapper;
 
 import com.laberit.Modu.domain.model.Cart;
+import com.laberit.Modu.domain.model.CartDTO;
 import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
 import com.laberit.Modu.domain.model.response.InsufficientStockResult;
 import com.laberit.Modu.domain.model.response.ProductPriceChange;
@@ -44,6 +45,13 @@ public interface CartRestMapper {
                 addRequest.getQuantity()
         );
     };
+
+    default CartDTO toCartDTO(UpdateCartRequest updateCartRequest) {
+        return CartDTO.builder()
+                .deviceId(updateCartRequest.getDeviceId())
+                .cartItems(null)
+                .build();
+    }
 
     List<CartResponse>  toCartResponseList(List<Cart> carts);
 

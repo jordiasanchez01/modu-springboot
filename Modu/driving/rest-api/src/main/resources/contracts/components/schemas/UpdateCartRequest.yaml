@@ -1,0 +1,11 @@
+type: object
+required:
+  - deviceId
+  - cart_items
+properties:
+  deviceId:
+    type: string
+  cart_items:
+    type: array
+    items:
+      $ref: './CartItemForCartResponse.yaml'

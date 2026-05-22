@@ -19,9 +19,8 @@ public class CartItemEntity {
     @Column(nullable = false)
     private Integer quantity;
 
-    @ManyToOne
-    @JoinColumn(name = "cart_id")
-    private CartEntity cart;
+    @Column(name = "cart_id")
+    private Long cartId;
 
     @ManyToOne
     @JoinColumn(name = "product_variant_id")

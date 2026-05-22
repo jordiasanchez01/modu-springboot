@@ -29,6 +29,8 @@ paths:
 
   /cart:
     $ref: './paths/cart/cart.yaml'
+  /cart/updateCart:
+    $ref: './paths/cart/update-cart.yaml'
   /cart/addItem:
     $ref: './paths/cart/add-item.yaml'
   /cart/items/{itemId}:
@@ -38,7 +40,7 @@ paths:
 
   /checkout:
     $ref: './paths/checkout/checkout.yaml'
-  /get_order:
+  /get_order/{orderId}:
     $ref: './paths/checkout/get-order.yaml'
 
 components:
@@ -49,7 +51,7 @@ components:
       name: Authorization
       description: "Device ID authentication. Format: DeviceId <device-IMEI>"
   schemas:
-    ProductResponse:
+    ProductPagedResponse:
       $ref: './components/schemas/ProductPageResponse.yaml'
     CartResponse:
       $ref: './components/schemas/CartResponse.yaml'

@@ -17,6 +17,12 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalControllerAdvice {
 
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(CartEmptyException.class)
+    public ErrorResponse handleCartEmpty(CartEmptyException ex) {
+        return error(ErrorType.CONFLICT, ex.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(CartItemNotFoundException.class)
     public ErrorResponse handleCartItemNotFound(CartItemNotFoundException ex) {

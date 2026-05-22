@@ -2,6 +2,7 @@ type: object
 required:
   - isPaid
   - specialInstructions
+  - cartToOrder
 properties:
   isPaid:
     type: boolean
@@ -10,3 +11,5 @@ properties:
     type: string
     description: Special instructions for the order
     example: "Please leave at the door"
+  cartToOrder:
+    $ref: './CartToOrder.yaml'

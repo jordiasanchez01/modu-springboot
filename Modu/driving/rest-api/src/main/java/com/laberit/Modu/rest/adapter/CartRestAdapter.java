@@ -36,6 +36,17 @@ public class CartRestAdapter implements CartApi {
     }
 
     @Override
+    public ResponseEntity<CartResponse> updateCart(UpdateCartRequest updateCartRequest) {
+        List<CartItem> items = cartItemMapper.toCartItemList(updateCartRequest.getCartItems());
+        CartDTO cartDTO = CartDTO.builder()
+                .deviceId(updateCartRequest.getDeviceId())
+                .cartItems(items)
+                .build();
+        Cart cart = cartServicePort.updateCart(cartDTO);
+        return ResponseEntity.ok(cartMapper.toCartResponse(cart));
+    }
+
+    @Override
     public ResponseEntity<CartResponse> addCartItem(AddItemRequest addItemRequest) {
         String deviceId = currentDeviceId();
         Cart cart = cartServicePort.addCartItemToCart(cartMapper.toAddCartItemCommand(
@@ -68,4 +79,13 @@ public class CartRestAdapter implements CartApi {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    private InsufficientStockAlert checkIfInsufficientStock(List<InsufficientStockResult> stockList){
+
+        InsufficientStockAlert  insufficientStockAlert = new InsufficientStockAlert();
+
+        if (!stockList.isEmpty()){
+            insufficientStockAlert.setCartItems(cartMapper.toInsufficientStockResponseList(stockList));
+        }
+        return insufficientStockAlert;
+    }
 }

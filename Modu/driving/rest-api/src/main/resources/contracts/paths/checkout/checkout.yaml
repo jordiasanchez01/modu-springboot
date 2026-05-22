@@ -5,7 +5,7 @@ post:
   description: Displays the user's cart details and contained items, receives Special Instructions if any. Authentication is needed in Authorization header (user´s device IMEI)
   operationId: checkoutCart
   security:
-    - deviceAuth: []
+    - deviceAuth: [ ]
   requestBody:
     required: true
     content:
@@ -39,7 +39,11 @@ post:
           schema:
             $ref: '../../components/schemas/ErrorResponse.yaml'
     '409':
-      description: Price changes detected
+      description: |
+        Conflict detected during checkout. Possible causes:
+        - **Price change detected**: One or more cart item prices have changed since they were added to the cart.
+        - **Insufficient stock**: One or more cart items exceed the available stock.
+        - **Empty cart**: The cart contains no items to checkout.
       content:
         application/json:
           schema:

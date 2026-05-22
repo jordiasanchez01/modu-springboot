@@ -62,8 +62,14 @@ public class CartServiceUseCase implements CartServicePort {
 
     @Override
     public Cart findCartByDeviceId(String deviceId) {
-        return cartRepositoryPort.findByDeviceId(deviceId)
+
+        Cart cart = cartRepositoryPort.findByDeviceId(deviceId)
                 .orElseThrow(() -> new CartNotFoundException(deviceId));
+        List<CartItem> cartItems = retrieveFullCartItems(cart.getId());
+
+        cart.setCartItems(cartItems);
+
+        return cart;
     }
 
     @Override
@@ -89,8 +95,42 @@ public class CartServiceUseCase implements CartServicePort {
         cartItemRepositoryPort.save(item);
 
         List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
+
         cart.setCartItems(cartItems);
-        return cart;
+        return cartRepositoryPort.findByDeviceId(command.deviceId()).orElseThrow(() -> new CartNotFoundException(command.deviceId()));
+    }
+
+    @Transactional
+    @Override
+    public Cart updateCart(CartDTO cartDTO) {
+
+        Cart cart = findCartByDeviceId(cartDTO.deviceId());
+        List<CartItem> cartItems = new ArrayList<>();
+
+        if (cartDTO.cartItems() != null && !cartDTO.cartItems().isEmpty()) {
+            cartItems = cartDTO.cartItems();
+            for (CartItem cartItem : cartItems) {
+                cartItem.setCartId(cart.getId());
+            }
+            cartItemRepositoryPort.saveAll(cartItems);
+        }
+
+        List<CartItem> updatedItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
+        cart.setCartItems(updatedItems);
+        return cartRepositoryPort.save(cart);
+    }
+
+    private List<CartItem> retrieveFullCartItems(Long cartId) {
+        List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cartId);
+
+        Set<Long> variantIds = cartItems.stream()
+                .map(CartItem::getProductVariantId)
+                .collect(Collectors.toSet());
+        Set<ProductVariant> variants = productVariantRepositoryPort.findAllByIdInSet(variantIds);
+
+        updateCurrentStock(cartItems, variants);
+
+        return cartItems;
     }
 
     private CartItem buildCartItem(

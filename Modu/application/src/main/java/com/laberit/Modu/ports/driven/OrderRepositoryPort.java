@@ -9,6 +9,8 @@ public interface OrderRepositoryPort {
 
     Optional<Order> findByDeviceId(String deviceId);
 
+    Optional<Order> findByOrderId(Long orderId);
+
     boolean existsByDeviceId(String deviceId);
 
     Order save(Order order);
