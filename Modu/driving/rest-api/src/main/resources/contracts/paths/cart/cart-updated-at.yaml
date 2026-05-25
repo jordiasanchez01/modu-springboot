@@ -1,0 +1,34 @@
+get:
+  tags:
+    - Cart
+  summary: Displays the 'updatedAt' LocalDateTime field from the user's cart
+  description: Displays the user's cart 'updatedAt' LocalDateTime field. Authentication is needed in Authorization header (user´s device IMEI)
+  operationId: getCartUpdatedAt
+  security:
+    - deviceAuth: []
+
+  responses:
+    '200':
+      description: updatedAt timestamp retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/CartUpdatedAtResponse.yaml'
+    '400':
+      description: Invalid request. Check the fields for more details.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '401':
+      description: User authentication by device IMEI is missing.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '404':
+      description: Requested cart could not be found
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
