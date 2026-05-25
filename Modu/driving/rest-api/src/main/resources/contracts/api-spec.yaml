@@ -37,6 +37,8 @@ paths:
     $ref: './paths/cart/cart-item.yaml'
   /cart/items:
     $ref: './paths/cart/cart-items.yaml'
+  /cart/cartUpdatedAt:
+    $ref: './paths/cart/cart-updated-at.yaml'
 
   /checkout:
     $ref: './paths/checkout/checkout.yaml'

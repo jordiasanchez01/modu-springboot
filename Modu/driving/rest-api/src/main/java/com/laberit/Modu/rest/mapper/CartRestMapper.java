@@ -9,6 +9,7 @@ import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
 import com.laberit.Modu.rest.generated.model.*;
 import org.mapstruct.Mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -31,6 +32,8 @@ public interface CartRestMapper {
     }
 
     CartResponse toCartResponse(Cart cart);
+
+    CartUpdatedAtResponse toCartUpdatedAtResponse(LocalDateTime updatedAt);
 
         default AddItemRequest toAddItemRequest(AddCartItemCommand addCommand) {
         return new AddItemRequest(
