@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -80,6 +81,14 @@ public class CartRestAdapter implements CartApi {
         String deviceId = currentDeviceId();
         cartItemServicePort.deleteAllCartItems(deviceId);
         return ResponseEntity.ok(cartMapper.toCartResponse(cartServicePort.findCartByDeviceId(deviceId)));
+    }
+
+    @Override
+    public ResponseEntity<CartUpdatedAtResponse> getCartUpdatedAt() {
+        String deviceId = currentDeviceId();
+        return ResponseEntity.ok(cartMapper
+                .toCartUpdatedAtResponse(cartServicePort.getCartUpdatedAt(deviceId))
+        );
     }
 
     private String currentDeviceId() {

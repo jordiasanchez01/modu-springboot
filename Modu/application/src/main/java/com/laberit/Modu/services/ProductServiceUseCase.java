@@ -6,8 +6,8 @@ import com.laberit.Modu.domain.model.response.PagedResult;
 import com.laberit.Modu.ports.driven.CategoryRepositoryPort;
 import com.laberit.Modu.ports.driven.ProductCategoryRepositoryPort;
 import com.laberit.Modu.ports.driven.ProductRepositoryPort;
-import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
 import com.laberit.Modu.ports.driving.ProductServicePort;
+import com.laberit.Modu.ports.driving.ProductVariantServicePort;
 import com.laberit.Modu.ports.driving.command.AddProductCommand;
 import com.laberit.Modu.ports.driving.command.UpdateProductCommand;
 import com.laberit.Modu.ports.driving.command.SearchProductsCommand;
@@ -27,7 +27,7 @@ public class ProductServiceUseCase implements ProductServicePort {
     private final ProductRepositoryPort productRepositoryPort;
     private final CategoryRepositoryPort categoryRepositoryPort;
     private final ProductCategoryRepositoryPort productCategoryRepositoryPort;
-    private final ProductVariantRepositoryPort productVariantRepositoryPort;
+    private final ProductVariantServicePort productVariantServicePort;
 
     @Override
     public Product findProductById(Long productId) {
@@ -42,7 +42,7 @@ public class ProductServiceUseCase implements ProductServicePort {
         Set<Category> categories = categoryRepositoryPort.findAllByIdIn(categoryIds);
 
         product.setCategoriesSet(categories);
-        product.setProductVariantsList(productVariantRepositoryPort.findAllByProductId(productId));
+        product.setProductVariantsList(productVariantServicePort.findAllByProductId(productId));
 
         return product;
     }
