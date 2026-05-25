@@ -2,6 +2,7 @@ type: object
 required:
   - id
   - orderId
+  - productId
   - productVariantId
   - quantity
   - unitPrice
@@ -12,6 +13,10 @@ properties:
     format: int64
     example: 1
   orderId:
+    type: integer
+    format: int64
+    example: 1
+  productId:
     type: integer
     format: int64
     example: 1

@@ -6,6 +6,7 @@ import com.laberit.Modu.domain.exceptions.OrderNotPaidException;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
 import com.laberit.Modu.domain.model.response.CheckoutResult;
+import com.laberit.Modu.ports.driven.OrderItemRepositoryPort;
 import com.laberit.Modu.ports.driven.OrderRepositoryPort;
 import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
 import com.laberit.Modu.ports.driving.CartItemServicePort;
@@ -31,6 +32,7 @@ public class OrderServiceUseCase implements OrderServicePort {
     private final OrderRepositoryPort orderRepositoryPort;
     private final CartServicePort cartServicePort;
     private final CartItemServicePort cartItemServicePort;
+    private final OrderItemRepositoryPort orderItemRepositoryPort;
     private final ProductVariantRepositoryPort productVariantRepositoryPort;
 
     @Override
@@ -66,6 +68,8 @@ public class OrderServiceUseCase implements OrderServicePort {
                 savedOrder = orderRepositoryPort.save(order);
                 updateProductVariantStock(savedOrder);
                 cartItemServicePort.deleteAllCartItems(cartResponse.cart().getDeviceId());
+                savedOrder.setOrderItems(order.getOrderItems());
+                System.out.println("SAVED ORDER to String: "+savedOrder.toString()  );
                 return new CheckoutResult(savedOrder, cartResponse);
             }
 
@@ -97,6 +101,7 @@ public class OrderServiceUseCase implements OrderServicePort {
         for (CartItem cartItem: cart.getCartItems()){
             OrderItem item = OrderItem.builder()
                     .orderId(order.getId())
+                    .productId(cartItem.getProductId())
                     .productVariantId(cartItem.getProductVariantId())
                     .unitPrice(cartItem.getUnitPrice())
                     .quantity(cartItem.getQuantity())
@@ -107,7 +112,9 @@ public class OrderServiceUseCase implements OrderServicePort {
 
         order.setDeviceId(cart.getDeviceId());
         order.setSpecialInstructions(command.specialInstructions());
+        //orderItemRepositoryPort.saveAll(orderItems);
         order.setOrderItems(orderItems);
+
 
         return order;
     }
