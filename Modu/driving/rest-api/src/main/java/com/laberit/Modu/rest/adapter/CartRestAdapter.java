@@ -12,6 +12,7 @@ import com.laberit.Modu.rest.mapper.CartItemRestMapper;
 import com.laberit.Modu.rest.mapper.CartRestMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,6 +53,12 @@ public class CartRestAdapter implements CartApi {
         Cart cart = cartServicePort.addCartItemToCart(cartMapper.toAddCartItemCommand(
                 deviceId,addItemRequest));
         return ResponseEntity.ok(cartMapper.toCartResponse(cart));
+    }
+
+    @Override
+    public ResponseEntity<CartResponse> createCart() {
+        Cart cart = cartServicePort.createCart();
+        return ResponseEntity.status(HttpStatus.CREATED).body(cartMapper.toCartResponse(cart));
     }
 
     @Override

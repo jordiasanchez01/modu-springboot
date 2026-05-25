@@ -32,3 +32,29 @@ get:
         application/json:
           schema:
             $ref: '../../components/schemas/ErrorResponse.yaml'
+
+post:
+  tags:
+    - Cart
+  summary: Create a new cart
+  description: >
+    Creates a new empty cart and returns the generated UID associated with it.
+    This endpoint should be called only once, when the user first interacts
+    with the cart and does not have a UUID yet. The returned UID must be stored
+    locally by the frontend and sent in the Authorization header on all
+    subsequent cart requests.
+  operationId: createCart
+
+  responses:
+    '201':
+      description: Cart created successfully. Returns an empty cart with generated UUID as deviceID and created_at/updated_at timestamps
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/CartResponse.yaml'
+    '500':
+      description: Unexpected server error. The cart could not be created.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'

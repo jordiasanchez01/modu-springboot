@@ -17,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -28,16 +29,16 @@ public class DeviceIdFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
-        if (header != null && header.startsWith("DeviceId ")) {
+        if (header != null) {
             String deviceId = header.substring(9);
-            if (deviceId.matches("\\d{15}")) {
+            if (isValidUUID(deviceId)) {
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         deviceId, null, List.of());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
                 SecurityContextHolder.clearContext();
                 request.setAttribute(RestAuthenticationEntryPoint.AUTH_ERROR, ErrorType.VALIDATION_ERROR);
-                String errorDetails = "Invalid IMEI format. Expected 15 digits.";
+                String errorDetails = "Invalid device ID format. Expected UUID format.";
                 request.setAttribute(RestAuthenticationEntryPoint.AUTH_ERROR_DETAILS, errorDetails);
                 authenticationEntryPoint.commence(request, response, new BadCredentialsException(errorDetails));
                 return;
@@ -45,6 +46,15 @@ public class DeviceIdFilter extends OncePerRequestFilter {
 
         }
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isValidUUID(String value) {
+        try {
+            UUID.fromString(value);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
 }

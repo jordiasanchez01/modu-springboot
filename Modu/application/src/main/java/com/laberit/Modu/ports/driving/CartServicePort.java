@@ -7,11 +7,13 @@ import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
 
 public interface CartServicePort {
 
-    Cart addCartItemToCart(AddCartItemCommand command);
+    Cart addCartItemToCart(AddCartItemCommand command); //TODO: move to CartItemServicePort
 
     CartWithPriceAndStockCheck getCartWithPriceAndStockCheck(String deviceId);
 
     Cart findCartByDeviceId(String deviceId);
 
     Cart updateCart(CartDTO cartDTO);
+
+    Cart createCart();
 }

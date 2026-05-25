@@ -31,6 +31,13 @@ public class CartServiceUseCase implements CartServicePort {
     private final ProductVariantServicePort productVariantServicePort;
 
     @Transactional
+    public Cart createCart() {
+        String deviceId = UUID.randomUUID().toString();
+        return cartRepositoryPort.save(
+                Cart.builder().deviceId(deviceId).cartItems(new ArrayList<>()).build());
+    }
+
+    @Transactional
     public CartWithPriceAndStockCheck getCartWithPriceAndStockCheck(String deviceId) {
         Cart cart = cartRepositoryPort.findByDeviceId(deviceId)
                 .orElseThrow(() -> new CartNotFoundException(deviceId));
@@ -78,26 +85,23 @@ public class CartServiceUseCase implements CartServicePort {
         ProductVariant variant = getProductVariant(command.productVariantId());
         Product product = getProduct(variant.getProductId());
 
-        Optional<Cart> existingCart = cartRepositoryPort.findByDeviceId(command.deviceId());
+        Cart cart = cartRepositoryPort.findByDeviceId(command.deviceId())
+                .orElseThrow(() -> new CartNotFoundException(command.deviceId()));
 
-        Optional<CartItem> existingItem = existingCart.flatMap(cart ->
-                cartItemRepositoryPort.findByCartIdAndProductVariantId(cart.getId(), command.productVariantId()));
+        Optional<CartItem> existingItem = cartItemRepositoryPort
+                .findByCartIdAndProductVariantId(cart.getId(), command.productVariantId());
 
         int totalQuantity = existingItem.map(item -> item.getQuantity() + command.quantity())
                 .orElse(command.quantity());
 
         productVariantServicePort.assertIsValidToPurchase(variant, totalQuantity);
 
-        Cart cart = existingCart.orElseGet(() -> cartRepositoryPort.save(
-                Cart.builder().deviceId(command.deviceId()).cartItems(new ArrayList<>()).build()));
-
         CartItem item = buildCartItem(existingItem, cart, command, product, variant);
         cartItemRepositoryPort.save(item);
 
-        List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
-
-        cart.setCartItems(cartItems);
-        return cartRepositoryPort.findByDeviceId(command.deviceId()).orElseThrow(() -> new CartNotFoundException(command.deviceId()));
+        cart.setCartItems(cartItemRepositoryPort.findAllByCartId(cart.getId()));
+        return cart;
+                //cartRepositoryPort.findByDeviceId(command.deviceId()).orElseThrow(() -> new CartNotFoundException(command.deviceId()));
     }
 
     @Transactional
