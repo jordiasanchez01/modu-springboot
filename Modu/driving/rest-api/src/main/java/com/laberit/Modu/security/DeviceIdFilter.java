@@ -28,12 +28,11 @@ public class DeviceIdFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String header = request.getHeader("Authorization");
-        if (header != null) {
-            String deviceId = header.substring(9);
+        String deviceId = request.getHeader("Authorization");
+        if (deviceId != null) {
             if (isValidUUID(deviceId)) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        deviceId, null, List.of());
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(deviceId, null, List.of());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
                 SecurityContextHolder.clearContext();
@@ -43,10 +42,11 @@ public class DeviceIdFilter extends OncePerRequestFilter {
                 authenticationEntryPoint.commence(request, response, new BadCredentialsException(errorDetails));
                 return;
             }
-
         }
+
         filterChain.doFilter(request, response);
     }
+
 
     private boolean isValidUUID(String value) {
         try {

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -51,7 +52,7 @@ public class CartRepositoryAdapter implements CartRepositoryPort {
 
     @Override
     public Optional<Cart> findByDeviceId(String deviceId) {
-        return cartJpaRepository.findByDeviceId(deviceId).map(entity -> {
+        return cartJpaRepository.findByDeviceId(UUID.fromString(deviceId)).map(entity -> {
             entityManager.refresh(entity);
             Cart cart = cartMapper.toDomain(entity);
             cart.setCartItems(cartItemMapper.toDomainList(entity.getCartItems()));
@@ -61,6 +62,6 @@ public class CartRepositoryAdapter implements CartRepositoryPort {
 
     @Override
     public boolean existsByDeviceId(String deviceId) {
-        return cartJpaRepository.existsByDeviceId(deviceId);
+        return cartJpaRepository.existsByDeviceId(UUID.fromString(deviceId));
     }
 }

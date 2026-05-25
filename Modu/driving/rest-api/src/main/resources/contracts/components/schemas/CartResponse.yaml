@@ -7,9 +7,9 @@ required:
   - cart_items
 properties:
   deviceId:
-    type: integer
-    format: int64
-    example: 1
+    type: string
+    format: uuid
+    example: "ede8e350-8c0b-4eba-a0fc-f06d441f0f10"
   createdAt:
     type: string
     format: date-time

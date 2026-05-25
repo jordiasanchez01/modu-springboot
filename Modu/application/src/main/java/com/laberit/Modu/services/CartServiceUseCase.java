@@ -1,8 +1,6 @@
 package com.laberit.Modu.services;
 
 import com.laberit.Modu.domain.exceptions.CartNotFoundException;
-import com.laberit.Modu.domain.exceptions.ProductNotFoundException;
-import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
 import com.laberit.Modu.domain.model.response.InsufficientStockResult;
@@ -87,31 +85,6 @@ public class CartServiceUseCase implements CartServicePort {
         return cart;
     }
 
-    @Override
-    @Transactional
-    public Cart addCartItemToCart(AddCartItemCommand command) {
-        ProductVariant variant = getProductVariant(command.productVariantId());
-        Product product = getProduct(variant.getProductId());
-
-        Cart cart = cartRepositoryPort.findByDeviceId(command.deviceId())
-                .orElseThrow(() -> new CartNotFoundException(command.deviceId()));
-
-        Optional<CartItem> existingItem = cartItemRepositoryPort
-                .findByCartIdAndProductVariantId(cart.getId(), command.productVariantId());
-
-        int totalQuantity = existingItem.map(item -> item.getQuantity() + command.quantity())
-                .orElse(command.quantity());
-
-        productVariantServicePort.assertIsValidToPurchase(variant, totalQuantity);
-
-        CartItem item = buildCartItem(existingItem, cart, command, product, variant);
-        cartItemRepositoryPort.save(item);
-
-        cart.setCartItems(cartItemRepositoryPort.findAllByCartId(cart.getId()));
-        return cart;
-                //cartRepositoryPort.findByDeviceId(command.deviceId()).orElseThrow(() -> new CartNotFoundException(command.deviceId()));
-    }
-
     @Transactional
     @Override
     public Cart updateCart(CartDTO cartDTO) {
@@ -143,34 +116,6 @@ public class CartServiceUseCase implements CartServicePort {
         updateCurrentStock(cartItems, variants);
 
         return cartItems;
-    }
-
-    private CartItem buildCartItem(
-            Optional<CartItem> existing,
-            Cart cart,
-            AddCartItemCommand command,
-            Product product,
-            ProductVariant variant
-    ) {
-        if (existing.isPresent()) {
-            CartItem item = existing.get();
-            item.setQuantity(item.getQuantity() + command.quantity());
-            item.setCurrentStock(variant.getStock());
-            return item;
-        }
-
-        return CartItem.builder()
-                .cartId(cart.getId())
-                .productVariantId(command.productVariantId())
-                .unitPrice(product.getPrice())
-                .quantity(command.quantity())
-                .currentStock(variant.getStock())
-                .build();
-    }
-
-    private Product getProduct(Long productId) {
-        return productRepositoryPort.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException(productId.toString()));
     }
 
     private void applyPriceChanges(List<CartItem> cartItems, List<ProductPriceChange> priceChanges) {
@@ -244,10 +189,5 @@ public class CartServiceUseCase implements CartServicePort {
                 variantMap.get(item.getProductVariantId()).getStock()));
     }
 
-    private ProductVariant getProductVariant(Long id) {
-        return productVariantRepositoryPort.findById(id)
-                .orElseThrow(()-> new ProductVariantNotFoundException(
-                        id.toString()
-                ));
-    }
+
 }

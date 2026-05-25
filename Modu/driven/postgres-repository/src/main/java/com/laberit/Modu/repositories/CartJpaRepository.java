@@ -7,16 +7,17 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @NullMarked
 public interface CartJpaRepository extends JpaRepository<CartEntity, Long>, JpaSpecificationExecutor<CartEntity> {
 
     Optional<CartEntity> findById(Long id);
 
-    Optional<CartEntity> findByDeviceId(String deviceId);
+    Optional<CartEntity> findByDeviceId(UUID deviceId);
 
     boolean existsById(Long id);
 
-    boolean existsByDeviceId(String deviceId);
+    boolean existsByDeviceId(UUID deviceId);
 
 }

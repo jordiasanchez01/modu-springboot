@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ public class CartEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false, name="device_id")
-    private String deviceId;
+    private UUID deviceId;
     
     @Column(name="created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;

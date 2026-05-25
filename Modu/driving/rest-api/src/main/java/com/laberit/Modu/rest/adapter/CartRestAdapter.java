@@ -2,7 +2,6 @@ package com.laberit.Modu.rest.adapter;
 
 import com.laberit.Modu.domain.model.response.InsufficientStockResult;
 import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
-import com.laberit.Modu.domain.model.response.ProductPriceChange;
 import com.laberit.Modu.ports.driving.CartItemServicePort;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
@@ -17,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -51,7 +49,7 @@ public class CartRestAdapter implements CartApi {
     @Override
     public ResponseEntity<CartResponse> addCartItem(AddItemRequest addItemRequest) {
         String deviceId = currentDeviceId();
-        Cart cart = cartServicePort.addCartItemToCart(cartMapper.toAddCartItemCommand(
+        Cart cart = cartItemServicePort.addCartItemToCart(cartMapper.toAddCartItemCommand(
                 deviceId,addItemRequest));
         return ResponseEntity.ok(cartMapper.toCartResponse(cart));
     }

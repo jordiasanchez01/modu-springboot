@@ -5,6 +5,7 @@ import com.laberit.Modu.domain.exceptions.*;
 import com.laberit.Modu.rest.generated.model.ErrorResponse;
 import com.laberit.Modu.rest.generated.model.ErrorResponseFieldsInner;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +15,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.util.List;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalControllerAdvice {
 
@@ -107,6 +109,7 @@ public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorResponse handleGeneric(Exception ex) {
+        log.error("Unexpected error", ex); // add this line temporarily
         return error(ErrorType.INTERNAL_ERROR, ex.getMessage());
     }
 
