@@ -33,17 +33,15 @@ get:
           schema:
             $ref: '../../components/schemas/ErrorResponse.yaml'
 
-post:
+put:
   tags:
     - Cart
   summary: Create a new cart
   description: >
-    Creates a new empty cart and returns the generated UID associated with it.
-    This endpoint should be called only once, when the user first interacts
-    with the cart and does not have a UUID yet. The returned UID must be stored
-    locally by the frontend and sent in the Authorization header on all
-    subsequent cart requests.
-  operationId: createCart
+    Creates or resets the cart for the device identified by the Authorization header.
+     If the device already has an existing cart, it is deleted and a new empty
+     cart is created with the same device ID.
+  operationId: initializeCart
 
   responses:
     '201':

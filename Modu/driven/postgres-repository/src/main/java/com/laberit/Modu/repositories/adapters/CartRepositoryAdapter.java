@@ -44,15 +44,13 @@ public class CartRepositoryAdapter implements CartRepositoryPort {
     }
 
     @Override
-    public Cart saveAndFlush(Cart cart) {
-        CartEntity entity = cartMapper.toEntity(cart);
-        CartEntity saved = cartJpaRepository.saveAndFlush(entity);
-        return cartMapper.toDomain(saved);
+    public void deleteByDeviceId(String deviceId) {
+        cartJpaRepository.deleteByDeviceId(deviceId);
     }
 
     @Override
     public Optional<Cart> findByDeviceId(String deviceId) {
-        return cartJpaRepository.findByDeviceId(UUID.fromString(deviceId)).map(entity -> {
+        return cartJpaRepository.findByDeviceId(deviceId).map(entity -> {
             entityManager.refresh(entity);
             Cart cart = cartMapper.toDomain(entity);
             cart.setCartItems(cartItemMapper.toDomainList(entity.getCartItems()));
@@ -62,6 +60,6 @@ public class CartRepositoryAdapter implements CartRepositoryPort {
 
     @Override
     public boolean existsByDeviceId(String deviceId) {
-        return cartJpaRepository.existsByDeviceId(UUID.fromString(deviceId));
+        return cartJpaRepository.existsByDeviceId(deviceId);
     }
 }

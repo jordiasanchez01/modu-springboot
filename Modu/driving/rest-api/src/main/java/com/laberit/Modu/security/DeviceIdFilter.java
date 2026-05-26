@@ -30,14 +30,14 @@ public class DeviceIdFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String deviceId = request.getHeader("Authorization");
         if (deviceId != null) {
-            if (isValidUUID(deviceId)) {
+            if (deviceId.length()==16 || deviceId.length() == 32) {
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(deviceId, null, List.of());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
                 SecurityContextHolder.clearContext();
                 request.setAttribute(RestAuthenticationEntryPoint.AUTH_ERROR, ErrorType.VALIDATION_ERROR);
-                String errorDetails = "Invalid device ID format. Expected UUID format.";
+                String errorDetails = "Invalid device ID format. Device ID length should be 16 or 32 characters.";
                 request.setAttribute(RestAuthenticationEntryPoint.AUTH_ERROR_DETAILS, errorDetails);
                 authenticationEntryPoint.commence(request, response, new BadCredentialsException(errorDetails));
                 return;
@@ -46,15 +46,4 @@ public class DeviceIdFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-
-
-    private boolean isValidUUID(String value) {
-        try {
-            UUID.fromString(value);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-    }
-
 }

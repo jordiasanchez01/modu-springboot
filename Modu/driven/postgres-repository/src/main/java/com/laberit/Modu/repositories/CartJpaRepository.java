@@ -12,12 +12,11 @@ import java.util.UUID;
 @NullMarked
 public interface CartJpaRepository extends JpaRepository<CartEntity, Long>, JpaSpecificationExecutor<CartEntity> {
 
-    Optional<CartEntity> findById(Long id);
-
-    Optional<CartEntity> findByDeviceId(UUID deviceId);
+    Optional<CartEntity> findByDeviceId(String deviceId);
 
     boolean existsById(Long id);
 
-    boolean existsByDeviceId(UUID deviceId);
+    boolean existsByDeviceId(String deviceId);
 
+    void deleteByDeviceId(String deviceId);
 }

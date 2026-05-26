@@ -19,5 +19,5 @@ public interface CartServicePort {
 
     Cart updateCart(CartDTO cartDTO);
 
-    Cart createCart();
+    Cart initializeCart(String deviceId);
 }

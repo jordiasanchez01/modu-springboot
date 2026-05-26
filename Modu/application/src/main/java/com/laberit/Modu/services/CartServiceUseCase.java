@@ -30,8 +30,10 @@ public class CartServiceUseCase implements CartServicePort {
     private final ProductVariantServicePort productVariantServicePort;
 
     @Transactional
-    public Cart createCart() {
-        String deviceId = UUID.randomUUID().toString();
+    public Cart initializeCart(String deviceId) {
+        if (cartRepositoryPort.existsByDeviceId(deviceId)) {
+            cartRepositoryPort.deleteByDeviceId(deviceId);
+        }
         return cartRepositoryPort.save(
                 Cart.builder().deviceId(deviceId).cartItems(new ArrayList<>()).build());
     }
