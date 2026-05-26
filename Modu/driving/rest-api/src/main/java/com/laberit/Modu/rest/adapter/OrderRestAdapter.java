@@ -3,7 +3,6 @@ package com.laberit.Modu.rest.adapter;
 import com.laberit.Modu.domain.model.Order;
 import com.laberit.Modu.domain.model.response.CheckoutResult;
 import com.laberit.Modu.ports.driving.OrderServicePort;
-import com.laberit.Modu.ports.driving.command.AddOrderCommand;
 import com.laberit.Modu.rest.generated.api.CheckoutApi;
 import com.laberit.Modu.rest.generated.model.*;
 import com.laberit.Modu.rest.mapper.CartRestMapper;
@@ -30,9 +29,9 @@ public class OrderRestAdapter implements CheckoutApi {
         String deviceId = currentDeviceId();
         CheckoutResult result = orderServicePort.addOrder(deviceId, orderMapper.toAddOrderCommand(addOrderRequest));
 
-        CheckoutResponse response = new CheckoutResponse().orderPlaced(result.isSuccessful());
+        CheckoutResponse response = new CheckoutResponse().orderPlaced(result.isOrderPlaced());
 
-        if (result.isSuccessful()) {
+        if (result.isOrderPlaced()) {
             response.orderId(result.order().getId());
             response.order(orderMapper.toOrderResponse(result.order()));
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
