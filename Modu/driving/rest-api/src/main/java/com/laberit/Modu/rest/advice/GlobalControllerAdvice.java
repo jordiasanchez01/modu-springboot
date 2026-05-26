@@ -109,7 +109,7 @@ public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorResponse handleGeneric(Exception ex) {
-        log.error("Unexpected error", ex); // add this line temporarily
+        log.error("Unhandled exception: {}", ex.getMessage(), ex);
         return error(ErrorType.INTERNAL_ERROR, ex.getMessage());
     }
 

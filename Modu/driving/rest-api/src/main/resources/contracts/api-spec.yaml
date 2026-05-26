@@ -55,5 +55,5 @@ components:
   schemas:
     ProductPagedResponse:
       $ref: './components/schemas/ProductPageResponse.yaml'
-    CartResponse:
-      $ref: './components/schemas/CartResponse.yaml'
+    ValidatedCartResponse:
+      $ref: './components/schemas/ValidatedCartResponse.yaml'
