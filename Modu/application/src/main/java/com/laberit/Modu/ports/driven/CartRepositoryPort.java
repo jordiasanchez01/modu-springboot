@@ -11,5 +11,5 @@ public interface CartRepositoryPort {
 
     Cart save(Cart cart);
 
-    Cart saveAndFlush(Cart cart);
+    void deleteByDeviceId(String deviceId);
 }

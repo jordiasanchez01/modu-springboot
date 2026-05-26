@@ -10,7 +10,7 @@ required:
 properties:
   deviceId:
     type: string
-    example: "100000000000001"
+    example: "10000abcdef00001"
   createdAt:
     type: string
     format: date-time

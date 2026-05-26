@@ -17,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -27,24 +28,22 @@ public class DeviceIdFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String header = request.getHeader("Authorization");
-        if (header != null && header.startsWith("DeviceId ")) {
-            String deviceId = header.substring(9);
-            if (deviceId.matches("\\d{15}")) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        deviceId, null, List.of());
+        String deviceId = request.getHeader("Authorization");
+        if (deviceId != null) {
+            if (deviceId.length()==16 || deviceId.length() == 32) {
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(deviceId, null, List.of());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
                 SecurityContextHolder.clearContext();
                 request.setAttribute(RestAuthenticationEntryPoint.AUTH_ERROR, ErrorType.VALIDATION_ERROR);
-                String errorDetails = "Invalid IMEI format. Expected 15 digits.";
+                String errorDetails = "Invalid device ID format. Device ID length should be 16 or 32 characters.";
                 request.setAttribute(RestAuthenticationEntryPoint.AUTH_ERROR_DETAILS, errorDetails);
                 authenticationEntryPoint.commence(request, response, new BadCredentialsException(errorDetails));
                 return;
             }
-
         }
+
         filterChain.doFilter(request, response);
     }
-
 }

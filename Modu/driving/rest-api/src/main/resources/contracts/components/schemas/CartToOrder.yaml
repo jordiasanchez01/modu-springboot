@@ -1,12 +1,7 @@
 type: object
 required:
-  - deviceId
   - cart_items
 properties:
-  deviceId:
-    type: integer
-    format: int64
-    example: 1
   cart_items:
     type: array
     items:

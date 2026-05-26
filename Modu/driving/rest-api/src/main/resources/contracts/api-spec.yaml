@@ -51,7 +51,7 @@ components:
       type: apiKey
       in: header
       name: Authorization
-      description: "Device ID authentication. Format: DeviceId <device-IMEI>"
+      description: "Device ID authentication. Format: ANDROID_ID"
   schemas:
     ProductPagedResponse:
       $ref: './components/schemas/ProductPageResponse.yaml'

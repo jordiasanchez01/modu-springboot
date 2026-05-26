@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 public interface CartServicePort {
 
-    Cart addCartItemToCart(AddCartItemCommand command);
+    //Cart addCartItemToCart(AddCartItemCommand command); //TODO: move to CartItemServicePort
 
     CartWithPriceAndStockCheck getCartWithPriceAndStockCheck(String deviceId);
 
@@ -18,4 +18,6 @@ public interface CartServicePort {
     Cart findCartByDeviceId(String deviceId);
 
     Cart updateCart(CartDTO cartDTO);
+
+    Cart initializeCart(String deviceId);
 }

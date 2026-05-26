@@ -56,7 +56,7 @@ public class OrderServiceUseCase implements OrderServicePort {
             CartWithPriceAndStockCheck cartResponse = cartServicePort.getCartWithPriceAndStockCheck(deviceId);
 
             if (cartResponse.cart().getCartItems().isEmpty()) {
-                throw new CartEmptyException(deviceId);
+                throw new CartEmptyException();
             }
 
             if (cartResponse.changedPrices().isEmpty() && cartResponse.insufficientStock().isEmpty()) {
