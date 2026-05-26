@@ -41,7 +41,7 @@ public class CartServiceUseCase implements CartServicePort {
     @Transactional
     public CartWithPriceAndStockCheck getCartWithPriceAndStockCheck(String deviceId) {
         Cart cart = cartRepositoryPort.findByDeviceId(deviceId)
-                .orElseThrow(() -> new CartNotFoundException(deviceId));
+                .orElseThrow(CartNotFoundException::new);
         List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
 
         Set<Long> variantIds = cartItems.stream()
@@ -71,7 +71,7 @@ public class CartServiceUseCase implements CartServicePort {
     @Override
     public LocalDateTime getCartUpdatedAt(String deviceId){
         Cart cart = cartRepositoryPort.findByDeviceId(deviceId)
-                .orElseThrow(() -> new CartNotFoundException(deviceId));
+                .orElseThrow(CartNotFoundException::new);
         return cart.getUpdatedAt();
     }
 
@@ -79,7 +79,7 @@ public class CartServiceUseCase implements CartServicePort {
     public Cart findCartByDeviceId(String deviceId) {
 
         Cart cart = cartRepositoryPort.findByDeviceId(deviceId)
-                .orElseThrow(() -> new CartNotFoundException(deviceId));
+                .orElseThrow(CartNotFoundException::new);
         List<CartItem> cartItems = retrieveFullCartItems(cart.getId());
 
         cart.setCartItems(cartItems);

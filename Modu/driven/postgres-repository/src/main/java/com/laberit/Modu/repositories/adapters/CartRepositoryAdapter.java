@@ -46,6 +46,7 @@ public class CartRepositoryAdapter implements CartRepositoryPort {
     @Override
     public void deleteByDeviceId(String deviceId) {
         cartJpaRepository.deleteByDeviceId(deviceId);
+        cartJpaRepository.flush();
     }
 
     @Override

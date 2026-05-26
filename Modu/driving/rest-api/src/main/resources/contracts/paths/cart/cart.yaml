@@ -42,6 +42,8 @@ put:
      If the device already has an existing cart, it is deleted and a new empty
      cart is created with the same device ID.
   operationId: initializeCart
+  security:
+    - deviceAuth: []
 
   responses:
     '201':

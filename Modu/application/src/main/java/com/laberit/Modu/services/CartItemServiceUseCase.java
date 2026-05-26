@@ -37,7 +37,7 @@ public class CartItemServiceUseCase implements CartItemServicePort {
     public CartItem updateCartItemQuantity(String deviceId, Long cartItemId, UpdateCartItemQuantityCommand command) {
         int requestedQuantity = command.quantity();
         Cart cart = cartRepositoryPort.findByDeviceId(deviceId).orElseThrow(
-                () -> new CartNotFoundException(deviceId));
+                CartNotFoundException::new);
         CartItem item = cartItemRepositoryPort.findByIdAndCartId(cartItemId, cart.getId())
                 .orElseThrow(() -> new CartItemNotFoundException(cartItemId));
         ProductVariant productVariant = productVariantRepositoryPort.findById(item.getProductVariantId())
@@ -51,7 +51,7 @@ public class CartItemServiceUseCase implements CartItemServicePort {
     @Override
     public void deleteCartItemById(String deviceId, Long itemId) {
         Cart cart = cartRepositoryPort.findByDeviceId(deviceId).orElseThrow(
-                () -> new CartNotFoundException(deviceId));
+                CartNotFoundException::new);
         CartItem item = cartItemRepositoryPort.findByIdAndCartId(itemId, cart.getId())
                 .orElseThrow(() -> new CartItemNotFoundException(itemId));
         cartItemRepositoryPort.deleteById(itemId);
@@ -59,10 +59,8 @@ public class CartItemServiceUseCase implements CartItemServicePort {
 
     @Override
     public void deleteAllCartItems(String deviceId) {
-        Cart cart = cartRepositoryPort.findByDeviceId(deviceId).orElseThrow(() -> new CartNotFoundException(deviceId));
-        if (cart!=null) {
-            cartItemRepositoryPort.deleteAllByCartId(cart.getId());
-        }
+        Cart cart = cartRepositoryPort.findByDeviceId(deviceId).orElseThrow(CartNotFoundException::new);
+        cartItemRepositoryPort.deleteAllByCartId(cart.getId());
     }
 
     @Override
@@ -106,7 +104,7 @@ public class CartItemServiceUseCase implements CartItemServicePort {
         Product product = getProduct(variant.getProductId());
 
         Cart cart = cartRepositoryPort.findByDeviceId(command.deviceId())
-                .orElseThrow(() -> new CartNotFoundException(command.deviceId()));
+                .orElseThrow(CartNotFoundException::new);
 
         Optional<CartItem> existingItem = cartItemRepositoryPort
                 .findByCartIdAndProductVariantId(cart.getId(), command.productVariantId());
@@ -120,7 +118,7 @@ public class CartItemServiceUseCase implements CartItemServicePort {
         cartItemRepositoryPort.save(item);
 
         cart.setCartItems(cartItemRepositoryPort.findAllByCartId(cart.getId()));
-        return cartRepositoryPort.findByDeviceId(command.deviceId()).orElseThrow(() -> new CartNotFoundException(command.deviceId()));
+        return cartRepositoryPort.findByDeviceId(command.deviceId()).orElseThrow(CartNotFoundException::new);
     }
 
     private CartItem buildCartItem(
