@@ -44,6 +44,8 @@ public class CartServiceUseCase implements CartServicePort {
 
         updateCurrentStock(cartItems, variants);
 
+        setProductIdsInItems(cartItems, variants);
+
         List<ProductPriceChange> priceChanges = detectPriceChanges(cartItems, variants);
 
         List<InsufficientStockResult> insufficientStock = detectInsufficientStock(cartItems);
@@ -139,6 +141,8 @@ public class CartServiceUseCase implements CartServicePort {
 
         updateCurrentStock(cartItems, variants);
 
+        setProductIdsInItems(cartItems, variants);
+
         return cartItems;
     }
 
@@ -151,6 +155,7 @@ public class CartServiceUseCase implements CartServicePort {
     ) {
         if (existing.isPresent()) {
             CartItem item = existing.get();
+            item.setProductId(product.getId());
             item.setQuantity(item.getQuantity() + command.quantity());
             item.setCurrentStock(variant.getStock());
             return item;
@@ -158,6 +163,7 @@ public class CartServiceUseCase implements CartServicePort {
 
         return CartItem.builder()
                 .cartId(cart.getId())
+                .productId(product.getId())
                 .productVariantId(command.productVariantId())
                 .unitPrice(product.getPrice())
                 .quantity(command.quantity())
@@ -239,6 +245,14 @@ public class CartServiceUseCase implements CartServicePort {
 
         cartItems.forEach(item -> item.setCurrentStock(
                 variantMap.get(item.getProductVariantId()).getStock()));
+    }
+
+    private void setProductIdsInItems(List<CartItem> cartItems, Set<ProductVariant> variants) {
+        Map<Long, ProductVariant> variantMap = variants.stream()
+                .collect(Collectors.toMap(ProductVariant::getId, v -> v));
+
+        cartItems.forEach(item -> item.setProductId(
+                variantMap.get(item.getProductVariantId()).getProductId()));
     }
 
     private ProductVariant getProductVariant(Long id) {

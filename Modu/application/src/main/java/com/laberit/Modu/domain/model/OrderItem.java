@@ -15,6 +15,7 @@ import java.math.RoundingMode;
 public class OrderItem {
     private Long id;
     private Long orderId;
+    private Long productId;
     private Long productVariantId;
     private Double unitPrice;
     private Integer quantity;

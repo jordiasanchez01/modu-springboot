@@ -66,9 +66,9 @@ public class OrderServiceUseCase implements OrderServicePort {
                 savedOrder = orderRepositoryPort.save(order);
                 updateProductVariantStock(savedOrder);
                 cartItemServicePort.deleteAllCartItems(cartResponse.cart().getDeviceId());
+                savedOrder.setOrderItems(order.getOrderItems());
                 return new CheckoutResult(savedOrder, cartResponse);
             }
-
             return new CheckoutResult(order, cartResponse);
         }
         else {
@@ -97,18 +97,16 @@ public class OrderServiceUseCase implements OrderServicePort {
         for (CartItem cartItem: cart.getCartItems()){
             OrderItem item = OrderItem.builder()
                     .orderId(order.getId())
+                    .productId(cartItem.getProductId())
                     .productVariantId(cartItem.getProductVariantId())
                     .unitPrice(cartItem.getUnitPrice())
                     .quantity(cartItem.getQuantity())
                     .build();
-            System.out.println("OrderItem: "+item.toString());
             orderItems.add(item);
         }
-
         order.setDeviceId(cart.getDeviceId());
         order.setSpecialInstructions(command.specialInstructions());
         order.setOrderItems(orderItems);
-
         return order;
     }
 

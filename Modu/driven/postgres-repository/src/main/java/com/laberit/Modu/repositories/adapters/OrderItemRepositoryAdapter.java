@@ -45,4 +45,11 @@ public class OrderItemRepositoryAdapter implements OrderItemRepositoryPort {
     public OrderItem save(OrderItem orderItem) {
         return orderItemMapper.toDomain(orderItemJpaRepository.save(orderItemMapper.toEntity(orderItem)));
     }
+
+    @Override
+    public List<OrderItem> saveAll(List<OrderItem> orderItems) {
+        return orderItemMapper.toDomainList(
+                orderItemJpaRepository.saveAll(
+                        orderItemMapper.toEntityList(orderItems)));
+    }
 }

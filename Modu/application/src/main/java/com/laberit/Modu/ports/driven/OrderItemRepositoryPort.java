@@ -19,4 +19,6 @@ public interface OrderItemRepositoryPort {
 
     OrderItem save(OrderItem orderItem);
 
+    List<OrderItem> saveAll(List<OrderItem> orderItems);
+
 }
