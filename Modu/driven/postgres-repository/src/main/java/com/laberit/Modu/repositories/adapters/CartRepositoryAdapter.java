@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -43,10 +44,9 @@ public class CartRepositoryAdapter implements CartRepositoryPort {
     }
 
     @Override
-    public Cart saveAndFlush(Cart cart) {
-        CartEntity entity = cartMapper.toEntity(cart);
-        CartEntity saved = cartJpaRepository.saveAndFlush(entity);
-        return cartMapper.toDomain(saved);
+    public void deleteByDeviceId(String deviceId) {
+        cartJpaRepository.deleteByDeviceId(deviceId);
+        cartJpaRepository.flush();
     }
 
     @Override

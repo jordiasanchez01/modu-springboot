@@ -13,6 +13,7 @@ import com.laberit.Modu.rest.mapper.CartItemRestMapper;
 import com.laberit.Modu.rest.mapper.CartRestMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,13 +30,16 @@ public class CartRestAdapter implements CartApi {
     private final HttpServletRequest request;
 
     @Override
-    public ResponseEntity<CartResponse> getValidatedCart() {
+    public ResponseEntity<ValidatedCartResponse> getValidatedCart() {
         String deviceId = currentDeviceId();
         CartWithPriceAndStockCheck result = cartServicePort.getCartWithPriceAndStockCheck(deviceId);
-        return ResponseEntity.ok(cartMapper.toCartWithPriceAndStockCheckResponse(result));
+        return ResponseEntity.ok(cartMapper.toValidatedCartResponse(result));
     }
 
     @Override
+    public ResponseEntity<CartResponse> updateCart(UpdateCartRequest updateCartRequest) {
+        String deviceId = currentDeviceId();
+        Cart cart = cartServicePort.updateCart(cartMapper.toCartDTO(deviceId, updateCartRequest));
     public ResponseEntity<CartResponseAllChecks> updateCart(CartUpdateRequest cartUpdateRequest) {
         Cart cartToUpdate = cartMapper.toCartFromCartUpdateRequest(cartUpdateRequest);
         String deviceId = currentDeviceId();
@@ -60,9 +64,16 @@ public class CartRestAdapter implements CartApi {
     @Override
     public ResponseEntity<CartResponse> addCartItem(AddItemRequest addItemRequest) {
         String deviceId = currentDeviceId();
-        Cart cart = cartServicePort.addCartItemToCart(cartMapper.toAddCartItemCommand(
+        Cart cart = cartItemServicePort.addCartItemToCart(cartMapper.toAddCartItemCommand(
                 deviceId,addItemRequest));
         return ResponseEntity.ok(cartMapper.toCartResponse(cart));
+    }
+
+    @Override
+    public ResponseEntity<CartResponse> initializeCart() {
+        String deviceId = currentDeviceId();
+        Cart cart = cartServicePort.initializeCart(deviceId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(cartMapper.toCartResponse(cart));
     }
 
     @Override

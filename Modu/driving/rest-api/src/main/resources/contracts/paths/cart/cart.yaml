@@ -13,7 +13,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../components/schemas/CartResponse.yaml'
+            $ref: '../../components/schemas/ValidatedCartResponse.yaml'
     '400':
       description: Invalid request. Check the fields for more details.
       content:
@@ -28,6 +28,32 @@ get:
             $ref: '../../components/schemas/ErrorResponse.yaml'
     '404':
       description: Requested cart could not be found
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+
+put:
+  tags:
+    - Cart
+  summary: Create a new cart
+  description: >
+    Creates or resets the cart for the device identified by the Authorization header.
+     If the device already has an existing cart, it is deleted and a new empty
+     cart is created with the same device ID.
+  operationId: initializeCart
+  security:
+    - deviceAuth: []
+
+  responses:
+    '201':
+      description: Cart created successfully. Returns an empty cart with generated UUID as deviceID and created_at/updated_at timestamps
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/CartResponse.yaml'
+    '500':
+      description: Unexpected server error. The cart could not be created.
       content:
         application/json:
           schema:

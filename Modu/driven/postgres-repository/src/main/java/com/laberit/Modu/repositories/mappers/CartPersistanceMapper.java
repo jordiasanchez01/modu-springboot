@@ -5,6 +5,7 @@ import com.laberit.Modu.repositories.models.CartEntity;
 import org.mapstruct.Mapper;
 
 import java.util.List;
+import java.util.UUID;
 
 @Mapper(componentModel="spring")
 public interface CartPersistanceMapper {
@@ -31,8 +32,6 @@ public interface CartPersistanceMapper {
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();
-
-
     }
 
     List<Cart> toDomainList(List<CartEntity> entities);

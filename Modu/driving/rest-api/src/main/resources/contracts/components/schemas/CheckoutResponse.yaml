@@ -1,11 +1,11 @@
 type: object
 required:
-  - ok
+  - orderPlaced
   - orderId
   - order
   - cartResponse
 properties:
-  ok:
+  orderPlaced:
     type: boolean
     example: true
   orderId:
@@ -15,6 +15,6 @@ properties:
   order:
     $ref: './OrderResponse.yaml'
   cartResponse:
-    $ref: './CartResponse.yaml'
+    $ref: './ValidatedCartResponse.yaml'
 
 

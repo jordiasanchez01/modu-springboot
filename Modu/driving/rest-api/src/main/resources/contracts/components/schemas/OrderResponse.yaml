@@ -12,9 +12,8 @@ properties:
     format: int64
     example: 1
   deviceId:
-    type: integer
-    format: int64
-    example: 1
+    type: string
+    example: "10000abcdef00001"
   createdAt:
     type: string
     format: date-time

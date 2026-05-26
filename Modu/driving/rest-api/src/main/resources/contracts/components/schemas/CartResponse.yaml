@@ -3,13 +3,14 @@ required:
   - deviceId
   - createdAt
   - updatedAt
+  - subTotalPrice
+  - shippingCosts
   - totalPrice
-  - cart_items
+  - cartItems
 properties:
   deviceId:
-    type: integer
-    format: int64
-    example: 1
+    type: string
+    example: "10000abcdef00001"
   createdAt:
     type: string
     format: date-time
@@ -18,16 +19,19 @@ properties:
     type: string
     format: date-time
     example: "2026-01-15T10:42:15"
+  subTotalPrice:
+    type: number
+    format: double
+    example: 39.99
+  shippingCosts:
+    type: number
+    format: double
+    example: 0.0
   totalPrice:
     type: number
     format: double
-    example: 457.15
-  cart_items:
+    example: 39.99
+  cartItems:
     type: array
     items:
       $ref: './CartItemForCartResponse.yaml'
-  price_changed_alert:
-    $ref: './PriceChangedAlert.yaml'
-  insufficient_stock_alert:
-    $ref: './InsufficientStockAlert.yaml'
-
