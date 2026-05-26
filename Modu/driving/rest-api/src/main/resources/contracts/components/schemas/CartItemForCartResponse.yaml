@@ -1,6 +1,7 @@
 type: object
 required:
   - id
+  - productId
   - productVariantId
   - currentStock
   - quantity
@@ -8,6 +9,10 @@ required:
   - totalPrice
 properties:
   id:
+    type: integer
+    format: int64
+    example: 1
+  productId:
     type: integer
     format: int64
     example: 1

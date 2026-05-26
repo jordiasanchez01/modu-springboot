@@ -15,6 +15,7 @@ import java.math.RoundingMode;
 public class CartItem {
     private Long id;
     private Long cartId;
+    private Long productId;
     private Long productVariantId;
     private Double unitPrice;
     private Integer quantity;

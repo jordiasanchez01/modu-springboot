@@ -118,7 +118,13 @@ public class CartItemServiceUseCase implements CartItemServicePort {
         cartItemRepositoryPort.save(item);
 
         cart.setCartItems(cartItemRepositoryPort.findAllByCartId(cart.getId()));
-        return cartRepositoryPort.findByDeviceId(command.deviceId()).orElseThrow(CartNotFoundException::new);
+        Cart updatedCart = cartRepositoryPort.findByDeviceId(command.deviceId()).orElseThrow(CartNotFoundException::new);
+        Set<Long> variantIds = updatedCart.getCartItems().stream()
+                .map(CartItem::getProductVariantId)
+                .collect(Collectors.toSet());
+        Set<ProductVariant> variants = productVariantRepositoryPort.findAllByIdInSet(variantIds);
+        updatedCart.setCartItems(setProductIdsInItems(updatedCart.getCartItems(), variants));
+        return updatedCart;
     }
 
     private CartItem buildCartItem(
@@ -154,5 +160,14 @@ public class CartItemServiceUseCase implements CartItemServicePort {
                 .orElseThrow(()-> new ProductVariantNotFoundException(
                         id.toString()
                 ));
+    }
+
+    private List<CartItem> setProductIdsInItems(List<CartItem> cartItems, Set<ProductVariant> variants) {
+        Map<Long, ProductVariant> variantMap = variants.stream()
+                .collect(Collectors.toMap(ProductVariant::getId, v -> v));
+
+        cartItems.forEach(item -> item.setProductId(
+                variantMap.get(item.getProductVariantId()).getProductId()));
+        return cartItems;
     }
 }

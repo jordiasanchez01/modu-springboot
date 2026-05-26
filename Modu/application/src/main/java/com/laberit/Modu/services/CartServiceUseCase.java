@@ -1,6 +1,8 @@
 package com.laberit.Modu.services;
 
 import com.laberit.Modu.domain.exceptions.CartNotFoundException;
+import com.laberit.Modu.domain.exceptions.ProductNotFoundException;
+import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
 import com.laberit.Modu.domain.model.response.InsufficientStockResult;
@@ -50,6 +52,8 @@ public class CartServiceUseCase implements CartServicePort {
         Set<ProductVariant> variants = productVariantRepositoryPort.findAllByIdInSet(variantIds);
 
         updateCurrentStock(cartItems, variants);
+
+        setProductIdsInItems(cartItems, variants);
 
         List<ProductPriceChange> priceChanges = detectPriceChanges(cartItems, variants);
 
@@ -117,6 +121,8 @@ public class CartServiceUseCase implements CartServicePort {
         Set<ProductVariant> variants = productVariantRepositoryPort.findAllByIdInSet(variantIds);
 
         updateCurrentStock(cartItems, variants);
+
+        setProductIdsInItems(cartItems, variants);
 
         return cartItems;
     }
@@ -192,5 +198,11 @@ public class CartServiceUseCase implements CartServicePort {
                 variantMap.get(item.getProductVariantId()).getStock()));
     }
 
+    private void setProductIdsInItems(List<CartItem> cartItems, Set<ProductVariant> variants) {
+        Map<Long, ProductVariant> variantMap = variants.stream()
+                .collect(Collectors.toMap(ProductVariant::getId, v -> v));
 
+        cartItems.forEach(item -> item.setProductId(
+                variantMap.get(item.getProductVariantId()).getProductId()));
+    }
 }
