@@ -23,12 +23,19 @@ public class Cart {
     @Builder.Default
     private List<CartItem> cartItems = new ArrayList<>();
 
-    public Double getTotalPrice(){
+    public Double getSubTotalPrice(){
         return BigDecimal.valueOf(
                 cartItems.stream()
                         .mapToDouble(CartItem::getTotalPrice)
                         .sum())
-                .setScale(2, RoundingMode.HALF_UP)
-                .doubleValue();
+                .setScale(2, RoundingMode.HALF_UP).doubleValue();
+    }
+
+    public Double getShippingCosts(){
+        return BigDecimal.valueOf(0).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    }
+
+    public Double getTotalPrice() {
+        return getSubTotalPrice() + getShippingCosts();
     }
 }
