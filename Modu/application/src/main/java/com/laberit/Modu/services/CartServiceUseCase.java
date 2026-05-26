@@ -125,6 +125,7 @@ public class CartServiceUseCase implements CartServicePort {
 
         List<CartItem> updatedItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
         cart.setCartItems(updatedItems);
+
         return cartRepositoryPort.save(cart);
     }
 

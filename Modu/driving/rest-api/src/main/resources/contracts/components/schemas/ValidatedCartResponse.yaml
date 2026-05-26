@@ -1,0 +1,13 @@
+type: object
+required:
+  - cartSummary
+  - priceChangedAlert
+  - insufficientStockAlert
+properties:
+  cartSummary:
+    $ref: './CartResponse.yaml'
+  priceChangedAlert:
+    $ref: './PriceChangedAlert.yaml'
+  insufficientStockAlert:
+    $ref: './InsufficientStockAlert.yaml'
+

@@ -8,6 +8,7 @@ import com.laberit.Modu.domain.model.response.ProductPriceChange;
 import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
 import com.laberit.Modu.rest.generated.model.*;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,31 +16,14 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CartRestMapper {
 
-    default CartResponse toCartWithPriceAndStockCheckResponse(CartWithPriceAndStockCheck cartWithPriceAndStockCheck) {
-        CartResponse response = toCartResponse(cartWithPriceAndStockCheck.cart());
-
-        List<ProductPriceChangeResponse> priceChangeList = toProductPriceChangeResponseList(cartWithPriceAndStockCheck.changedPrices());
-        PriceChangedAlert priceChangedAlert = new PriceChangedAlert();
-        priceChangedAlert.setCartItems(priceChangeList);
-        response.setPriceChangedAlert(priceChangedAlert);
-
-        List<InsufficientStockResponse> insufficientStockList = toInsufficientStockResponseList(cartWithPriceAndStockCheck.insufficientStock());
-        InsufficientStockAlert insufficientStockAlert = new InsufficientStockAlert();
-        insufficientStockAlert.setCartItems(insufficientStockList);
-        response.setInsufficientStockAlert(insufficientStockAlert);
-
-        return response;
-    }
-
     CartResponse toCartResponse(Cart cart);
 
-    CartUpdatedAtResponse toCartUpdatedAtResponse(LocalDateTime updatedAt);
+    @Mapping(target = "cartSummary", source = "cart")
+    @Mapping(target = "priceChangedAlert.cartItems", source = "changedPrices")
+    @Mapping(target = "insufficientStockAlert.cartItems", source = "insufficientStock")
+    ValidatedCartResponse toValidatedCartResponse(CartWithPriceAndStockCheck cartWithPriceAndStockCheck);
 
-        default AddItemRequest toAddItemRequest(AddCartItemCommand addCommand) {
-        return new AddItemRequest(
-                addCommand.productVariantId(),
-                addCommand.quantity());
-    };
+    CartUpdatedAtResponse toCartUpdatedAtResponse(LocalDateTime updatedAt); //TODO:check if works
 
     default AddCartItemCommand toAddCartItemCommand(String deviceId, AddItemRequest addRequest) {
         return new AddCartItemCommand(
@@ -47,7 +31,7 @@ public interface CartRestMapper {
                 addRequest.getVariantId(),
                 addRequest.getQuantity()
         );
-    };
+    }
 
     default CartDTO toCartDTO(UpdateCartRequest updateCartRequest) {
         return CartDTO.builder()
