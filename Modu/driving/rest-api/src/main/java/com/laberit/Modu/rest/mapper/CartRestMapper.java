@@ -1,7 +1,7 @@
 package com.laberit.Modu.rest.mapper;
 
 import com.laberit.Modu.domain.model.Cart;
-import com.laberit.Modu.domain.model.CartDTO;
+import com.laberit.Modu.domain.model.CartItemsQuantitiesUpdateDTO;
 import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
 import com.laberit.Modu.domain.model.response.InsufficientStockResult;
 import com.laberit.Modu.domain.model.response.ProductPriceChange;
@@ -39,7 +39,7 @@ public interface CartRestMapper {
         return new AddItemRequest(
                 addCommand.productVariantId(),
                 addCommand.quantity());
-    };
+    }
 
     default AddCartItemCommand toAddCartItemCommand(String deviceId, AddItemRequest addRequest) {
         return new AddCartItemCommand(
@@ -47,12 +47,12 @@ public interface CartRestMapper {
                 addRequest.getVariantId(),
                 addRequest.getQuantity()
         );
-    };
+    }
 
-    default CartDTO toCartDTO(UpdateCartRequest updateCartRequest) {
-        return CartDTO.builder()
-                .deviceId(updateCartRequest.getDeviceId())
-                .cartItems(null)
+    default CartItemsQuantitiesUpdateDTO toCartDTO(UpdateCartQuantitiesRequest updateCartQuantitiesRequest) {
+        return CartItemsQuantitiesUpdateDTO.builder()
+                .deviceId(updateCartQuantitiesRequest.getDeviceId())
+                .cartItemCommands(null)
                 .build();
     }
 

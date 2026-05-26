@@ -8,7 +8,7 @@ import java.util.Set;
 
 public interface CartItemServicePort {
 
-    CartItem updateCartItemQuantity(String deviceId, Long cartItemId, UpdateCartItemQuantityCommand command);
+    CartItem updateCartItemQuantity(String deviceId, UpdateCartItemQuantityCommand command);
 
     void deleteCartItemById(String deviceId, Long cartItemId);
 

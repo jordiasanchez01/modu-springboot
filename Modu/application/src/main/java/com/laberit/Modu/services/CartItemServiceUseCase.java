@@ -33,12 +33,12 @@ public class CartItemServiceUseCase implements CartItemServicePort {
     private final ProductVariantRepositoryPort productVariantRepositoryPort;
 
     @Override
-    public CartItem updateCartItemQuantity(String deviceId, Long cartItemId, UpdateCartItemQuantityCommand command) {
+    public CartItem updateCartItemQuantity(String deviceId, UpdateCartItemQuantityCommand command) {
         int requestedQuantity = command.quantity();
         Cart cart = cartRepositoryPort.findByDeviceId(deviceId).orElseThrow(
                 () -> new CartNotFoundException(deviceId));
-        CartItem item = cartItemRepositoryPort.findByIdAndCartId(cartItemId, cart.getId())
-                .orElseThrow(() -> new CartItemNotFoundException(cartItemId));
+        CartItem item = cartItemRepositoryPort.findByIdAndCartId(command.cartItemId(), cart.getId())
+                .orElseThrow(() -> new CartItemNotFoundException(command.cartItemId()));
         ProductVariant productVariant = productVariantRepositoryPort.findById(item.getProductVariantId())
                 .orElseThrow(() -> new ProductVariantNotFoundException(item.getProductVariantId().toString()));
         productVariantServicePort.assertIsValidToPurchase(productVariant, requestedQuantity);

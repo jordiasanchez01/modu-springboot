@@ -51,7 +51,7 @@ public class OrderServiceUseCase implements OrderServicePort {
         Order order = new Order();
         if (validateAddOrderCommand(command)) {
 
-            cartServicePort.updateCart(command.cartToOrder());
+            cartServicePort.updateCartItemsQuantities(command.cartToOrder());
 
             CartWithPriceAndStockCheck cartResponse = cartServicePort.getCartWithPriceAndStockCheck(deviceId);
 

@@ -112,15 +112,18 @@ public class CartServiceUseCase implements CartServicePort {
 
     @Transactional
     @Override
-    public Cart updateCart(CartDTO cartDTO) {
+    public Cart updateCartItemsQuantities(CartItemsQuantitiesUpdateDTO cartItemsQuantitiesUpdateDTO) {
 
-        Cart cart = findCartByDeviceId(cartDTO.deviceId());
-        List<CartItem> cartItems = new ArrayList<>();
+        Cart cart = findCartByDeviceId(cartItemsQuantitiesUpdateDTO.deviceId());
+        List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
 
-        if (cartDTO.cartItems() != null && !cartDTO.cartItems().isEmpty()) {
-            cartItems = cartDTO.cartItems();
+        if (cartItemsQuantitiesUpdateDTO.cartItemCommands() != null && !cartItemsQuantitiesUpdateDTO.cartItemCommands().isEmpty()) {
+            List<UpdateCartItemQuantityCommand> itemCommands = cartItemsQuantitiesUpdateDTO.cartItemCommands();
             for (CartItem cartItem : cartItems) {
-                cartItem.setCartId(cart.getId());
+                itemCommands.stream()
+                        .filter(command -> command.cartItemId().equals(cartItem.getId()))
+                        .findFirst()
+                        .ifPresent(command -> cartItem.setQuantity(command.quantity()));
             }
             cartItemRepositoryPort.saveAll(cartItems);
         }

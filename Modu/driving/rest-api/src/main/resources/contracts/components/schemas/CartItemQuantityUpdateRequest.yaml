@@ -9,5 +9,5 @@ properties:
     example: 1
   quantity:
     type: integer
-    example: 1
+    example: 13
     minimum: 1
