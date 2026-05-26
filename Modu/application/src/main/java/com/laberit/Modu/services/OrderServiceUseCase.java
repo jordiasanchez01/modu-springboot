@@ -6,7 +6,6 @@ import com.laberit.Modu.domain.exceptions.OrderNotPaidException;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
 import com.laberit.Modu.domain.model.response.CheckoutResult;
-import com.laberit.Modu.ports.driven.OrderItemRepositoryPort;
 import com.laberit.Modu.ports.driven.OrderRepositoryPort;
 import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
 import com.laberit.Modu.ports.driving.CartItemServicePort;
@@ -32,7 +31,6 @@ public class OrderServiceUseCase implements OrderServicePort {
     private final OrderRepositoryPort orderRepositoryPort;
     private final CartServicePort cartServicePort;
     private final CartItemServicePort cartItemServicePort;
-    private final OrderItemRepositoryPort orderItemRepositoryPort;
     private final ProductVariantRepositoryPort productVariantRepositoryPort;
 
     @Override
@@ -69,10 +67,8 @@ public class OrderServiceUseCase implements OrderServicePort {
                 updateProductVariantStock(savedOrder);
                 cartItemServicePort.deleteAllCartItems(cartResponse.cart().getDeviceId());
                 savedOrder.setOrderItems(order.getOrderItems());
-                System.out.println("SAVED ORDER to String: "+savedOrder.toString()  );
                 return new CheckoutResult(savedOrder, cartResponse);
             }
-
             return new CheckoutResult(order, cartResponse);
         }
         else {
@@ -106,16 +102,11 @@ public class OrderServiceUseCase implements OrderServicePort {
                     .unitPrice(cartItem.getUnitPrice())
                     .quantity(cartItem.getQuantity())
                     .build();
-            System.out.println("OrderItem: "+item.toString());
             orderItems.add(item);
         }
-
         order.setDeviceId(cart.getDeviceId());
         order.setSpecialInstructions(command.specialInstructions());
-        //orderItemRepositoryPort.saveAll(orderItems);
         order.setOrderItems(orderItems);
-
-
         return order;
     }
 
