@@ -4,6 +4,7 @@ import com.laberit.Modu.domain.exceptions.CartEmptyException;
 import com.laberit.Modu.domain.exceptions.OrderNotFoundException;
 import com.laberit.Modu.domain.exceptions.OrderNotPaidException;
 import com.laberit.Modu.domain.model.*;
+import com.laberit.Modu.domain.model.response.CartWithAllChecks;
 import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
 import com.laberit.Modu.domain.model.response.CheckoutResult;
 import com.laberit.Modu.ports.driven.OrderRepositoryPort;
@@ -53,13 +54,17 @@ public class OrderServiceUseCase implements OrderServicePort {
 
             cartServicePort.updateCartItemsQuantities(command.cartToOrder());
 
-            CartWithPriceAndStockCheck cartResponse = cartServicePort.getCartWithPriceAndStockCheck(deviceId);
+            CartWithAllChecks cartResponse = cartServicePort.getCartWithAllChecks(deviceId);
 
             if (cartResponse.cart().getCartItems().isEmpty()) {
                 throw new CartEmptyException();
             }
 
-            if (cartResponse.changedPrices().isEmpty() && cartResponse.insufficientStock().isEmpty()) {
+            if (
+                    cartResponse.changedPrices().isEmpty() &&
+                    cartResponse.insufficientStock().isEmpty() &&
+                    cartResponse.unavailableVariants().isEmpty()
+            ) {
                 order.setDeviceId(deviceId);
                 Order savedOrder = orderRepositoryPort.saveWithoutItems(order);
                 order = mapOrderCommandToOrder(command, cartResponse.cart(), savedOrder);

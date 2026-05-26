@@ -1,8 +1,6 @@
 type: object
 required:
   - cartSummary
-  - priceChangedAlert
-  - insufficientStockAlert
 properties:
   cartSummary:
     $ref: './CartResponse.yaml'
@@ -10,4 +8,6 @@ properties:
     $ref: './PriceChangedAlert.yaml'
   insufficientStockAlert:
     $ref: './InsufficientStockAlert.yaml'
+  variantAvailabilityAlert:
+    $ref: './VariantAvailabilityAlert.yaml'
 

@@ -50,8 +50,6 @@ public interface CartRestMapper {
 
     CartUpdateRequest toCartUpdateRequest(Cart cart);
 
-
-
     CartUpdatedAtResponse toCartUpdatedAtResponse(LocalDateTime updatedAt);
 
     default AddItemRequest toAddItemRequest(AddCartItemCommand addCommand) {
@@ -60,14 +58,11 @@ public interface CartRestMapper {
                 addCommand.quantity());
     }
 
-    CartResponse toCartResponse(Cart cart);
-
     @Mapping(target = "cartSummary", source = "cart")
     @Mapping(target = "priceChangedAlert.cartItems", source = "changedPrices")
     @Mapping(target = "insufficientStockAlert.cartItems", source = "insufficientStock")
-    ValidatedCartResponse toValidatedCartResponse(CartWithPriceAndStockCheck cartWithPriceAndStockCheck);
-
-    CartUpdatedAtResponse toCartUpdatedAtResponse(LocalDateTime updatedAt); //TODO:check if works
+    @Mapping(target = "variantAvailabilityAlert.cartItems", source = "unavailableVariants")
+    ValidatedCartResponse toValidatedCartResponse(CartWithAllChecks cartWithAllChecks);
 
     default AddCartItemCommand toAddCartItemCommand(String deviceId, AddItemRequest addRequest) {
         return new AddCartItemCommand(
@@ -77,14 +72,12 @@ public interface CartRestMapper {
         );
     }
 
-    default CartItemsQuantitiesUpdateDTO toCartDTO(UpdateCartQuantitiesRequest updateCartQuantitiesRequest) {
+    default CartItemsQuantitiesUpdateDTO toCartItemsQuantitiesUpdateDTO(String deviceId, UpdateCartQuantitiesRequest updateCartQuantitiesRequest) {
         return CartItemsQuantitiesUpdateDTO.builder()
-                .deviceId(updateCartQuantitiesRequest.getDeviceId())
+                .deviceId(deviceId)
                 .cartItemCommands(null)
                 .build();
     }
-
-    List<CartResponse>  toCartResponseList(List<Cart> carts);
 
     List<CartItemForCartResponse>  toCartItemForCartResponseList(List<CartItem> cartItemList);
 

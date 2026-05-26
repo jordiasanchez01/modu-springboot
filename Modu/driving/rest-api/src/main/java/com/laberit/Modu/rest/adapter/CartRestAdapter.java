@@ -32,14 +32,11 @@ public class CartRestAdapter implements CartApi {
     @Override
     public ResponseEntity<ValidatedCartResponse> getValidatedCart() {
         String deviceId = currentDeviceId();
-        CartWithPriceAndStockCheck result = cartServicePort.getCartWithPriceAndStockCheck(deviceId);
+        CartWithAllChecks result = cartServicePort.getCartWithAllChecks(deviceId);
         return ResponseEntity.ok(cartMapper.toValidatedCartResponse(result));
     }
 
     @Override
-    public ResponseEntity<CartResponse> updateCart(UpdateCartRequest updateCartRequest) {
-        String deviceId = currentDeviceId();
-        Cart cart = cartServicePort.updateCart(cartMapper.toCartDTO(deviceId, updateCartRequest));
     public ResponseEntity<CartResponseAllChecks> updateCart(CartUpdateRequest cartUpdateRequest) {
         Cart cartToUpdate = cartMapper.toCartFromCartUpdateRequest(cartUpdateRequest);
         String deviceId = currentDeviceId();
@@ -52,8 +49,9 @@ public class CartRestAdapter implements CartApi {
     @Override
     public ResponseEntity<CartResponse> updateCartItemsQuantities(UpdateCartQuantitiesRequest updateCartQuantitiesRequest) {
         List<UpdateCartItemQuantityCommand> updateCommands = cartItemMapper.toUpdateCartItemQuantityCommandList(updateCartQuantitiesRequest.getCartItems());
+        String deviceId = currentDeviceId();
         CartItemsQuantitiesUpdateDTO cartItemsQuantitiesUpdateDTO = CartItemsQuantitiesUpdateDTO.builder()
-                .deviceId(updateCartQuantitiesRequest.getDeviceId())
+                .deviceId(deviceId)
                 .cartItemCommands(updateCommands)
                 .build();
 

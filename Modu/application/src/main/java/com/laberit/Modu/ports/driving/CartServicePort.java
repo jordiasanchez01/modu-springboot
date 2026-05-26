@@ -12,7 +12,9 @@ public interface CartServicePort {
 
     //Cart addCartItemToCart(AddCartItemCommand command); //TODO: move to CartItemServicePort
 
-    CartWithPriceAndStockCheck getCartWithPriceAndStockCheck(String deviceId);
+    //CartWithPriceAndStockCheck getCartWithPriceAndStockCheck(String deviceId);
+
+    CartWithAllChecks getCartWithAllChecks(String deviceId);
 
     LocalDateTime getCartUpdatedAt(String deviceId);
 

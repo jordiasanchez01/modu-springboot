@@ -33,7 +33,7 @@ public interface CartItemRestMapper {
 
     List<UpdateCartItemQuantityCommand> toUpdateCartItemQuantityCommandList(List<CartItemQuantityUpdateRequest> updateItemRequests);
 
-    List<CartItem> toCartItemFromCartItemResponseList(List<CartItemForCartResponse> cartItemResponses);
+    //List<CartItem> toCartItemFromCartItemResponseList(List<CartItemForCartResponse> cartItemResponses);
 
     @Mapping(source = "cartItemId", target = "id")
     List<CartItem> toCartItemListFromQuantityUpdateRequest(List<CartItemQuantityUpdateRequest> cartItemQuantityUpdateRequests);

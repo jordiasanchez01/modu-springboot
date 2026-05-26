@@ -40,7 +40,7 @@ public class CartServiceUseCase implements CartServicePort {
     }
 
     @Transactional
-    public CartWithPriceAndStockCheck getCartWithPriceAndStockCheck(String deviceId) {
+    public CartWithAllChecks getCartWithAllChecks(String deviceId) {
         Cart cart = cartRepositoryPort.findByDeviceId(deviceId)
                 .orElseThrow(CartNotFoundException::new);
         List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
@@ -53,6 +53,22 @@ public class CartServiceUseCase implements CartServicePort {
         updateCurrentStock(cartItems, variants);
 
         setProductIdsInItems(cartItems, variants);
+
+        List<CartItem> toDelete = new ArrayList<>();
+
+        List<ProductVariantAvailabilityResult> variantAvailability = detectVariantAvailability(
+                cartItems, variants);
+
+        if (!variantAvailability.isEmpty()) {
+            List<CartItem> removedByAvailability = cartItems.stream()
+                    .filter(cartItem -> variantAvailability.stream()
+                            .anyMatch(result -> result.productVariantId().equals(cartItem.getProductVariantId())))
+                    .toList();
+
+            toDelete.addAll(removedByAvailability);
+            cartItems.removeAll(removedByAvailability);
+            cartItemRepositoryPort.saveAll(cartItems);
+        }
 
         List<ProductPriceChange> priceChanges = detectPriceChanges(cartItems, variants);
 
@@ -68,7 +84,14 @@ public class CartServiceUseCase implements CartServicePort {
         }
 
         cart.setCartItems(cartItems);
-        return new CartWithPriceAndStockCheck(cart, priceChanges, insufficientStock);
+
+        List<Long> cartItemIds = toDelete.stream()
+                .map(CartItem::getId)
+                .collect(Collectors.toList());
+
+        cartItemRepositoryPort.deleteAllByIdIn(cartItemIds);
+
+        return new CartWithAllChecks(cart, priceChanges, insufficientStock, variantAvailability);
     }
 
     @Override
@@ -94,7 +117,7 @@ public class CartServiceUseCase implements CartServicePort {
     @Override
     public CartWithAllChecks updateCart(Cart clientCart) {
         Cart updatedCart = cartRepositoryPort.findByDeviceId(clientCart.getDeviceId())
-                .orElseThrow(() -> new CartNotFoundException(clientCart.getDeviceId()));
+                .orElseThrow(CartNotFoundException::new);
 
         clientCart.setId(updatedCart.getId());
         List<CartItem> updatedCartItems = retrieveFullCartItems(clientCart.getId());
@@ -111,17 +134,17 @@ public class CartServiceUseCase implements CartServicePort {
                 .toList();
 
         // Items in updatedCart not present in clientCart → remove
-        List<CartItem> toDelete = updatedCartItems.stream()
+        List<CartItem> toDelete = new ArrayList<>(updatedCartItems.stream()
                 .filter(updated -> clientCartItems.stream()
-                        .noneMatch(client -> client.getId().equals(updated.getId())))
-                .toList();
+                        .noneMatch(client -> updated.getId().equals(client.getId())))
+                .toList());
 
         // Items present in both → copy quantity and unitPrice
         updatedCartItems.stream()
                 .filter(updated -> clientCartItems.stream()
-                        .anyMatch(client -> client.getId().equals(updated.getId())))
+                        .anyMatch(client -> updated.getId().equals(client.getId())))
                 .forEach(updated -> clientCartItems.stream()
-                        .filter(client -> client.getId().equals(updated.getId()))
+                        .filter(client -> updated.getId().equals(client.getId()))
                         .findFirst()
                         .ifPresent(match -> {
                             updated.setQuantity(match.getQuantity());
@@ -138,15 +161,23 @@ public class CartServiceUseCase implements CartServicePort {
 
         updateCurrentStock(updatedCartItems, variants);
 
-        List<ProductVariantAvailabilityResult> variantAvailability = detectVariantAvailability(updatedCartItems, variants);
+        List<ProductVariantAvailabilityResult> variantAvailability = detectVariantAvailability(
+                updatedCartItems, variants);
 
         List<CartItem> savedItems = new ArrayList<>();
 
         if (!variantAvailability.isEmpty()) {
-            updatedCartItems.removeIf(cartItem -> variantAvailability.stream()
-                    .anyMatch(result -> result.productVariantId().equals(cartItem.getProductVariantId())));
-            savedItems = cartItemRepositoryPort.saveAll(updatedCartItems);
+            List<CartItem> removedByAvailability = updatedCartItems.stream()
+                    .filter(cartItem -> variantAvailability.stream()
+                            .anyMatch(result -> result.productVariantId().equals(cartItem.getProductVariantId())))
+                    .toList();
+
+            toDelete.addAll(removedByAvailability);
+            updatedCartItems.removeAll(removedByAvailability);
+            //savedItems = cartItemRepositoryPort.saveAll(updatedCartItems);
         }
+
+
 
         List<ProductPriceChange> priceChanges = detectPriceChanges(updatedCartItems, variants);
 
@@ -159,15 +190,18 @@ public class CartServiceUseCase implements CartServicePort {
             applyQuantityChanges(updatedCartItems, insufficientStock);
         }
 
-        cartItemRepositoryPort.saveAll(savedItems);
-
-        updatedCart.setCartItems(updatedCartItems);
+        savedItems = cartItemRepositoryPort.saveAll(updatedCartItems);
+        log.debug("Saved Items: {}", savedItems);
 
         List<Long> cartItemIds = toDelete.stream()
                 .map(CartItem::getId)
                 .collect(Collectors.toList());
 
         cartItemRepositoryPort.deleteAllByIdIn(cartItemIds);
+        log.debug("Deleted Items Ids: {}", cartItemIds);
+
+        updatedCart.setCartItems(retrieveFullCartItems(updatedCart.getId()));
+        log.debug("Updated Items: {}", updatedCart.getCartItems());
 
         return new CartWithAllChecks(updatedCart, priceChanges, insufficientStock, variantAvailability);
     }
