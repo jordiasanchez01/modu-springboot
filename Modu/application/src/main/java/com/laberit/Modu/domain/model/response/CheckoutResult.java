@@ -8,4 +8,7 @@ public record CheckoutResult(
         Order order,
         CartWithPriceAndStockCheck cartResponse
 ) {
+    public boolean isOrderPlaced() {
+        return cartResponse.changedPrices().isEmpty() && cartResponse.insufficientStock().isEmpty();
+    }
 }

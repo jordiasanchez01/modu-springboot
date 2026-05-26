@@ -30,20 +30,16 @@ public class CartRestAdapter implements CartApi {
     private final HttpServletRequest request;
 
     @Override
-    public ResponseEntity<CartResponse> getValidatedCart() {
+    public ResponseEntity<ValidatedCartResponse> getValidatedCart() {
         String deviceId = currentDeviceId();
         CartWithPriceAndStockCheck result = cartServicePort.getCartWithPriceAndStockCheck(deviceId);
-        return ResponseEntity.ok(cartMapper.toCartWithPriceAndStockCheckResponse(result));
+        return ResponseEntity.ok(cartMapper.toValidatedCartResponse(result));
     }
 
     @Override
     public ResponseEntity<CartResponse> updateCart(UpdateCartRequest updateCartRequest) {
         List<CartItem> items = cartItemMapper.toCartItemList(updateCartRequest.getCartItems());
-        CartDTO cartDTO = CartDTO.builder()
-                .deviceId(updateCartRequest.getDeviceId())
-                .cartItems(items)
-                .build();
-        Cart cart = cartServicePort.updateCart(cartDTO);
+        Cart cart = cartServicePort.updateCart(cartMapper.toCartDTO(updateCartRequest));
         return ResponseEntity.ok(cartMapper.toCartResponse(cart));
     }
 
@@ -88,13 +84,4 @@ public class CartRestAdapter implements CartApi {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
-    private InsufficientStockAlert checkIfInsufficientStock(List<InsufficientStockResult> stockList){
-
-        InsufficientStockAlert  insufficientStockAlert = new InsufficientStockAlert();
-
-        if (!stockList.isEmpty()){
-            insufficientStockAlert.setCartItems(cartMapper.toInsufficientStockResponseList(stockList));
-        }
-        return insufficientStockAlert;
-    }
 }

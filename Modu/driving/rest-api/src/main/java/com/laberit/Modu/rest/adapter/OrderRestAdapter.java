@@ -3,7 +3,6 @@ package com.laberit.Modu.rest.adapter;
 import com.laberit.Modu.domain.model.Order;
 import com.laberit.Modu.domain.model.response.CheckoutResult;
 import com.laberit.Modu.ports.driving.OrderServicePort;
-import com.laberit.Modu.ports.driving.command.AddOrderCommand;
 import com.laberit.Modu.rest.generated.api.CheckoutApi;
 import com.laberit.Modu.rest.generated.model.*;
 import com.laberit.Modu.rest.mapper.CartRestMapper;
@@ -28,40 +27,16 @@ public class OrderRestAdapter implements CheckoutApi {
     @Override
     public ResponseEntity<CheckoutResponse> checkoutCart(AddOrderRequest addOrderRequest) {
         String deviceId = currentDeviceId();
-        AddOrderCommand command = orderMapper.toAddOrderCommand(addOrderRequest);
-        CheckoutResult result = orderServicePort.addOrder(deviceId, command);
+        CheckoutResult result = orderServicePort.addOrder(deviceId, orderMapper.toAddOrderCommand(addOrderRequest));
 
-        CheckoutResponse response = new CheckoutResponse();
-        if (result.cartResponse().changedPrices().isEmpty() && result.cartResponse().insufficientStock().isEmpty()) {
-            response.ok(true);
+        CheckoutResponse response = new CheckoutResponse().orderPlaced(result.isOrderPlaced());
+
+        if (result.isOrderPlaced()) {
             response.orderId(result.order().getId());
-            response.order(
-                    orderMapper.toOrderResponse(result.order())
-            );
-            return ResponseEntity.status(201).body(response);
+            response.order(orderMapper.toOrderResponse(result.order()));
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } else {
-
-            response.ok(false);
-            response.orderId(null);
-            response.order(null);
-
-            if (result.cartResponse().cart() != null) {
-                CartResponse cartResponse = cartMapper.toCartResponse(result.cartResponse().cart());
-
-                if (!result.cartResponse().changedPrices().isEmpty()) {
-                    PriceChangedAlert priceChangedAlert = new PriceChangedAlert(
-                            cartMapper.toProductPriceChangeResponseList(result.cartResponse().changedPrices())
-                    );
-                    cartResponse.setPriceChangedAlert(priceChangedAlert);
-                }
-                if (!result.cartResponse().insufficientStock().isEmpty()) {
-                    InsufficientStockAlert insufficientStockAlert = new InsufficientStockAlert(
-                            cartMapper.toInsufficientStockResponseList(result.cartResponse().insufficientStock())
-                    );
-                    cartResponse.setInsufficientStockAlert(insufficientStockAlert);
-                }
-                response.cartResponse(cartResponse);
-            }
+            response.cartResponse(cartMapper.toValidatedCartResponse(result.cartResponse()));
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
     }
