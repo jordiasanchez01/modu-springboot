@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 public class CartServiceUseCase implements CartServicePort {
     private final CartRepositoryPort cartRepositoryPort;
     private final CartItemRepositoryPort cartItemRepositoryPort;
-    private final CartItemServicePort cartItemServicePort;
     private final ProductVariantRepositoryPort productVariantRepositoryPort;
     private final ProductRepositoryPort productRepositoryPort;
     private final ProductVariantServicePort productVariantServicePort;
@@ -165,10 +164,7 @@ public class CartServiceUseCase implements CartServicePort {
         if (!variantAvailability.isEmpty()) {
             updatedCartItems.removeIf(cartItem -> variantAvailability.stream()
                     .anyMatch(result -> result.productVariantId().equals(cartItem.getProductVariantId())));
-            System.out.println("Updated cart Items before variantAvailability change: "+updatedCartItems);
             savedItems = cartItemRepositoryPort.saveAll(updatedCartItems);
-            System.out.println("Saved cart Items AFTER variantAvailability: "+savedItems);
-            System.out.println("Updated cart Items AFTER variantAvailability change: "+updatedCartItems);
         }
 
         List<ProductPriceChange> priceChanges = detectPriceChanges(updatedCartItems, variants);
@@ -177,18 +173,14 @@ public class CartServiceUseCase implements CartServicePort {
 
         if (!priceChanges.isEmpty()) {
             applyPriceChanges(updatedCartItems, priceChanges);
-            //cartItemRepositoryPort.saveAll(updatedCartItems);
         }
         if (!insufficientStock.isEmpty()) {
             applyQuantityChanges(updatedCartItems, insufficientStock);
-            //cartItemRepositoryPort.saveAll(updatedCartItems);
         }
 
         cartItemRepositoryPort.saveAll(savedItems);
 
         updatedCart.setCartItems(updatedCartItems);
-
-        System.out.println("Saved cart + Items: "+updatedCart);
 
         List<Long> cartItemIds = toDelete.stream()
                 .map(CartItem::getId)
