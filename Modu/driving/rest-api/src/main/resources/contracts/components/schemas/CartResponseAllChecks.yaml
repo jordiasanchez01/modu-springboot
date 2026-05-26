@@ -7,9 +7,8 @@ required:
   - cart_items
 properties:
   deviceId:
-    type: integer
-    format: int64
-    example: 1
+    type: string
+    example: 100000000000015
   createdAt:
     type: string
     format: date-time
@@ -30,4 +29,6 @@ properties:
     $ref: './PriceChangedAlert.yaml'
   insufficient_stock_alert:
     $ref: './InsufficientStockAlert.yaml'
+  variant_availability_alert:
+    $ref: './VariantAvailabilityAlert.yaml'
 

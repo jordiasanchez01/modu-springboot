@@ -1,5 +1,6 @@
 package com.laberit.Modu.rest.adapter;
 
+import com.laberit.Modu.domain.model.response.CartWithAllChecks;
 import com.laberit.Modu.domain.model.response.InsufficientStockResult;
 import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
 import com.laberit.Modu.ports.driving.CartItemServicePort;
@@ -32,6 +33,16 @@ public class CartRestAdapter implements CartApi {
         String deviceId = currentDeviceId();
         CartWithPriceAndStockCheck result = cartServicePort.getCartWithPriceAndStockCheck(deviceId);
         return ResponseEntity.ok(cartMapper.toCartWithPriceAndStockCheckResponse(result));
+    }
+
+    @Override
+    public ResponseEntity<CartResponseAllChecks> updateCart(CartUpdateRequest cartUpdateRequest) {
+        Cart cartToUpdate = cartMapper.toCartFromCartUpdateRequest(cartUpdateRequest);
+        String deviceId = currentDeviceId();
+        cartToUpdate.setDeviceId(deviceId);
+
+        CartWithAllChecks updatedCart = cartServicePort.updateCart(cartToUpdate);
+        return ResponseEntity.ok(cartMapper.toCartWithAllChecksResponse(updatedCart));
     }
 
     @Override

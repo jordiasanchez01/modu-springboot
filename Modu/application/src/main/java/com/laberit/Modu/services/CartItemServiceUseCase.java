@@ -53,7 +53,7 @@ public class CartItemServiceUseCase implements CartItemServicePort {
                 () -> new CartNotFoundException(deviceId));
         CartItem item = cartItemRepositoryPort.findByIdAndCartId(itemId, cart.getId())
                 .orElseThrow(() -> new CartItemNotFoundException(itemId));
-        cartItemRepositoryPort.deleteById(itemId);
+        cartItemRepositoryPort.deleteById(item.getId());
     }
 
     @Override

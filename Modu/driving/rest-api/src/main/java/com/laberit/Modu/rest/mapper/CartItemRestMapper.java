@@ -3,6 +3,7 @@ package com.laberit.Modu.rest.mapper;
 import com.laberit.Modu.domain.model.CartItem;
 import com.laberit.Modu.ports.driving.command.UpdateCartItemQuantityCommand;
 import com.laberit.Modu.rest.generated.model.CartItemForCartResponse;
+import com.laberit.Modu.rest.generated.model.CartItemForCartUpdate;
 import com.laberit.Modu.rest.generated.model.CartItemForOrderRequest;
 import com.laberit.Modu.rest.generated.model.CartItemQuantityUpdateRequest;
 import org.mapstruct.Mapper;
@@ -15,12 +16,16 @@ public interface CartItemRestMapper {
 
     CartItemForCartResponse toCartItemForCartResponse(CartItem cartItem);
 
+    CartItemForCartUpdate toCartItemForCartUpdate(CartItem cartItem);
+
     CartItemForOrderRequest toCartItemForOrderRequest(CartItem cartItem);
 
     @Mapping(source = "id", target = "cartItemId")
     CartItemQuantityUpdateRequest toCartItemQuantityUpdateRequest(CartItem cartItem);
 
     List<CartItemForCartResponse>  toCartItemForCartResponseList(List<CartItem> cartItemList);
+
+    List<CartItemForCartUpdate> toCartItemForCartUpdateList(List<CartItem> cartItemList);
 
     List<CartItemForOrderRequest>   toCartItemForOrderRequestList(List<CartItem> cartItemList);
 

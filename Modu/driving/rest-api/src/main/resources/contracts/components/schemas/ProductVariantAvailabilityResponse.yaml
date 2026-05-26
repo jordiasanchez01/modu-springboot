@@ -1,0 +1,17 @@
+type: object
+required:
+    - cartItemId
+    - productVariantId
+    - availableStock
+properties:
+  cartItemId:
+    type: integer
+    format: int64
+    example: 1
+  productVariantId:
+    type: integer
+    format: int64
+    example: 1
+  isVariantAvailable:
+    type: boolean
+    example: true
