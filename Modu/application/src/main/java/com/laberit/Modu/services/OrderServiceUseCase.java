@@ -5,7 +5,6 @@ import com.laberit.Modu.domain.exceptions.OrderNotFoundException;
 import com.laberit.Modu.domain.exceptions.OrderNotPaidException;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.domain.model.response.CartWithAllChecks;
-import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
 import com.laberit.Modu.domain.model.response.CheckoutResult;
 import com.laberit.Modu.ports.driven.OrderRepositoryPort;
 import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;

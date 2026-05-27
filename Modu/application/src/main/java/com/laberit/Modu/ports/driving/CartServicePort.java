@@ -3,16 +3,10 @@ package com.laberit.Modu.ports.driving;
 import com.laberit.Modu.domain.model.Cart;
 import com.laberit.Modu.domain.model.CartItemsQuantitiesUpdateDTO;
 import com.laberit.Modu.domain.model.response.CartWithAllChecks;
-import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
-import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
 
 import java.time.LocalDateTime;
 
 public interface CartServicePort {
-
-    //Cart addCartItemToCart(AddCartItemCommand command); //TODO: move to CartItemServicePort
-
-    //CartWithPriceAndStockCheck getCartWithPriceAndStockCheck(String deviceId);
 
     CartWithAllChecks getCartWithAllChecks(String deviceId);
 

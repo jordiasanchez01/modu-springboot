@@ -2,7 +2,6 @@ package com.laberit.Modu.rest.adapter;
 
 import com.laberit.Modu.domain.model.response.CartWithAllChecks;
 import com.laberit.Modu.domain.model.response.InsufficientStockResult;
-import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
 import com.laberit.Modu.ports.driving.CartItemServicePort;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
