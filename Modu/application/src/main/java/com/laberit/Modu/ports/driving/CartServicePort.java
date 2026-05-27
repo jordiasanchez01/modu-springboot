@@ -14,7 +14,7 @@ public interface CartServicePort {
 
     Cart findCartByDeviceId(String deviceId);
 
-    Cart updateCartItemsQuantities(CartItemsQuantitiesUpdateDTO cartItemsQuantitiesUpdateDTO);
+    Cart updateCartItemsQuantities(String deviceId, CartItemsQuantitiesUpdateDTO cartItemsQuantitiesUpdateDTO);
 
     CartWithAllChecks updateCart(Cart cart);
 

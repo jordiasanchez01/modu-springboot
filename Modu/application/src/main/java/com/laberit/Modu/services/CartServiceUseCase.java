@@ -126,11 +126,8 @@ public class CartServiceUseCase implements CartServicePort {
 
         // Items in clientCart with no id (or id not in updatedCart) → add
         List<CartItem> toAdd = clientCartItems.stream()
-                .filter(client -> updatedCartItems.stream()
-                        .noneMatch(updated ->
-                                client.getId() != null
-                                        ? updated.getId().equals(client.getId())
-                                        : updated.getProductVariantId().equals(client.getProductVariantId())))
+                .filter(clientItem -> updatedCartItems.stream()
+                        .noneMatch(updatedItem -> isSameCartItem(clientItem, updatedItem)))
                 .toList();
 
         // Items in updatedCart not present in clientCart → remove
@@ -177,8 +174,6 @@ public class CartServiceUseCase implements CartServicePort {
             //savedItems = cartItemRepositoryPort.saveAll(updatedCartItems);
         }
 
-
-
         List<ProductPriceChange> priceChanges = detectPriceChanges(updatedCartItems, variants);
 
         List<InsufficientStockResult> insufficientStock = detectInsufficientStock(updatedCartItems);
@@ -209,9 +204,8 @@ public class CartServiceUseCase implements CartServicePort {
 
     @Transactional
     @Override
-    public Cart updateCartItemsQuantities(CartItemsQuantitiesUpdateDTO cartItemsQuantitiesUpdateDTO) {
-
-        Cart cart = findCartByDeviceId(cartItemsQuantitiesUpdateDTO.deviceId());
+    public Cart updateCartItemsQuantities(String deviceId, CartItemsQuantitiesUpdateDTO cartItemsQuantitiesUpdateDTO) {
+        Cart cart = findCartByDeviceId(deviceId);
         List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
 
         if (cartItemsQuantitiesUpdateDTO.cartItemCommands() != null && !cartItemsQuantitiesUpdateDTO.cartItemCommands().isEmpty()) {
@@ -229,6 +223,12 @@ public class CartServiceUseCase implements CartServicePort {
         cart.setCartItems(updatedItems);
 
         return cartRepositoryPort.save(cart);
+    }
+
+    private boolean isSameCartItem(CartItem cartItemA, CartItem cartItemB) {
+        return cartItemA.getId() != null
+                ? cartItemA.getId().equals(cartItemB.getId())
+                : cartItemA.getProductVariantId().equals(cartItemB.getProductVariantId());
     }
 
     private List<CartItem> retrieveFullCartItems(Long cartId) {

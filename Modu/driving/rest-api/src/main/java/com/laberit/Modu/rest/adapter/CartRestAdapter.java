@@ -54,7 +54,7 @@ public class CartRestAdapter implements CartApi {
                 .cartItemCommands(updateCommands)
                 .build();
 
-        Cart cart = cartServicePort.updateCartItemsQuantities(cartItemsQuantitiesUpdateDTO);
+        Cart cart = cartServicePort.updateCartItemsQuantities(deviceId, cartItemsQuantitiesUpdateDTO);
         return ResponseEntity.ok(cartMapper.toCartResponse(cart));
     }
 

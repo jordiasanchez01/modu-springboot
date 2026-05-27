@@ -10,5 +10,6 @@ import java.util.List;
 public record CartItemsQuantitiesUpdateDTO(
         String deviceId,
         List<UpdateCartItemQuantityCommand> cartItemCommands
-    ){}
+    ){
+}
 

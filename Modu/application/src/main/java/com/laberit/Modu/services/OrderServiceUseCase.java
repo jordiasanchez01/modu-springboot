@@ -51,7 +51,7 @@ public class OrderServiceUseCase implements OrderServicePort {
         Order order = new Order();
         if (validateAddOrderCommand(command)) {
 
-            cartServicePort.updateCartItemsQuantities(command.cartToOrder());
+            cartServicePort.updateCartItemsQuantities(deviceId, command.cartToOrder());
 
             CartWithAllChecks cartResponse = cartServicePort.getCartWithAllChecks(deviceId);
 
@@ -59,11 +59,7 @@ public class OrderServiceUseCase implements OrderServicePort {
                 throw new CartEmptyException();
             }
 
-            if (
-                    cartResponse.changedPrices().isEmpty() &&
-                    cartResponse.insufficientStock().isEmpty() &&
-                    cartResponse.unavailableVariants().isEmpty()
-            ) {
+            if (isCartValidForCheckout(cartResponse)) {
                 order.setDeviceId(deviceId);
                 Order savedOrder = orderRepositoryPort.saveWithoutItems(order);
                 order = mapOrderCommandToOrder(command, cartResponse.cart(), savedOrder);
@@ -145,5 +141,11 @@ public class OrderServiceUseCase implements OrderServicePort {
         );
 
         return productVariantRepositoryPort.saveAll(variants);
+    }
+
+    private boolean isCartValidForCheckout (CartWithAllChecks cart) {
+        return cart.changedPrices().isEmpty() &&
+                cart.insufficientStock().isEmpty() &&
+                cart.unavailableVariants().isEmpty();
     }
 }
