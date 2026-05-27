@@ -62,6 +62,7 @@ public class CartItemRepositoryAdapter implements CartItemRepositoryPort {
     @Override
     public void deleteAllByCartId(Long cartId) {
         cartItemJpaRepository.deleteAllByCartId(cartId);
+        cartItemJpaRepository.flush();
     }
 
     @Override

@@ -28,8 +28,6 @@ public class CartServiceUseCase implements CartServicePort {
     private final CartItemRepositoryPort cartItemRepositoryPort;
     private final ProductVariantRepositoryPort productVariantRepositoryPort;
     private final ProductRepositoryPort productRepositoryPort;
-    private final ProductVariantServicePort productVariantServicePort;
-
     @Transactional
     public Cart initializeCart(String deviceId) {
         if (cartRepositoryPort.existsByDeviceId(deviceId)) {
@@ -126,8 +124,9 @@ public class CartServiceUseCase implements CartServicePort {
 
         // Items in clientCart with no id (or id not in updatedCart) → add
         List<CartItem> toAdd = clientCartItems.stream()
-                .filter(clientItem -> updatedCartItems.stream()
-                        .noneMatch(updatedItem -> isSameCartItem(clientItem, updatedItem)))
+                .filter(client -> client.getId() == null
+                        || updatedCartItems.stream()
+                        .noneMatch(updated -> updated.getId().equals(client.getId())))
                 .toList();
 
         // Items in updatedCart not present in clientCart → remove
@@ -148,8 +147,9 @@ public class CartServiceUseCase implements CartServicePort {
                             updated.setUnitPrice(match.getUnitPrice());
                         }));
 
-        updatedCartItems.addAll(toAdd);
         updatedCartItems.removeAll(toDelete);
+        updatedCartItems.addAll(toAdd);
+
 
         Set<Long> variantIds = updatedCartItems.stream()
                 .map(CartItem::getProductVariantId)
@@ -185,15 +185,18 @@ public class CartServiceUseCase implements CartServicePort {
             applyQuantityChanges(updatedCartItems, insufficientStock);
         }
 
-        savedItems = cartItemRepositoryPort.saveAll(updatedCartItems);
-        log.debug("Saved Items: {}", savedItems);
-
         List<Long> cartItemIds = toDelete.stream()
                 .map(CartItem::getId)
                 .collect(Collectors.toList());
 
         cartItemRepositoryPort.deleteAllByIdIn(cartItemIds);
+
         log.debug("Deleted Items Ids: {}", cartItemIds);
+
+
+        savedItems = cartItemRepositoryPort.saveAll(updatedCartItems);
+        log.debug("Saved Items: {}", savedItems);
+
 
         updatedCart.setCartItems(retrieveFullCartItems(updatedCart.getId()));
         log.debug("Updated Items: {}", updatedCart.getCartItems());
