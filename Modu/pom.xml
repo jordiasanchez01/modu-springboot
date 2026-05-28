@@ -77,6 +77,13 @@
                 <version>${flyway.version}</version>
                 <scope>runtime</scope>
             </dependency>
+            <!-- Testing -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>4.0.5</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
