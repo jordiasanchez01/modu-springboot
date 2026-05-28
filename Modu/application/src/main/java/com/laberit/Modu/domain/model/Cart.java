@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +18,10 @@ import java.util.List;
 public class Cart {
     private Long id;
     private String deviceId;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
+    @Builder.Default
+    private double shippingCosts = 0.00;
     @Builder.Default
     private List<CartItem> cartItems = new ArrayList<>();
 
@@ -32,7 +34,7 @@ public class Cart {
     }
 
     public Double getShippingCosts(){
-        return BigDecimal.valueOf(0).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        return BigDecimal.valueOf(shippingCosts).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     public Double getTotalPrice() {

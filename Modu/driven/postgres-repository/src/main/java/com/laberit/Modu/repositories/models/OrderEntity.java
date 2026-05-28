@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Getter
@@ -20,10 +20,14 @@ public class OrderEntity {
 
     @Column(name="special_instructions")
     private String specialInstructions;
+    @Column(name="subtotal_price")
+    private double subtotalPrice;
+    @Column(name="shipping_costs")
+    private double shippingCosts;
     @Column(name="total_price")
     private Double totalPrice;
     @Column(name="created_at", insertable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @OneToMany(mappedBy = "order")
     private List<OrderItemEntity> orderItems;

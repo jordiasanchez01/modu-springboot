@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,17 +18,26 @@ import java.util.List;
 public class Order {
     private Long id;
     private String deviceId;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
+    @Builder.Default
+    private double shippingCosts = 0.00;
     private String specialInstructions;
     @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    public Double getTotalOrderPrice(){
+    public Double getSubTotalPrice(){
         return BigDecimal.valueOf(
                         orderItems.stream()
                                 .mapToDouble(OrderItem::getTotalPrice)
                                 .sum())
-                .setScale(2, RoundingMode.HALF_UP)
-                .doubleValue();
+                .setScale(2, RoundingMode.HALF_UP).doubleValue();
+    }
+
+    public Double getShippingCosts(){
+        return BigDecimal.valueOf(shippingCosts).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    }
+
+    public Double getTotalOrderPrice() {
+        return getSubTotalPrice() + getShippingCosts();
     }
 }

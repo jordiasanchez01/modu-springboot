@@ -18,6 +18,8 @@ public interface OrderPersistanceMapper {
         entity.setId(order.getId());
         entity.setDeviceId(order.getDeviceId());
         entity.setSpecialInstructions(order.getSpecialInstructions());
+        entity.setSubtotalPrice(order.getSubTotalPrice());
+        entity.setShippingCosts(order.getShippingCosts());
         entity.setTotalPrice(order.getTotalOrderPrice());
 
         return entity;
@@ -32,6 +34,7 @@ public interface OrderPersistanceMapper {
                 .deviceId(entity.getDeviceId())
                 .specialInstructions(entity.getSpecialInstructions())
                 .createdAt(entity.getCreatedAt())
+                .shippingCosts(entity.getShippingCosts())
                 .build();
     }
 

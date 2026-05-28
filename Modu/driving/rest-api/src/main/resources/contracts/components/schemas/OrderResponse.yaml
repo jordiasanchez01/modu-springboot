@@ -4,6 +4,8 @@ required:
   - deviceId
   - createdAt
   - specialInstructions
+  - subtotalPrice
+  - shippingCosts
   - totalPrice
   - order_items
 properties:
@@ -21,6 +23,14 @@ properties:
   specialInstructions:
     type: string
     example: 'Wrap each jean individually in red giftwrap'
+  subtotalPrice:
+    type: number
+    format: double
+    example: 123.56
+  shippingCosts:
+    type: number
+    format: double
+    example: 123.56
   totalPrice:
     type: number
     format: double

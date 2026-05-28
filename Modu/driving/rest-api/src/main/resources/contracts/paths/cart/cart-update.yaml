@@ -19,7 +19,7 @@ patch:
       content:
         application/json:
           schema:
-            $ref: '../../components/schemas/CartResponseAllChecks.yaml'
+            $ref: '../../components/schemas/ValidatedCartResponse.yaml'
     '400':
       description: Invalid request. Check the fields for more details.
       content:

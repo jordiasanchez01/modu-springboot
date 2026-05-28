@@ -2,7 +2,7 @@ spring:
   application:
     name: Modu API
   datasource:
-    url: jdbc:postgresql://localhost:5432/modu_db
+    url: jdbc:postgresql://localhost:5432/modu_db?TimeZone=UTC
     username: modu_user
     password: modu_pass
 

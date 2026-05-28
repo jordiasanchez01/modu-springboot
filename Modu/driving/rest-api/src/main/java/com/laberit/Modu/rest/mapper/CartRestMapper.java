@@ -9,48 +9,28 @@ import com.laberit.Modu.rest.generated.model.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CartRestMapper {
 
-    default CartResponseAllChecks toCartWithAllChecksResponse(CartWithAllChecks cartWithAllChecks) {
-        CartResponseAllChecks response = new CartResponseAllChecks();
-
-        response.deviceId(cartWithAllChecks.cart().getDeviceId());
-        response.createdAt(cartWithAllChecks.cart().getCreatedAt());
-        response.updatedAt(cartWithAllChecks.cart().getUpdatedAt());
-        List<CartItemForCartResponse> responseItemList = toCartItemForCartResponseList(cartWithAllChecks.cart().getCartItems());
-        response.setCartItems(responseItemList);
-
-        List<ProductPriceChangeResponse> priceChangeList = toProductPriceChangeResponseList(cartWithAllChecks.changedPrices());
-        PriceChangedAlert priceChangedAlert = new PriceChangedAlert();
-        priceChangedAlert.setCartItems(priceChangeList);
-        response.setPriceChangedAlert(priceChangedAlert);
-
-        List<InsufficientStockResponse> insufficientStockList = toInsufficientStockResponseList(cartWithAllChecks.insufficientStock());
-        InsufficientStockAlert insufficientStockAlert = new InsufficientStockAlert();
-        insufficientStockAlert.setCartItems(insufficientStockList);
-        response.setInsufficientStockAlert(insufficientStockAlert);
-
-        List<ProductVariantAvailabilityResponse> variantAvailabilityList = toVariantAvailabilityResponseList(cartWithAllChecks.unavailableVariants());
-        VariantAvailabilityAlert variantAvailabilityAlert = new VariantAvailabilityAlert();
-        variantAvailabilityAlert.setCartItems(variantAvailabilityList);
-        response.setVariantAvailabilityAlert(variantAvailabilityAlert);
-
-        return response;
-    }
-
     Cart toCartFromCartUpdateRequest(CartUpdateRequest cartUpdateRequest);
 
-    CartResponse toCartResponse(Cart cart);
+    default OffsetDateTime map(Instant instant) {
+        return instant == null ? null : instant.atOffset(ZoneOffset.UTC);
+    }
 
-    CartResponseAllChecks toCartResponseAllChecks(CartWithAllChecks cartWithAllChecks);
+    @Mapping(target = "subTotalPrice", expression = "java(cart.getSubTotalPrice())")
+    @Mapping(target = "totalPrice", expression = "java(cart.getTotalPrice())")
+    CartResponse toCartResponse(Cart cart);
 
     CartUpdateRequest toCartUpdateRequest(Cart cart);
 
-    CartUpdatedAtResponse toCartUpdatedAtResponse(LocalDateTime updatedAt);
+    CartUpdatedAtResponse toCartUpdatedAtResponse(Instant updatedAt);
 
     default AddItemRequest toAddItemRequest(AddCartItemCommand addCommand) {
         return new AddItemRequest(
@@ -70,13 +50,6 @@ public interface CartRestMapper {
                 addRequest.getVariantId(),
                 addRequest.getQuantity()
         );
-    }
-
-    default CartItemsQuantitiesUpdateDTO toCartItemsQuantitiesUpdateDTO(String deviceId, UpdateCartQuantitiesRequest updateCartQuantitiesRequest) {
-        return CartItemsQuantitiesUpdateDTO.builder()
-                .deviceId(deviceId)
-                .cartItemCommands(null)
-                .build();
     }
 
     List<CartItemForCartResponse>  toCartItemForCartResponseList(List<CartItem> cartItemList);
