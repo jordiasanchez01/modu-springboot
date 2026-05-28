@@ -10,7 +10,7 @@ public record CheckoutResult(
 ) {
     public boolean isOrderPlaced() {
         return cartResponse.changedPrices().isEmpty() &&
-                cartResponse.insufficientStock().isEmpty() &&
-                cartResponse.unavailableVariants().isEmpty();
+            cartResponse.insufficientStock().isEmpty() &&
+            cartResponse.unavailableVariants().isEmpty();
     }
 }

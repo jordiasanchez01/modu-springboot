@@ -122,20 +122,17 @@ public class CartServiceUseCase implements CartServicePort {
         List<CartItem> clientCartItems = clientCart.getCartItems();
         clientCartItems.forEach(cartItem -> {cartItem.setCartId(clientCart.getId());});
 
-        // Items in clientCart with no id (or id not in updatedCart) → add
         List<CartItem> toAdd = clientCartItems.stream()
                 .filter(client -> client.getId() == null
                         || updatedCartItems.stream()
                         .noneMatch(updated -> updated.getId().equals(client.getId())))
                 .toList();
 
-        // Items in updatedCart not present in clientCart → remove
         List<CartItem> toDelete = new ArrayList<>(updatedCartItems.stream()
                 .filter(updated -> clientCartItems.stream()
                         .noneMatch(client -> updated.getId().equals(client.getId())))
                 .toList());
 
-        // Items present in both → copy quantity and unitPrice
         updatedCartItems.stream()
                 .filter(updated -> clientCartItems.stream()
                         .anyMatch(client -> updated.getId().equals(client.getId())))
@@ -149,7 +146,6 @@ public class CartServiceUseCase implements CartServicePort {
 
         updatedCartItems.removeAll(toDelete);
         updatedCartItems.addAll(toAdd);
-
 
         Set<Long> variantIds = updatedCartItems.stream()
                 .map(CartItem::getProductVariantId)
@@ -186,24 +182,15 @@ public class CartServiceUseCase implements CartServicePort {
         }
 
         List<Long> cartItemIds = toDelete.stream()
-                .map(CartItem::getId)
-                .collect(Collectors.toList());
+            .map(CartItem::getId)
+            .collect(Collectors.toList());
 
         cartItemRepositoryPort.deleteAllByIdIn(cartItemIds);
-
-        log.debug("Deleted Items Ids: {}", cartItemIds);
-
-
         savedItems = cartItemRepositoryPort.saveAll(updatedCartItems);
-        log.debug("Saved Items: {}", savedItems);
-
-
         updatedCart.setCartItems(retrieveFullCartItems(updatedCart.getId()));
-        log.debug("Updated Items: {}", updatedCart.getCartItems());
 
         return new CartWithAllChecks(updatedCart, priceChanges, insufficientStock, variantAvailability);
     }
-
 
     @Transactional
     @Override
@@ -215,9 +202,9 @@ public class CartServiceUseCase implements CartServicePort {
             List<UpdateCartItemQuantityCommand> itemCommands = cartItemsQuantitiesUpdateDTO.cartItemCommands();
             for (CartItem cartItem : cartItems) {
                 itemCommands.stream()
-                        .filter(command -> command.cartItemId().equals(cartItem.getId()))
-                        .findFirst()
-                        .ifPresent(command -> cartItem.setQuantity(command.quantity()));
+                    .filter(command -> command.cartItemId().equals(cartItem.getId()))
+                    .findFirst()
+                    .ifPresent(command -> cartItem.setQuantity(command.quantity()));
             }
             cartItemRepositoryPort.saveAll(cartItems);
         }
@@ -230,16 +217,16 @@ public class CartServiceUseCase implements CartServicePort {
 
     private boolean isSameCartItem(CartItem cartItemA, CartItem cartItemB) {
         return cartItemA.getId() != null
-                ? cartItemA.getId().equals(cartItemB.getId())
-                : cartItemA.getProductVariantId().equals(cartItemB.getProductVariantId());
+            ? cartItemA.getId().equals(cartItemB.getId())
+            : cartItemA.getProductVariantId().equals(cartItemB.getProductVariantId());
     }
 
     private List<CartItem> retrieveFullCartItems(Long cartId) {
         List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cartId);
 
         Set<Long> variantIds = cartItems.stream()
-                .map(CartItem::getProductVariantId)
-                .collect(Collectors.toSet());
+            .map(CartItem::getProductVariantId)
+            .collect(Collectors.toSet());
         Set<ProductVariant> variants = productVariantRepositoryPort.findAllByIdInSet(variantIds);
 
         updateCurrentStock(cartItems, variants);
@@ -251,7 +238,7 @@ public class CartServiceUseCase implements CartServicePort {
 
     private void applyPriceChanges(List<CartItem> cartItems, List<ProductPriceChange> priceChanges) {
         Map<Long, Double> variantsWithNewPriceMap = priceChanges.stream()
-                .collect(Collectors.toMap(ProductPriceChange::productVariantId, ProductPriceChange:: newPrice));
+            .collect(Collectors.toMap(ProductPriceChange::productVariantId, ProductPriceChange:: newPrice));
         cartItems.forEach(cartItem -> {
             if (variantsWithNewPriceMap.containsKey(cartItem.getProductVariantId())) {
                 cartItem.setUnitPrice(variantsWithNewPriceMap.get(cartItem.getProductVariantId()));
