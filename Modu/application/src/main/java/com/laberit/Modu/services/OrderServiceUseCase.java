@@ -106,6 +106,7 @@ public class OrderServiceUseCase implements OrderServicePort {
         }
         order.setDeviceId(cart.getDeviceId());
         order.setSpecialInstructions(command.specialInstructions());
+        order.setShippingCosts(command.shippingCosts());
         order.setOrderItems(orderItems);
         return order;
     }
