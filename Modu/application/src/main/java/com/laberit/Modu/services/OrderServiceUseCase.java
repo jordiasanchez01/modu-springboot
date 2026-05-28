@@ -4,7 +4,7 @@ import com.laberit.Modu.domain.exceptions.CartEmptyException;
 import com.laberit.Modu.domain.exceptions.OrderNotFoundException;
 import com.laberit.Modu.domain.exceptions.OrderNotPaidException;
 import com.laberit.Modu.domain.model.*;
-import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
+import com.laberit.Modu.domain.model.response.CartWithAllChecks;
 import com.laberit.Modu.domain.model.response.CheckoutResult;
 import com.laberit.Modu.ports.driven.OrderRepositoryPort;
 import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
@@ -51,15 +51,15 @@ public class OrderServiceUseCase implements OrderServicePort {
         Order order = new Order();
         if (validateAddOrderCommand(command)) {
 
-            cartServicePort.updateCart(command.cartToOrder());
+            cartServicePort.updateCartItemsQuantities(deviceId, command.cartToOrder());
 
-            CartWithPriceAndStockCheck cartResponse = cartServicePort.getCartWithPriceAndStockCheck(deviceId);
+            CartWithAllChecks cartResponse = cartServicePort.getCartWithAllChecks(deviceId);
 
             if (cartResponse.cart().getCartItems().isEmpty()) {
                 throw new CartEmptyException();
             }
 
-            if (cartResponse.changedPrices().isEmpty() && cartResponse.insufficientStock().isEmpty()) {
+            if (isCartValidForCheckout(cartResponse)) {
                 order.setDeviceId(deviceId);
                 Order savedOrder = orderRepositoryPort.saveWithoutItems(order);
                 order = mapOrderCommandToOrder(command, cartResponse.cart(), savedOrder);
@@ -141,5 +141,11 @@ public class OrderServiceUseCase implements OrderServicePort {
         );
 
         return productVariantRepositoryPort.saveAll(variants);
+    }
+
+    private boolean isCartValidForCheckout (CartWithAllChecks cart) {
+        return cart.changedPrices().isEmpty() &&
+                cart.insufficientStock().isEmpty() &&
+                cart.unavailableVariants().isEmpty();
     }
 }

@@ -1,0 +1,13 @@
+type: object
+required:
+  - shippingCosts
+  - cartItems
+properties:
+  shippingCosts:
+    type: number
+    format: double
+    example: 457.15
+  cartItems:
+    type: array
+    items:
+      $ref: './CartItemForCartUpdate.yaml'

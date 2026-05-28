@@ -1,10 +1,11 @@
 package com.laberit.Modu.rest.adapter;
 
+import com.laberit.Modu.domain.model.response.CartWithAllChecks;
 import com.laberit.Modu.domain.model.response.InsufficientStockResult;
-import com.laberit.Modu.domain.model.response.CartWithPriceAndStockCheck;
 import com.laberit.Modu.ports.driving.CartItemServicePort;
 import com.laberit.Modu.domain.model.*;
 import com.laberit.Modu.ports.driving.CartServicePort;
+import com.laberit.Modu.ports.driving.command.UpdateCartItemQuantityCommand;
 import com.laberit.Modu.rest.generated.api.CartApi;
 import com.laberit.Modu.rest.generated.model.*;
 import com.laberit.Modu.rest.mapper.CartItemRestMapper;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-
 @RestController
 @RequiredArgsConstructor
 public class CartRestAdapter implements CartApi {
@@ -31,14 +31,30 @@ public class CartRestAdapter implements CartApi {
     @Override
     public ResponseEntity<ValidatedCartResponse> getValidatedCart() {
         String deviceId = currentDeviceId();
-        CartWithPriceAndStockCheck result = cartServicePort.getCartWithPriceAndStockCheck(deviceId);
+        CartWithAllChecks result = cartServicePort.getCartWithAllChecks(deviceId);
         return ResponseEntity.ok(cartMapper.toValidatedCartResponse(result));
     }
 
     @Override
-    public ResponseEntity<CartResponse> updateCart(UpdateCartRequest updateCartRequest) {
+    public ResponseEntity<CartResponseAllChecks> updateCart(CartUpdateRequest cartUpdateRequest) {
+        Cart cartToUpdate = cartMapper.toCartFromCartUpdateRequest(cartUpdateRequest);
         String deviceId = currentDeviceId();
-        Cart cart = cartServicePort.updateCart(cartMapper.toCartDTO(deviceId, updateCartRequest));
+        cartToUpdate.setDeviceId(deviceId);
+
+        CartWithAllChecks updatedCart = cartServicePort.updateCart(cartToUpdate);
+        return ResponseEntity.ok(cartMapper.toCartWithAllChecksResponse(updatedCart));
+    }
+
+    @Override
+    public ResponseEntity<CartResponse> updateCartItemsQuantities(UpdateCartQuantitiesRequest updateCartQuantitiesRequest) {
+        List<UpdateCartItemQuantityCommand> updateCommands = cartItemMapper.toUpdateCartItemQuantityCommandList(updateCartQuantitiesRequest.getCartItems());
+        String deviceId = currentDeviceId();
+        CartItemsQuantitiesUpdateDTO cartItemsQuantitiesUpdateDTO = CartItemsQuantitiesUpdateDTO.builder()
+                .deviceId(deviceId)
+                .cartItemCommands(updateCommands)
+                .build();
+
+        Cart cart = cartServicePort.updateCartItemsQuantities(deviceId, cartItemsQuantitiesUpdateDTO);
         return ResponseEntity.ok(cartMapper.toCartResponse(cart));
     }
 
@@ -58,9 +74,9 @@ public class CartRestAdapter implements CartApi {
     }
 
     @Override
-    public ResponseEntity<CartResponse> updateCartItemQuantity(Long itemID, UpdateItemRequest updateItemRequest) {
+    public ResponseEntity<CartResponse> updateCartItemQuantity(Long itemId, CartItemQuantityUpdateRequest updateItemRequest) {
         String deviceId = currentDeviceId();
-        cartItemServicePort.updateCartItemQuantity(deviceId, itemID, cartItemMapper.toCommand(updateItemRequest));
+        cartItemServicePort.updateCartItemQuantity(deviceId, cartItemMapper.toUpdateCartItemQuantityCommand(updateItemRequest));
         return ResponseEntity.ok(cartMapper.toCartResponse(cartServicePort.findCartByDeviceId(deviceId)));
     }
 
@@ -90,4 +106,13 @@ public class CartRestAdapter implements CartApi {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    private InsufficientStockAlert checkIfInsufficientStock(List<InsufficientStockResult> stockList){
+
+        InsufficientStockAlert  insufficientStockAlert = new InsufficientStockAlert();
+
+        if (!stockList.isEmpty()){
+            insufficientStockAlert.setCartItems(cartMapper.toInsufficientStockResponseList(stockList));
+        }
+        return insufficientStockAlert;
+    }
 }

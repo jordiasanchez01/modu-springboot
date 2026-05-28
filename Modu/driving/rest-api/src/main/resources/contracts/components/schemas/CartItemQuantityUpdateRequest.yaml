@@ -1,8 +1,13 @@
 type: object
 required:
+  - cartItemId
   - quantity
 properties:
+  cartItemId:
+    type: integer
+    format: int64
+    example: 1
   quantity:
     type: integer
-    example: 1
+    example: 13
     minimum: 1

@@ -5,4 +5,4 @@ properties:
   cart_items:
     type: array
     items:
-      $ref: './CartItemForCartResponse.yaml'
+      $ref: './CartItemQuantityUpdateRequest.yaml'

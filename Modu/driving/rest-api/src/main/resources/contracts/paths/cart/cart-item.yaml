@@ -11,7 +11,7 @@ patch:
     content:
       application/json:
         schema:
-          $ref: '../../components/schemas/UpdateItemRequest.yaml'
+          $ref: '../../components/schemas/CartItemQuantityUpdateRequest.yaml'
   parameters:
     - name: itemId
       in: path

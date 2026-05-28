@@ -6,9 +6,11 @@ import lombok.Builder;
 @Builder
 public record CheckoutResult(
         Order order,
-        CartWithPriceAndStockCheck cartResponse
+        CartWithAllChecks cartResponse
 ) {
     public boolean isOrderPlaced() {
-        return cartResponse.changedPrices().isEmpty() && cartResponse.insufficientStock().isEmpty();
+        return cartResponse.changedPrices().isEmpty() &&
+            cartResponse.insufficientStock().isEmpty() &&
+            cartResponse.unavailableVariants().isEmpty();
     }
 }

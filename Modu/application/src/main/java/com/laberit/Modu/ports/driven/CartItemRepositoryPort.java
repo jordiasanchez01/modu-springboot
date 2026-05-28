@@ -10,6 +10,7 @@ public interface CartItemRepositoryPort {
     Optional<CartItem> findById(Long id);
 
     Optional<CartItem> findByProductVariantId(Long productVariantId);
+
     Optional<CartItem> findByIdAndCartId(Long id, Long cartId);
 
     Optional<CartItem> findByCartIdAndProductVariantId(Long cartId, Long productVariantId);
@@ -27,4 +28,6 @@ public interface CartItemRepositoryPort {
     void deleteById(Long id);
 
     void deleteAllByCartId(Long cartId);
+
+    void deleteAllByIdIn(List<Long> ids);
 }

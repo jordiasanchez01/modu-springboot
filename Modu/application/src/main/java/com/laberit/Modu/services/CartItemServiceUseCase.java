@@ -27,19 +27,19 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class CartItemServiceUseCase implements CartItemServicePort {
-    private final ProductVariantServicePort productVariantServicePort;
     private final CartItemRepositoryPort cartItemRepositoryPort;
+    private final ProductVariantServicePort productVariantServicePort;
     private final CartRepositoryPort cartRepositoryPort;
     private final ProductVariantRepositoryPort productVariantRepositoryPort;
     private final ProductRepositoryPort productRepositoryPort;
 
     @Override
-    public CartItem updateCartItemQuantity(String deviceId, Long cartItemId, UpdateCartItemQuantityCommand command) {
+    public CartItem updateCartItemQuantity(String deviceId, UpdateCartItemQuantityCommand command) {
         int requestedQuantity = command.quantity();
         Cart cart = cartRepositoryPort.findByDeviceId(deviceId).orElseThrow(
                 CartNotFoundException::new);
-        CartItem item = cartItemRepositoryPort.findByIdAndCartId(cartItemId, cart.getId())
-                .orElseThrow(() -> new CartItemNotFoundException(cartItemId));
+        CartItem item = cartItemRepositoryPort.findByIdAndCartId(command.cartItemId(), cart.getId())
+                .orElseThrow(() -> new CartItemNotFoundException(command.cartItemId()));
         ProductVariant productVariant = productVariantRepositoryPort.findById(item.getProductVariantId())
                 .orElseThrow(() -> new ProductVariantNotFoundException(item.getProductVariantId().toString()));
         productVariantServicePort.assertIsValidToPurchase(productVariant, requestedQuantity);
@@ -54,7 +54,7 @@ public class CartItemServiceUseCase implements CartItemServicePort {
                 CartNotFoundException::new);
         CartItem item = cartItemRepositoryPort.findByIdAndCartId(itemId, cart.getId())
                 .orElseThrow(() -> new CartItemNotFoundException(itemId));
-        cartItemRepositoryPort.deleteById(itemId);
+        cartItemRepositoryPort.deleteById(item.getId());
     }
 
     @Override
