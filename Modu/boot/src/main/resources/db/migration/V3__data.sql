@@ -76,7 +76,7 @@ FROM (
             -- Shorts
             ('Athletic Running Shorts', 'Lightweight performance shorts with a built-in mesh liner and moisture-wicking fabric. Engineered for freedom of movement during runs, training sessions, and active lifestyles.', 'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&w=800&q=80', 29.99, TRUE),
             ('Chino Bermuda Shorts', 'Knee-length chino shorts with a clean tailored appearance and comfortable stretch fabric. Perfect for warm-weather outings that call for a polished yet relaxed dress code.', 'https://images.unsplash.com/photo-1565084888279-aca607ecce0c?auto=format&fit=crop&w=800&q=80', 34.99, TRUE),
-            ('Swim Trunks', 'Quick-dry swim trunks with an elastic waistband and internal mesh briefs. Bold colour-block design adds style to beach days, pool parties, and seaside holiday wardrobes.', 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80', 27.99, TRUE),
+            ('Swim Trunks', 'Quick-dry swim trunks with an elastic waistband and internal mesh briefs. Bold colour-block design adds style to beach days, pool parties, and seaside holiday wardrobes.', 'https://images.unsplash.com/photo-1695741401689-b31f265c8ec7?auto=format&fit=crop&w=800&q=80', 27.99, TRUE),
 
             -- Footware
             ('Canvas Low-Top Sneakers', 'Minimalist canvas sneakers with vulcanised rubber soles and cotton laces. A timeless everyday shoe that complements casual outfits from jeans and tees to shorts and polos.', 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=800&q=80', 44.99, TRUE),
