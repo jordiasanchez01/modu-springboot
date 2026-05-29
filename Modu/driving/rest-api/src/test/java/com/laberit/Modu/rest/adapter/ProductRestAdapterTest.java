@@ -20,9 +20,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

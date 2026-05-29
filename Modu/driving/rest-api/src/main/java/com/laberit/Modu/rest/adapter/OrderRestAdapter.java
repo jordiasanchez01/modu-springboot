@@ -22,7 +22,6 @@ public class OrderRestAdapter implements CheckoutApi {
     private final OrderServicePort orderServicePort;
     private final OrderRestMapper orderMapper;
     private final CartRestMapper cartMapper;
-    private final HttpServletRequest request;
 
 
     @Override
