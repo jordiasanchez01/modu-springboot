@@ -25,8 +25,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ProductServiceUseCaseTest {
 
-    @Mock
-    private ProductRepositoryPort productRepositoryPort;
+    @Mock private ProductRepositoryPort productRepositoryPort;
     @Mock private CategoryRepositoryPort categoryRepositoryPort;
     @Mock private ProductCategoryRepositoryPort productCategoryRepositoryPort;
     @Mock private ProductVariantServicePort productVariantServicePort;
