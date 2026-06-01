@@ -19,8 +19,7 @@ public class Order {
     private Long id;
     private String deviceId;
     private Instant createdAt;
-    @Builder.Default
-    private double shippingCosts = 0.00;
+    private Double shippingCosts;
     private String specialInstructions;
     @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
@@ -34,7 +33,7 @@ public class Order {
     }
 
     public Double getShippingCosts(){
-        return BigDecimal.valueOf(shippingCosts).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        return BigDecimal.valueOf(shippingCosts != null ? shippingCosts : 0.00).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     public Double getTotalOrderPrice() {
