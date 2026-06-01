@@ -17,6 +17,4 @@ public interface CartItemServicePort {
     void deleteAllCartItems(String deviceId);
 
     Cart addCartItemToCart(AddCartItemCommand command);
-
-    Set<InsufficientStockResult> checkStockOfCartItems(Set<CartItem> cartItems);
 }

@@ -5,7 +5,6 @@ import com.laberit.Modu.domain.model.Cart;
 import com.laberit.Modu.domain.model.CartItem;
 import com.laberit.Modu.domain.model.Product;
 import com.laberit.Modu.domain.model.ProductVariant;
-import com.laberit.Modu.domain.model.response.InsufficientStockResult;
 import com.laberit.Modu.ports.driven.CartItemRepositoryPort;
 import com.laberit.Modu.ports.driven.CartRepositoryPort;
 import com.laberit.Modu.ports.driven.ProductRepositoryPort;
@@ -63,7 +62,7 @@ public class CartItemServiceUseCase implements CartItemServicePort {
         cartItemRepositoryPort.deleteAllByCartId(cart.getId());
     }
 
-    @Override
+    /*@Override
     public Set<InsufficientStockResult> checkStockOfCartItems(Set<CartItem> cartItems) {
         Set<Long> variantIds = cartItems.stream()
                 .map(CartItem::getProductVariantId)
@@ -95,7 +94,7 @@ public class CartItemServiceUseCase implements CartItemServicePort {
         );
 
         return insufficientStockResults;
-    }
+    }*/
 
     @Override
     @Transactional

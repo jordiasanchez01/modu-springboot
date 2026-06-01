@@ -12,12 +12,4 @@ public interface CategoryServicePort {
 
     Category findCategoryById(Integer categoryId);
 
-    Category findCategoryByName(String name);
-
-    Category addCategory(AddCategoryCommand command);
-
-    Category updateCategory(UpdateCategoryCommand command);
-
-    void deleteCategory(Long categoryId);
-
 }

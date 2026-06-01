@@ -75,11 +75,11 @@ class ProductServiceUseCaseTest {
 
     @Test
     void findProductById_shouldThrowProductNotFoundException_whenProductDoesNotExist() {
-        // Arrange
+        // given
         Long productId = 99L;
         when(productRepositoryPort.findById(productId)).thenReturn(Optional.empty());
 
-        // Act & Assert
+        // when & then
         assertThrows(ProductNotFoundException.class,
                 () -> productService.findProductById(productId));
 
@@ -89,7 +89,7 @@ class ProductServiceUseCaseTest {
 
     @Test
     void findProductById_shouldReturnProductWithEmptyCategories_whenProductHasNoCategories() {
-        // Arrange
+        // given
         Long productId = 1L;
         Product mockProduct = Product.builder().id(productId).build();
 
@@ -98,10 +98,10 @@ class ProductServiceUseCaseTest {
         when(categoryRepositoryPort.findAllByIdIn(Set.of())).thenReturn(Set.of());
         when(productVariantServicePort.findAllByProductId(productId)).thenReturn(List.of());
 
-        // Act
+        // when
         Product result = productService.findProductById(productId);
 
-        // Assert
+        // then
         assertNotNull(result);
         assertTrue(result.getCategoriesSet().isEmpty());
         assertTrue(result.getProductVariantsList().isEmpty());
@@ -111,17 +111,17 @@ class ProductServiceUseCaseTest {
 
     @Test
     void search_shouldSortByPriceAsc_whenOrderByPriceIsAsc() {
-        // Arrange
+        // given
         SearchProductsCommand command = new SearchProductsCommand(
                 null, "ASC", null, null, 0, 10
         );
         PagedResult<Product> mockResult = new PagedResult<>(List.of(), 0, 10, false);
         when(productRepositoryPort.findAll(any(ProductSearchCriteria.class))).thenReturn(mockResult);
 
-        // Act
+        // when
         productService.search(command);
 
-        // Assert — verify the criteria built has the right sort field and direction
+        // then
         ArgumentCaptor<ProductSearchCriteria> captor =
                 ArgumentCaptor.forClass(ProductSearchCriteria.class);
         verify(productRepositoryPort).findAll(captor.capture());
@@ -175,7 +175,7 @@ class ProductServiceUseCaseTest {
 
     @Test
     void search_shouldPassAllCriteriaFieldsThrough() {
-        // Arrange
+        // given
         List<String> categories = List.of("Electronics", "Gadgets", "Consumables");
 
         SearchProductsCommand command = new SearchProductsCommand(
@@ -185,15 +185,16 @@ class ProductServiceUseCaseTest {
         when(productRepositoryPort.findAll(any(ProductSearchCriteria.class)))
                 .thenReturn(new PagedResult<>(List.of(), 0, 2, false));
 
-        // Act
+        // when
         productService.search(command);
 
-        // Assert
+        // then
         ArgumentCaptor<ProductSearchCriteria> captor =
                 ArgumentCaptor.forClass(ProductSearchCriteria.class);
         verify(productRepositoryPort).findAll(captor.capture());
 
         ProductSearchCriteria captured = captor.getValue();
+
         assertEquals("laptop", captured.title());
         assertEquals(999, captured.maxPrice());
         assertEquals(categories, captured.categories());

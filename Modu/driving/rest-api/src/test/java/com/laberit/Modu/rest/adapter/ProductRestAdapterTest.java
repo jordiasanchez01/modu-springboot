@@ -12,6 +12,7 @@ import com.laberit.Modu.rest.generated.model.ProductPageResponse;
 import com.laberit.Modu.rest.generated.model.ProductsResponse;
 import com.laberit.Modu.rest.mapper.ProductRestMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +78,7 @@ class ProductRestAdapterTest {
     // ── getProductById ────────────────────────────────────────────────────────
 
     @Test
+    @DisplayName("If product Id exists, return associated product and it´s details")
     void getProductById_shouldReturn200_withProductDetails_whenProductExists() throws Exception {
         Product mockProduct = Product.builder().id(1L).name("Test Product").build();
         ProductDetailsResponse mockResponse = new ProductDetailsResponse()
@@ -93,6 +95,7 @@ class ProductRestAdapterTest {
     }
 
     @Test
+    @DisplayName("If product Id does not exist, return 404 Not Found exception")
     void getProductById_shouldReturn404_whenProductDoesNotExist() throws Exception {
         when(productServicePort.findProductById(99L))
                 .thenThrow(new ProductNotFoundException("99"));
@@ -104,8 +107,9 @@ class ProductRestAdapterTest {
     // ── getProducts ───────────────────────────────────────────────────────────
 
     @Test
+    @DisplayName("Products are returned as a paged list")
     void getProducts_shouldReturn200_withPagedResults() throws Exception {
-        PagedResult<Product> mockPagedResult = new PagedResult<>(mockProducts, 0, 5, false);
+        PagedResult<Product> mockPagedResult = new PagedResult<>(mockProducts, 0, 10, false);
 
         when(productServicePort.search(any(SearchProductsCommand.class)))
                 .thenReturn(mockPagedResult);
@@ -121,6 +125,7 @@ class ProductRestAdapterTest {
     }
 
     @Test
+    @DisplayName("All query params are passed to SearchProductsCommand")
     void getProducts_shouldPassAllQueryParamsToCommand() throws Exception {
         when(productServicePort.search(any(SearchProductsCommand.class)))
                 .thenReturn(new PagedResult<>(List.of(), 0, 10, false));
@@ -147,6 +152,7 @@ class ProductRestAdapterTest {
     }
 
     @Test
+    @DisplayName("A Product list is returned even when optional params are null")
     void getProducts_shouldReturn200_withNullOptionalParams() throws Exception {
         when(productServicePort.search(any(SearchProductsCommand.class)))
                 .thenReturn(new PagedResult<>(List.of(), 0, 0, false));
