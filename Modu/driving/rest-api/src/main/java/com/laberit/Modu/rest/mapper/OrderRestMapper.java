@@ -11,11 +11,19 @@ import com.laberit.Modu.rest.generated.model.ProductPriceChangeResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface OrderRestMapper {
 
+    default OffsetDateTime map(Instant instant) {
+        return instant == null ? null : instant.atOffset(ZoneOffset.UTC);
+    }
+
+    @Mapping(target = "subtotalPrice", expression = "java(order.getSubTotalPrice())")
     @Mapping(target = "totalPrice", expression = "java(order.getTotalOrderPrice())")
     OrderResponse toOrderResponse(Order order);
 

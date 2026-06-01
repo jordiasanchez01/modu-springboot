@@ -4,13 +4,14 @@ import com.laberit.Modu.domain.model.Cart;
 import com.laberit.Modu.domain.model.CartItemsQuantitiesUpdateDTO;
 import com.laberit.Modu.domain.model.response.CartWithAllChecks;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 public interface CartServicePort {
 
     CartWithAllChecks getCartWithAllChecks(String deviceId);
 
-    LocalDateTime getCartUpdatedAt(String deviceId);
+    Instant getCartUpdatedAt(String deviceId);
 
     Cart findCartByDeviceId(String deviceId);
 

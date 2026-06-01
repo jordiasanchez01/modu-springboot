@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -93,7 +94,7 @@ public class CartServiceUseCase implements CartServicePort {
     }
 
     @Override
-    public LocalDateTime getCartUpdatedAt(String deviceId){
+    public Instant getCartUpdatedAt(String deviceId){
         Cart cart = cartRepositoryPort.findByDeviceId(deviceId)
                 .orElseThrow(CartNotFoundException::new);
         return cart.getUpdatedAt();

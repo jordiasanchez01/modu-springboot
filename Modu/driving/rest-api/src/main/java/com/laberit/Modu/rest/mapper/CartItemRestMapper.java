@@ -1,11 +1,9 @@
 package com.laberit.Modu.rest.mapper;
 
 import com.laberit.Modu.domain.model.CartItem;
+import com.laberit.Modu.domain.model.CartItemsQuantitiesUpdateDTO;
 import com.laberit.Modu.ports.driving.command.UpdateCartItemQuantityCommand;
-import com.laberit.Modu.rest.generated.model.CartItemForCartResponse;
-import com.laberit.Modu.rest.generated.model.CartItemForCartUpdate;
-import com.laberit.Modu.rest.generated.model.CartItemForOrderRequest;
-import com.laberit.Modu.rest.generated.model.CartItemQuantityUpdateRequest;
+import com.laberit.Modu.rest.generated.model.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -33,6 +31,20 @@ public interface CartItemRestMapper {
 
     List<UpdateCartItemQuantityCommand> toUpdateCartItemQuantityCommandList(List<CartItemQuantityUpdateRequest> updateItemRequests);
 
+    default CartItemsQuantitiesUpdateDTO toCartItemsQuantitiesUpdateDTO(String deviceId, UpdateCartQuantitiesRequest updateCartQuantitiesRequest) {
+        return CartItemsQuantitiesUpdateDTO.builder()
+                .deviceId(deviceId)
+                .cartItemCommands(
+                        toUpdateCartItemQuantityCommandList(updateCartQuantitiesRequest.getCartItems())
+                )
+                .build();
+    }
+
+    @Mapping(target = "cartId", ignore = true)
+    @Mapping(target = "productId", ignore = true)
+    @Mapping(target = "productVariantId", ignore = true)
+    @Mapping(target = "unitPrice", ignore = true)
+    @Mapping(target = "currentStock", ignore = true)
     @Mapping(source = "cartItemId", target = "id")
     List<CartItem> toCartItemListFromQuantityUpdateRequest(List<CartItemQuantityUpdateRequest> cartItemQuantityUpdateRequests);
 
