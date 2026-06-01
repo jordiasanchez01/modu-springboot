@@ -76,21 +76,6 @@ public class OrderServiceUseCase implements OrderServicePort {
         }
     }
 
-    @Override
-    public Order addOrderItemToOrder(AddOrderItemCommand command) {
-        return null;
-    }
-
-    @Override
-    public Order updateOrder(UpdateOrderCommand command) {
-        return null;
-    }
-
-    @Override
-    public void deleteOrder(Long OrderId) {
-
-    }
-
     private Order mapOrderCommandToOrder(AddOrderCommand command, Cart cart, Order order) {
 
         List<OrderItem> orderItems = new ArrayList<>();
