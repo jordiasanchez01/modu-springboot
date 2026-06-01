@@ -43,7 +43,6 @@ public class CartItemServiceUseCase implements CartItemServicePort {
                 .orElseThrow(() -> new ProductVariantNotFoundException(item.getProductVariantId().toString()));
         productVariantServicePort.assertIsValidToPurchase(productVariant, requestedQuantity);
         item.setQuantity(requestedQuantity);
-        cartItemRepositoryPort.save(item);
         return cartItemRepositoryPort.save(item);
     }
 
@@ -61,40 +60,6 @@ public class CartItemServiceUseCase implements CartItemServicePort {
         Cart cart = cartRepositoryPort.findByDeviceId(deviceId).orElseThrow(CartNotFoundException::new);
         cartItemRepositoryPort.deleteAllByCartId(cart.getId());
     }
-
-    /*@Override
-    public Set<InsufficientStockResult> checkStockOfCartItems(Set<CartItem> cartItems) {
-        Set<Long> variantIds = cartItems.stream()
-                .map(CartItem::getProductVariantId)
-                .collect(Collectors.toSet());
-
-        Map<Long, Integer> quantityMap = cartItems.stream()
-                .collect(Collectors.toMap(
-                        CartItem::getProductVariantId,
-                        CartItem::getQuantity
-                ));
-
-        List<ProductVariant> variants = productVariantServicePort.findAllByIdInSet(variantIds)
-                .stream()
-                .toList();
-
-        Set<InsufficientStockResult> insufficientStockResults = new HashSet<>();
-
-        variants.forEach(variant -> {
-                    int stockResult = (variant.getStock() - quantityMap.get(variant.getId()));
-                    if (stockResult < 0) {
-                        InsufficientStockResult result = new InsufficientStockResult(
-                                variant.getId(),
-                                quantityMap.get(variant.getId()),
-                                variant.getStock()
-                        );
-                        insufficientStockResults.add(result);
-                    }
-                }
-        );
-
-        return insufficientStockResults;
-    }*/
 
     @Override
     @Transactional
