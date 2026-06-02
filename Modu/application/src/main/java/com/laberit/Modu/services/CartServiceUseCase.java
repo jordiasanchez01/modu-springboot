@@ -43,7 +43,9 @@ public class CartServiceUseCase implements CartServicePort {
     public CartWithAllChecks getCartWithAllChecks(String deviceId) {
         Cart cart = cartRepositoryPort.findByDeviceId(deviceId)
                 .orElseThrow(CartNotFoundException::new);
-        List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
+        List<CartItem> cartItems = new ArrayList<>(
+                cartItemRepositoryPort.findAllByCartId(cart.getId())
+        );
 
         Set<Long> variantIds = cartItems.stream()
                 .map(CartItem::getProductVariantId)
