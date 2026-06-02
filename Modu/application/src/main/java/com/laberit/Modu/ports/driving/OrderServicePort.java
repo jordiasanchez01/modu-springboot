@@ -14,10 +14,4 @@ public interface OrderServicePort {
 
     CheckoutResult addOrder(String deviceId, AddOrderCommand command);
 
-    Order addOrderItemToOrder(AddOrderItemCommand command);
-
-    Order updateOrder(UpdateOrderCommand command);
-
-    void deleteOrder(Long OrderId);
-
 }

@@ -31,24 +31,4 @@ public class CategoryServiceUseCase implements CategoryServicePort {
         return categoryRepositoryPort.findById(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException(categoryId.toString()));
     }
-
-    @Override
-    public Category findCategoryByName(String name) {
-        return null;
-    }
-
-    @Override
-    public Category addCategory(AddCategoryCommand command) {
-        return null;
-    }
-
-    @Override
-    public Category updateCategory(UpdateCategoryCommand command) {
-        return null;
-    }
-
-    @Override
-    public void deleteCategory(Long categoryId) {
-
-    }
 }

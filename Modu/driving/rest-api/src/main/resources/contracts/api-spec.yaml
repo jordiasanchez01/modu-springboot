@@ -21,7 +21,7 @@ tags:
 paths:
   /products:
     $ref: './paths/products/products.yaml'
-  /product/{productId}:
+  /products/{productId}:
     $ref: './paths/products/get-product-by-id.yaml'
 
   /categories:

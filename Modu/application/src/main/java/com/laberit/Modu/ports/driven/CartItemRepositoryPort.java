@@ -17,10 +17,6 @@ public interface CartItemRepositoryPort {
 
     List<CartItem> findAllByCartId(Long cartId);
 
-    List<CartItem> findAllByProductVariantId(Long productVariantId);
-
-    boolean existsByProductVariantId(Long productVariantId);
-
     CartItem save(CartItem cartItem);
 
     List<CartItem> saveAll(List<CartItem> cartItems);

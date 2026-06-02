@@ -55,21 +55,13 @@ public class ProductVariantServiceUseCase implements ProductVariantServicePort {
             List.of("XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL");
 
     public List<ProductVariant> sortBySizeThenColor(List<ProductVariant> variants) {
-        variants.forEach(v -> System.out.println(
-                "id=" + v.getId() +
-                        " | size='" + v.getSize() + "'" +
-                        " | category=" + sizeCategory(v) +
-                        " | resolved='" + resolveSize(v) + "'"
-        ));
-        List<ProductVariant> sortedVariants =
-        variants.stream()
+
+        return variants.stream()
                 .sorted(Comparator
                         .comparingInt(this::sizeCategory)       // numeric first, then lettered, then unknown
                         .thenComparing(this::resolveSize)        // within category, apply the right ordering
                         .thenComparing(v -> Optional.ofNullable(v.getColor()).orElse("")))
                 .collect(Collectors.toList());
-
-        return sortedVariants;
     }
 
     private int sizeCategory(ProductVariant v) {
