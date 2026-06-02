@@ -29,6 +29,7 @@ public class CartServiceUseCase implements CartServicePort {
     private final CartItemRepositoryPort cartItemRepositoryPort;
     private final ProductVariantRepositoryPort productVariantRepositoryPort;
     private final ProductRepositoryPort productRepositoryPort;
+
     @Transactional
     public Cart initializeCart(String deviceId) {
         if (cartRepositoryPort.existsByDeviceId(deviceId)) {
@@ -42,7 +43,9 @@ public class CartServiceUseCase implements CartServicePort {
     public CartWithAllChecks getCartWithAllChecks(String deviceId) {
         Cart cart = cartRepositoryPort.findByDeviceId(deviceId)
                 .orElseThrow(CartNotFoundException::new);
-        List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
+        List<CartItem> cartItems = new ArrayList<>(
+                cartItemRepositoryPort.findAllByCartId(cart.getId())
+        );
 
         Set<Long> variantIds = cartItems.stream()
                 .map(CartItem::getProductVariantId)
@@ -168,7 +171,6 @@ public class CartServiceUseCase implements CartServicePort {
 
             toDelete.addAll(removedByAvailability);
             updatedCartItems.removeAll(removedByAvailability);
-            //savedItems = cartItemRepositoryPort.saveAll(updatedCartItems);
         }
 
         List<ProductPriceChange> priceChanges = detectPriceChanges(updatedCartItems, variants);
@@ -210,10 +212,10 @@ public class CartServiceUseCase implements CartServicePort {
             cartItemRepositoryPort.saveAll(cartItems);
         }
 
-        List<CartItem> updatedItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
+        List<CartItem> updatedItems = retrieveFullCartItems(cart.getId());
         cart.setCartItems(updatedItems);
-
-        return cartRepositoryPort.save(cart);
+        cartRepositoryPort.save(cart);
+        return cart;
     }
 
     private boolean isSameCartItem(CartItem cartItemA, CartItem cartItemB) {
