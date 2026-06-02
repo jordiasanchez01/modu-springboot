@@ -44,16 +44,6 @@ public class CartItemRepositoryAdapter implements CartItemRepositoryPort {
     }
 
     @Override
-    public List<CartItem> findAllByProductVariantId(Long productVariantId) {
-        return List.of();
-    }
-
-    @Override
-    public boolean existsByProductVariantId(Long productVariantId) {
-        return false;
-    }
-
-    @Override
     public void deleteById(Long id) {
         cartItemJpaRepository.deleteById(id);
         cartItemJpaRepository.flush();
