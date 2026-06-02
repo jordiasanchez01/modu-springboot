@@ -13,7 +13,6 @@ import com.laberit.Modu.ports.driven.ProductVariantRepositoryPort;
 import com.laberit.Modu.ports.driving.CartItemServicePort;
 import com.laberit.Modu.ports.driving.ProductVariantServicePort;
 import com.laberit.Modu.ports.driving.command.AddCartItemCommand;
-import com.laberit.Modu.ports.driving.command.UpdateCartItemQuantityCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,21 +31,6 @@ public class CartItemServiceUseCase implements CartItemServicePort {
     private final CartRepositoryPort cartRepositoryPort;
     private final ProductVariantRepositoryPort productVariantRepositoryPort;
     private final ProductRepositoryPort productRepositoryPort;
-
-    @Override
-    public CartItem updateCartItemQuantity(String deviceId, UpdateCartItemQuantityCommand command) {
-        int requestedQuantity = command.quantity();
-        Cart cart = cartRepositoryPort.findByDeviceId(deviceId).orElseThrow(
-                CartNotFoundException::new);
-        CartItem item = cartItemRepositoryPort.findByIdAndCartId(command.cartItemId(), cart.getId())
-                .orElseThrow(() -> new CartItemNotFoundException(command.cartItemId()));
-        ProductVariant productVariant = productVariantRepositoryPort.findById(item.getProductVariantId())
-                .orElseThrow(() -> new ProductVariantNotFoundException(item.getProductVariantId().toString()));
-        productVariantServicePort.assertIsValidToPurchase(productVariant, requestedQuantity);
-        item.setQuantity(requestedQuantity);
-        cartItemRepositoryPort.save(item);
-        return cartItemRepositoryPort.save(item);
-    }
 
     @Override
     public void deleteCartItemById(String deviceId, Long itemId) {
