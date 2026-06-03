@@ -52,20 +52,35 @@ class GlobalControllerAdviceTest {
 
         @Test
         void shouldReturnConflict_forCategoryAlreadyExistsException() {
-            ErrorResponse result = advice.handleCategoryAlreadyExists(new CategoryAlreadyExistsException());
+            ErrorResponse result = advice.handleCategoryAlreadyExists(new CategoryAlreadyExistsException("Electronics"));
             assertErrorType(result, "CONFLICT");
+            assertThat(result.getMessage()).isEqualTo(new CategoryAlreadyExistsException("Electronics").getMessage());
+            assertThat(result.getMessage()).contains("Electronics");
         }
 
         @Test
         void shouldReturnConflict_forOrderNotPaidException() {
-            ErrorResponse result = advice.handleOrderNotPaid(new OrderNotPaidException());
+            ErrorResponse result = advice.handleOrderNotPaid(new OrderNotPaidException("device-abc"));
             assertErrorType(result, "CONFLICT");
+            assertThat(result.getMessage()).contains("device-abc");
         }
 
         @Test
-        void shouldReturnConflict_forProductVariantNotAvailableException() {
-            ErrorResponse result = advice.handleProductVariableNotAvailable(new ProductVariantNotAvailableException());
+        void shouldReturnConflict_forProductVariantNotAvailableException_withInsufficientStock() {
+            ErrorResponse result = advice.handleProductVariableNotAvailable(
+                    new ProductVariantNotAvailableException(10L, true));
             assertErrorType(result, "CONFLICT");
+            assertThat(result.getMessage()).contains("10");
+            assertThat(result.getMessage()).contains("Not enough stock");
+        }
+
+        @Test
+        void shouldReturnConflict_forProductVariantNotAvailableException_withoutStockMessage() {
+            ErrorResponse result = advice.handleProductVariableNotAvailable(
+                    new ProductVariantNotAvailableException(10L, false));
+            assertErrorType(result, "CONFLICT");
+            assertThat(result.getMessage()).contains("10");
+            assertThat(result.getMessage()).doesNotContain("Not enough stock");
         }
     }
 
@@ -77,8 +92,9 @@ class GlobalControllerAdviceTest {
 
         @Test
         void shouldReturnNotFound_forCartItemNotFoundException() {
-            ErrorResponse result = advice.handleCartItemNotFound(new CartItemNotFoundException());
+            ErrorResponse result = advice.handleCartItemNotFound(new CartItemNotFoundException(42L));
             assertErrorType(result, "NOT_FOUND");
+            assertThat(result.getMessage()).contains("42");
         }
 
         @Test
@@ -90,26 +106,30 @@ class GlobalControllerAdviceTest {
 
         @Test
         void shouldReturnNotFound_forCategoryNotFoundException() {
-            ErrorResponse result = advice.handleCategoryNotFound(new CategoryNotFoundException());
+            ErrorResponse result = advice.handleCategoryNotFound(new CategoryNotFoundException("5"));
             assertErrorType(result, "NOT_FOUND");
+            assertThat(result.getMessage()).contains("5");
         }
 
         @Test
         void shouldReturnNotFound_forOrderNotFoundException() {
-            ErrorResponse result = advice.handleOrderNotFound(new OrderNotFoundException());
+            ErrorResponse result = advice.handleOrderNotFound(new OrderNotFoundException("1"));
             assertErrorType(result, "NOT_FOUND");
+            assertThat(result.getMessage()).contains("1");
         }
 
         @Test
         void shouldReturnNotFound_forProductNotFoundException() {
-            ErrorResponse result = advice.handleProductNotFound(new ProductNotFoundException());
+            ErrorResponse result = advice.handleProductNotFound(new ProductNotFoundException("99"));
             assertErrorType(result, "NOT_FOUND");
+            assertThat(result.getMessage()).contains("99");
         }
 
         @Test
         void shouldReturnNotFound_forProductVariantNotFoundException() {
-            ErrorResponse result = advice.handleProductVariableNotFound(new ProductVariantNotFoundException());
+            ErrorResponse result = advice.handleProductVariableNotFound(new ProductVariantNotFoundException("7"));
             assertErrorType(result, "NOT_FOUND");
+            assertThat(result.getMessage()).contains("7");
         }
     }
 

@@ -86,7 +86,7 @@ class DeviceIdFilterTest {
         @ParameterizedTest(name = "device ID of length {0}")
         @ValueSource(strings = {
                 "short",          // too short
-                "17chardeviceid!x",// 17 chars — not 16 or 32
+                "12345678901234567",// 17 chars — not 16 or 32
                 "this-is-exactly-31-chars-long!!" // 31 chars
         })
         void shouldRejectRequest_andNotProceedThroughChain(String deviceId) throws Exception {
