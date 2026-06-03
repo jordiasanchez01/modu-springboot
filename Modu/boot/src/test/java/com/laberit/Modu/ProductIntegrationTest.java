@@ -51,10 +51,11 @@ class ProductIntegrationTest {
 
     @Test
     void shouldReturnFewerProducts_whenFilteredByMaxPrice() {
+        String maxPageSize = "30";
         // Request all products (large size to count them)
-        ResponseEntity<String> allResponse = restTemplate.getForEntity("/products?size=100", String.class);
+        ResponseEntity<String> allResponse = restTemplate.getForEntity("/products?size="+maxPageSize, String.class);
         // Request only products priced at or below 20 — seed data includes White T-Shirt (19.99), Knitted Beanie (14.99), Slide Sandals (19.99)
-        ResponseEntity<String> filteredResponse = restTemplate.getForEntity("/products?size=100&maxPrice=20", String.class);
+        ResponseEntity<String> filteredResponse = restTemplate.getForEntity("/products?size="+maxPageSize+"&maxPrice=20", String.class);
 
         int totalCount    = ((List<?>) JsonPath.parse(allResponse.getBody()).read("$.data")).size();
         int filteredCount = ((List<?>) JsonPath.parse(filteredResponse.getBody()).read("$.data")).size();
