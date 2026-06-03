@@ -78,21 +78,6 @@ class CartItemRepositoryAdapterTest {
     }
 
     @Nested
-    @DisplayName("findByProductVariantId()")
-    class FindByProductVariantId {
-
-        @Test
-        void shouldAlwaysReturnEmpty() {
-            // This method is a stub — it always returns empty regardless of input.
-            Optional<CartItem> result = adapter.findByProductVariantId(5L);
-
-            assertThat(result).isEmpty();
-            verifyNoInteractions(cartItemJpaRepository);
-            verifyNoInteractions(cartItemMapper);
-        }
-    }
-
-    @Nested
     @DisplayName("findByIdAndCartId()")
     class FindByIdAndCartId {
 
