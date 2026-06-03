@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -40,23 +41,27 @@ class CartRepositoryAdapterTest {
     private CartItemEntity cartItemEntity;
     private Cart domainCart;
     private CartItem domainCartItem;
+    
+    private String deviceId;
 
     @BeforeEach
     void setUp() {
+        deviceId = "1234567890DEVICE1234";
+        
         cartItemEntity = new CartItemEntity();
         cartItemEntity.setId(10L);
         cartItemEntity.setCartId(1L);
 
         cartEntity = new CartEntity();
         cartEntity.setId(1L);
-        cartEntity.setDeviceId("1234567890DEVICE1234");
+        cartEntity.setDeviceId(deviceId);
         cartEntity.setCartItems(List.of(cartItemEntity));
 
         domainCartItem = CartItem.builder()
                 .id(10L).cartId(1L).productVariantId(5L).unitPrice(15.0).quantity(1).build();
 
         domainCart = Cart.builder()
-                .id(1L).deviceId("1234567890DEVICE1234")
+                .id(1L).deviceId(deviceId)
                 .cartItems(List.of(domainCartItem)).build();
     }
 
@@ -74,7 +79,7 @@ class CartRepositoryAdapterTest {
 
             Cart result = adapter.save(domainCart);
 
-            assertThat(result.getDeviceId()).isEqualTo("device-abc");
+            assertThat(result.getDeviceId()).isEqualTo(deviceId);
             assertThat(result.getCartItems()).hasSize(1);
             verify(cartJpaRepository).save(cartEntity);
             verify(cartItemJpaRepository).saveAll(anyList());
@@ -105,10 +110,10 @@ class CartRepositoryAdapterTest {
 
         @Test
         void shouldCallDeleteThenFlush_inOrder() {
-            adapter.deleteByDeviceId("device-abc");
+            adapter.deleteByDeviceId(deviceId);
 
             var inOrder = inOrder(cartJpaRepository);
-            inOrder.verify(cartJpaRepository).deleteByDeviceId("device-abc");
+            inOrder.verify(cartJpaRepository).deleteByDeviceId(deviceId);
             inOrder.verify(cartJpaRepository).flush();
         }
     }
@@ -119,14 +124,14 @@ class CartRepositoryAdapterTest {
 
         @Test
         void shouldRefresh_mapCart_andPopulateItems_whenFound() {
-            when(cartJpaRepository.findByDeviceId("device-abc")).thenReturn(Optional.of(cartEntity));
+            when(cartJpaRepository.findByDeviceId(deviceId)).thenReturn(Optional.of(cartEntity));
             when(cartMapper.toDomain(cartEntity)).thenReturn(domainCart);
             when(cartItemMapper.toDomainList(cartEntity.getCartItems())).thenReturn(List.of(domainCartItem));
 
-            Optional<Cart> result = adapter.findByDeviceId("device-abc");
+            Optional<Cart> result = adapter.findByDeviceId(deviceId);
 
             assertThat(result).isPresent();
-            assertThat(result.get().getDeviceId()).isEqualTo("device-abc");
+            assertThat(result.get().getDeviceId()).isEqualTo(deviceId);
             assertThat(result.get().getCartItems()).hasSize(1);
             verify(entityManager).refresh(cartEntity);
         }
@@ -149,8 +154,8 @@ class CartRepositoryAdapterTest {
 
         @Test
         void shouldReturnTrue_whenExists() {
-            when(cartJpaRepository.existsByDeviceId("device-abc")).thenReturn(true);
-            assertThat(adapter.existsByDeviceId("device-abc")).isTrue();
+            when(cartJpaRepository.existsByDeviceId(deviceId)).thenReturn(true);
+            assertThat(adapter.existsByDeviceId(deviceId)).isTrue();
         }
 
         @Test
