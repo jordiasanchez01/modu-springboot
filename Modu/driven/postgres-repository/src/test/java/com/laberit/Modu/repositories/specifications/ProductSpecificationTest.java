@@ -11,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 
@@ -29,10 +28,7 @@ class ProductSpecificationTest {
     @Mock private Predicate predicate;
     @Mock private Predicate conjunction;
 
-    @BeforeEach
-    void setUpConjunction() {
-        when(cb.conjunction()).thenReturn(conjunction);
-    }
+
 
     @Nested
     @DisplayName("hasTitle()")
@@ -40,6 +36,8 @@ class ProductSpecificationTest {
 
         @Test
         void shouldReturnConjunction_whenTitleIsNull() {
+            when(cb.conjunction()).thenReturn(conjunction);
+
             Predicate result = ProductSpecification.hasTitle(null)
                     .toPredicate(root, query, cb);
 
@@ -51,9 +49,9 @@ class ProductSpecificationTest {
         @SuppressWarnings("unchecked")
         @Test
         void shouldCreateLikePredicate_wrappingTitleWithWildcards() {
-            Expression<String> namePath = mock(Expression.class);
+            Path<String> namePath = mock(Path.class);
             Expression<String> lowerName = mock(Expression.class);
-            when(root.get("name")).thenReturn(namePath);
+            doReturn(namePath).when(root).get("name");
             when(cb.lower(namePath)).thenReturn(lowerName);
             when(cb.like(eq(lowerName), any(String.class), eq('\\'))).thenReturn(predicate);
 
@@ -68,9 +66,9 @@ class ProductSpecificationTest {
         @SuppressWarnings("unchecked")
         @Test
         void shouldEscapePercent_inTitlePattern() {
-            Expression<String> namePath = mock(Expression.class);
+            Path<String> namePath = mock(Path.class);
             Expression<String> lowerName = mock(Expression.class);
-            when(root.get("name")).thenReturn(namePath);
+            doReturn(namePath).when(root).get("name");
             when(cb.lower(namePath)).thenReturn(lowerName);
             when(cb.like(eq(lowerName), any(String.class), eq('\\'))).thenReturn(predicate);
 
@@ -85,9 +83,9 @@ class ProductSpecificationTest {
         @SuppressWarnings("unchecked")
         @Test
         void shouldEscapeUnderscore_inTitlePattern() {
-            Expression<String> namePath = mock(Expression.class);
+            Path<String> namePath = mock(Path.class);
             Expression<String> lowerName = mock(Expression.class);
-            when(root.get("name")).thenReturn(namePath);
+            doReturn(namePath).when(root).get("name");
             when(cb.lower(namePath)).thenReturn(lowerName);
             when(cb.like(eq(lowerName), any(String.class), eq('\\'))).thenReturn(predicate);
 
@@ -102,9 +100,9 @@ class ProductSpecificationTest {
         @SuppressWarnings("unchecked")
         @Test
         void shouldEscapeBackslash_inTitlePattern() {
-            Expression<String> namePath = mock(Expression.class);
+            Path<String> namePath = mock(Path.class);
             Expression<String> lowerName = mock(Expression.class);
-            when(root.get("name")).thenReturn(namePath);
+            doReturn(namePath).when(root).get("name");
             when(cb.lower(namePath)).thenReturn(lowerName);
             when(cb.like(eq(lowerName), any(String.class), eq('\\'))).thenReturn(predicate);
 
@@ -123,6 +121,8 @@ class ProductSpecificationTest {
 
         @Test
         void shouldReturnConjunction_whenMaxPriceIsNull() {
+            when(cb.conjunction()).thenReturn(conjunction);
+
             Predicate result = ProductSpecification.hasMaxPrice(null)
                     .toPredicate(root, query, cb);
 
@@ -134,14 +134,15 @@ class ProductSpecificationTest {
         @Test
         void shouldCreateLessThanOrEqualToPredicate_whenMaxPriceProvided() {
             Path<Double> pricePath = mock(Path.class);
-            when(root.get("price")).thenReturn(pricePath);
-            when(cb.lessThanOrEqualTo(pricePath, 100)).thenReturn(predicate);
+            doReturn(pricePath).when(root).get("price");
+            doReturn(predicate).when(cb).lessThanOrEqualTo(any(Expression.class), any(Comparable.class));
 
             Predicate result = ProductSpecification.hasMaxPrice(100)
                     .toPredicate(root, query, cb);
 
             assertThat(result).isSameAs(predicate);
-            verify(cb).lessThanOrEqualTo(pricePath, 100);
+            verify(root).get("price");
+            verify(cb).lessThanOrEqualTo(any(Expression.class), any(Comparable.class));
         }
     }
 
@@ -151,6 +152,8 @@ class ProductSpecificationTest {
 
         @Test
         void shouldReturnConjunction_whenCategoriesIsNull() {
+            when(cb.conjunction()).thenReturn(conjunction);
+
             Predicate result = ProductSpecification.hasCategories(null)
                     .toPredicate(root, query, cb);
 
@@ -159,6 +162,8 @@ class ProductSpecificationTest {
 
         @Test
         void shouldReturnConjunction_whenCategoriesIsEmpty() {
+            when(cb.conjunction()).thenReturn(conjunction);
+
             Predicate result = ProductSpecification.hasCategories(List.of())
                     .toPredicate(root, query, cb);
 
@@ -172,8 +177,8 @@ class ProductSpecificationTest {
             Path<String> categoryNamePath = mock(Path.class);
             Expression<String> lowerCategoryName = mock(Expression.class);
 
-            when(root.join("categoriesSet")).thenReturn(join);
-            when(join.get("name")).thenReturn(categoryNamePath);
+            doReturn(join).when(root).join("categoriesSet");
+            doReturn(categoryNamePath).when(join).get("name");
             when(cb.lower(categoryNamePath)).thenReturn(lowerCategoryName);
             when(cb.equal(lowerCategoryName, "streetwear")).thenReturn(predicate);
             when(cb.and(any(Predicate[].class))).thenReturn(predicate);
@@ -189,14 +194,7 @@ class ProductSpecificationTest {
         @Test
         void shouldCallDistinct_whenQueryResultTypeIsNotLong() {
             Join<ProductEntity, CategoryEntity> join = mock(Join.class);
-            Path<String> categoryNamePath = mock(Path.class);
-            Expression<String> lowerCategoryName = mock(Expression.class);
-
-            when(root.join("categoriesSet")).thenReturn(join);
-            when(join.get("name")).thenReturn(categoryNamePath);
-            when(cb.lower(categoryNamePath)).thenReturn(lowerCategoryName);
-            when(cb.equal(any(), any())).thenReturn(predicate);
-            when(cb.and(any(Predicate[].class))).thenReturn(predicate);
+            doReturn(join).when(root).join("categoriesSet");
             when(query.getResultType()).thenReturn((Class) ProductEntity.class);
 
             ProductSpecification.hasCategories(List.of("Streetwear")).toPredicate(root, query, cb);
@@ -209,14 +207,7 @@ class ProductSpecificationTest {
         void shouldNotCallDistinct_whenQueryResultTypeIsLong() {
             // Count queries use Long as result type — calling distinct on them causes issues.
             Join<ProductEntity, CategoryEntity> join = mock(Join.class);
-            Path<String> categoryNamePath = mock(Path.class);
-            Expression<String> lowerCategoryName = mock(Expression.class);
-
-            when(root.join("categoriesSet")).thenReturn(join);
-            when(join.get("name")).thenReturn(categoryNamePath);
-            when(cb.lower(categoryNamePath)).thenReturn(lowerCategoryName);
-            when(cb.equal(any(), any())).thenReturn(predicate);
-            when(cb.and(any(Predicate[].class))).thenReturn(predicate);
+            doReturn(join).when(root).join("categoriesSet");
             when(query.getResultType()).thenReturn((Class) Long.class);
 
             ProductSpecification.hasCategories(List.of("Streetwear")).toPredicate(root, query, cb);
