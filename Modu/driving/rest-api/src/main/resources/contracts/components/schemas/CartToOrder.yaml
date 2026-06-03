@@ -1,8 +1,8 @@
 type: object
 required:
-  - cart_items
+  - cartItems
 properties:
-  cart_items:
+  cartItems:
     type: array
     items:
       $ref: './CartItemForOrderRequest.yaml'

@@ -51,7 +51,7 @@ class OrderRestAdapterTest {
     private AuthenticationEntryPoint authenticationEntryPoint;
 
     private static final String CHECKOUT_BODY =
-            "{\"isPaid\":true,\"specialInstructions\":\"Leave at door\",\"shippingCosts\":0.0,\"cartToOrder\":{\"cart_items\":[]}}";
+            "{\"isPaid\":true,\"specialInstructions\":\"Leave at door\",\"shippingCosts\":0.0,\"cartToOrder\":{\"cartItems\":[]}}";
 
     @Test
     void checkoutCart_shouldReturn201_whenOrderIsPlaced() throws Exception {

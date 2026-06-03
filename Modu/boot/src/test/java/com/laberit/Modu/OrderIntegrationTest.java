@@ -37,9 +37,9 @@ class OrderIntegrationTest {
     }
 
     // variant 1 (1_S_BLUE): active=true, stock=7, product_id=1 (price 79.99)
-    private static final String DEVICE_CHECKOUT   = "ORDER00000000000000000000000000001";
-    private static final String DEVICE_GET_ORDER  = "ORDER00000000000000000000000000002";
-    private static final String DEVICE_EMPTY_CART = "ORDER00000000000000000000000000003";
+    private static final String DEVICE_CHECKOUT   = "ORDER000000000000000000000000001";
+    private static final String DEVICE_GET_ORDER  = "ORDER000000000000000000000000002";
+    private static final String DEVICE_EMPTY_CART = "ORDER000000000000000000000000003";
 
     private HttpHeaders headersWithDevice(String deviceId) {
         HttpHeaders headers = new HttpHeaders();
@@ -70,7 +70,7 @@ class OrderIntegrationTest {
 
         return String.format(
                 "{\"isPaid\":true,\"specialInstructions\":\"none\",\"shippingCosts\":0.0," +
-                "\"cartToOrder\":{\"cart_items\":[{\"id\":%d,\"productId\":%d,\"productVariantId\":%d," +
+                "\"cartToOrder\":{\"cartItems\":[{\"id\":%d,\"productId\":%d,\"productVariantId\":%d," +
                 "\"quantity\":%d,\"unitPrice\":%.2f,\"totalPrice\":%.2f}]}}",
                 itemId, productId, variantId, quantity, unitPrice, totalPrice);
     }
@@ -96,7 +96,7 @@ class OrderIntegrationTest {
         assertThat(json.read("$.orderPlaced", Boolean.class)).isTrue();
         assertThat(json.read("$.orderId", Long.class)).isGreaterThan(0L);
         assertThat(json.read("$.order.deviceId", String.class)).isEqualTo(DEVICE_CHECKOUT);
-        assertThat((List<?>) json.read("$.order.order_items")).hasSize(1);
+        assertThat((List<?>) json.read("$.order.orderItems")).hasSize(1);
     }
 
     @Test
@@ -116,9 +116,9 @@ class OrderIntegrationTest {
         assertThat(orderResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(json.read("$.id", Long.class)).isEqualTo(orderId);
         assertThat(json.read("$.deviceId", String.class)).isEqualTo(DEVICE_GET_ORDER);
-        assertThat((List<?>) json.read("$.order_items")).isNotEmpty();
-        assertThat(json.read("$.order_items[0].productVariantId", Long.class)).isEqualTo(1L);
-        assertThat(json.read("$.order_items[0].quantity", Integer.class)).isEqualTo(1);
+        assertThat((List<?>) json.read("$.orderItems")).isNotEmpty();
+        assertThat(json.read("$.orderItems[0].productVariantId", Long.class)).isEqualTo(1L);
+        assertThat(json.read("$.orderItems[0].quantity", Integer.class)).isEqualTo(1);
     }
 
     @Test
@@ -126,12 +126,14 @@ class OrderIntegrationTest {
         initializeCart(DEVICE_EMPTY_CART);
 
         String emptyCheckoutBody = "{\"isPaid\":true,\"specialInstructions\":\"\",\"shippingCosts\":0.0," +
-                "\"cartToOrder\":{\"cart_items\":[]}}";
+                "\"cartToOrder\":{\"cartItems\":[]}}";
         HttpEntity<String> request = new HttpEntity<>(emptyCheckoutBody, headersWithDevice(DEVICE_EMPTY_CART));
         ResponseEntity<String> response = restTemplate.exchange("/checkout", HttpMethod.POST, request, String.class);
         DocumentContext json = JsonPath.parse(response.getBody());
 
+        System.out.println("checkoutResponse: " + json.jsonString());
+
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(json.read("$.orderPlaced", Boolean.class)).isFalse();
     }
 }

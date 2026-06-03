@@ -7,7 +7,7 @@ required:
   - subtotalPrice
   - shippingCosts
   - totalPrice
-  - order_items
+  - orderItems
 properties:
   id:
     type: integer
@@ -35,7 +35,7 @@ properties:
     type: number
     format: double
     example: 123.56
-  order_items:
+  orderItems:
     type: array
     items:
       $ref: './OrderItemResponse.yaml'
