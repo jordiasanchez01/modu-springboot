@@ -1,0 +1,37 @@
+type: object
+required:
+  - deviceId
+  - createdAt
+  - updatedAt
+  - subTotalPrice
+  - shippingCosts
+  - totalPrice
+  - cartItems
+properties:
+  deviceId:
+    type: string
+    example: "10000abcdef00001"
+  createdAt:
+    type: string
+    format: date-time
+    example: "2026-01-15T10:30:00Z"
+  updatedAt:
+    type: string
+    format: date-time
+    example: "2026-01-15T10:42:15Z"
+  subTotalPrice:
+    type: number
+    format: double
+    example: 39.99
+  shippingCosts:
+    type: number
+    format: double
+    example: 0.0
+  totalPrice:
+    type: number
+    format: double
+    example: 39.99
+  cartItems:
+    type: array
+    items:
+      $ref: './CartItemForCartResponse.yaml'

@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: Modu API
+  datasource:
+    url: jdbc:postgresql://localhost:5432/modu_db?TimeZone=UTC
+    username: modu_user
+    password: modu_pass
+
+  jpa:
+    show_sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: always
+
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: 8080
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    urls:
+      - name: MODU API
+        url: /docs/v3/api-spec.yaml
+logging:
+  level:
+    com.laberit.Modu: DEBUG
+    org.flywaydb: DEBUG

@@ -1,0 +1,41 @@
+type: object
+required:
+  - id
+  - name
+  - description
+  - imageUrl
+  - price
+  - active
+  - categoriesSet
+  - productVariantsSet
+properties:
+  id:
+    type: integer
+    format: int64
+    example: 1
+  name:
+    type: string
+    example: Classic Denim Jacket
+  description:
+    type: string
+    example: A timeless blue denim jacket with a relaxed fit.
+  imageUrl:
+    type: string
+    example: https://images.unsplash.com/photo-1520975922284-9e0ce8276a2f?auto=format&fit=crop&w=800&q=80
+  price:
+    type: number
+    format: double
+    example: 79.99
+  active:
+    type: boolean
+    example: TRUE
+  categoriesSet:
+    type: array
+    items:
+      $ref: '../../components/schemas/HomeCategoryResponse.yaml'
+  productVariantsList:
+    type: array
+    items:
+      $ref: '../../components/schemas/ProductVariantResponse.yaml'
+
+

@@ -1,0 +1,33 @@
+delete:
+  tags:
+    - Cart
+  summary: Delete all items from the user´s cart
+  description: Delete all items from the user´s cart. In case the cart has no related items, no error returned. Authentication is needed in Authorization header (user´s device IMEI)
+  operationId: deleteCartItems
+  security:
+    - deviceAuth: []
+  responses:
+    '200':
+      description: Items deleted successfully. Empty cart returned.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/CartResponse.yaml'
+    '400':
+      description: Invalid request. Check the fields for more details.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '401':
+      description: User authentication by device IMEI is missing.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '500':
+      description: Internal error.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'

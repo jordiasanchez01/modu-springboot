@@ -1,0 +1,46 @@
+patch:
+  tags:
+    - Cart
+  summary: Updates the cart items' quantities in user's cart in the database
+  description: Updates the quantities in the user´s cart in the database, if it exists.
+  operationId: updateCartItemsQuantities
+  security:
+    - deviceAuth: [ ]
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas/UpdateCartQuantitiesRequest.yaml'
+
+  responses:
+    '200':
+      description: Cart updated successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/CartResponse.yaml'
+    '400':
+      description: Invalid request body. Check the fields for more details.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '404':
+      description: Requested cart is not found
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '409':
+      description: Cart could not be updated
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '500':
+      description: Internal error.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'

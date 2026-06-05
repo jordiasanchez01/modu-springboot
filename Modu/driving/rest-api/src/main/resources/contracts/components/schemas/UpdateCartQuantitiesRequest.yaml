@@ -1,0 +1,8 @@
+type: object
+required:
+  - cart_items
+properties:
+  cart_items:
+    type: array
+    items:
+      $ref: './CartItemQuantityUpdateRequest.yaml'

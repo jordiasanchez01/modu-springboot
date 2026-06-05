@@ -1,0 +1,43 @@
+type: object
+required:
+  - id
+  - deviceId
+  - createdAt
+  - specialInstructions
+  - subtotalPrice
+  - shippingCosts
+  - totalPrice
+  - orderItems
+properties:
+  id:
+    type: integer
+    format: int64
+    example: 1
+  deviceId:
+    type: string
+    example: "10000abcdef00001"
+  createdAt:
+    type: string
+    format: date-time
+    example: "2026-01-15T10:30:00"
+  specialInstructions:
+    type: string
+    example: 'Wrap each jean individually in red giftwrap'
+  subtotalPrice:
+    type: number
+    format: double
+    example: 123.56
+  shippingCosts:
+    type: number
+    format: double
+    example: 123.56
+  totalPrice:
+    type: number
+    format: double
+    example: 123.56
+  orderItems:
+    type: array
+    items:
+      $ref: './OrderItemResponse.yaml'
+
+

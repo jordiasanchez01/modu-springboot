@@ -1,0 +1,20 @@
+type: object
+required:
+  - orderPlaced
+  - orderId
+  - order
+  - cartResponse
+properties:
+  orderPlaced:
+    type: boolean
+    example: true
+  orderId:
+    type: integer
+    format: int64
+    example: 1
+  order:
+    $ref: './OrderResponse.yaml'
+  cartResponse:
+    $ref: './ValidatedCartResponse.yaml'
+
+

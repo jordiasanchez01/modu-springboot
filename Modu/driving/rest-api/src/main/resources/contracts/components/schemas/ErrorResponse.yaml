@@ -1,0 +1,25 @@
+type: object
+required:
+  - type
+  - message
+properties:
+  type:
+    type: string
+    example: "VALIDATION_ERROR"
+  message:
+    type: string
+    example: "Input validation failed"
+  fields:
+    type: array
+    items:
+      type: object
+      required:
+        - field
+        - message
+      properties:
+        field:
+          type: string
+          example: email
+        message:
+          type: string
+          example: The email format is not valid

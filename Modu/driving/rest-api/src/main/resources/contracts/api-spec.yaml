@@ -1,0 +1,61 @@
+openapi: 3.0.3
+info:
+  title: Modu API
+  description: API for Modu e-commerce
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: local server
+
+tags:
+  - name: Products
+    description: read operations to get products
+  - name: Categories
+    description: read operation to get categories
+  - name: Cart
+    description: operations related to cart handling (add item, modify quantity, validate)
+  - name: Checkout
+    description: operations related to order handling (add cart to order, check order, validate)
+
+paths:
+  /products:
+    $ref: './paths/products/products.yaml'
+  /products/{productId}:
+    $ref: './paths/products/get-product-by-id.yaml'
+
+  /categories:
+    $ref: './paths/categories.yaml'
+
+  /cart:
+    $ref: './paths/cart/cart.yaml'
+  /cart/update:
+    $ref: './paths/cart/cart-update.yaml'
+  /cart/updateCartItemsQuantities:
+    $ref: './paths/cart/update-cart-quantities.yaml'
+  /cart/addItem:
+    $ref: './paths/cart/add-item.yaml'
+  /cart/items/{itemId}:
+    $ref: './paths/cart/cart-item.yaml'
+  /cart/items:
+    $ref: './paths/cart/cart-items.yaml'
+  /cart/cartUpdatedAt:
+    $ref: './paths/cart/cart-updated-at.yaml'
+
+  /checkout:
+    $ref: './paths/checkout/checkout.yaml'
+  /get_order/{orderId}:
+    $ref: './paths/checkout/get-order.yaml'
+
+components:
+  securitySchemes:
+    deviceAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: "Device ID authentication. Format: ANDROID_ID"
+  schemas:
+    ProductPagedResponse:
+      $ref: './components/schemas/ProductPageResponse.yaml'
+    ValidatedCartResponse:
+      $ref: './components/schemas/ValidatedCartResponse.yaml'

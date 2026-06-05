@@ -1,0 +1,52 @@
+patch:
+  tags:
+    - Cart
+  summary: Updates contents of the user´s cart
+  description: The cart object sent in request replaces the contents of the user's cart. Authentication is needed in Authorization header (user´s device IMEI)
+  operationId: updateCart
+  security:
+    - deviceAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas/CartUpdateRequest.yaml'
+
+  responses:
+    '200':
+      description: Cart updated successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ValidatedCartResponse.yaml'
+    '400':
+      description: Invalid request. Check the fields for more details.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '401':
+        description: User authentication by device IMEI is missing.
+        content:
+          application/json:
+            schema:
+              $ref: '../../components/schemas/ErrorResponse.yaml'
+    '404':
+      description: Requested cart was not found
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '409':
+      description: The cart contains no items to checkout.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/CartResponse.yaml'
+    '500':
+      description: Internal error.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'

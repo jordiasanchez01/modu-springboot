@@ -1,0 +1,334 @@
+package com.laberit.Modu.services;
+
+import com.laberit.Modu.domain.exceptions.CartNotFoundException;
+import com.laberit.Modu.domain.exceptions.ProductNotFoundException;
+import com.laberit.Modu.domain.exceptions.ProductVariantNotFoundException;
+import com.laberit.Modu.domain.model.*;
+import com.laberit.Modu.domain.model.response.*;
+import com.laberit.Modu.ports.driven.*;
+import com.laberit.Modu.ports.driving.CartItemServicePort;
+import com.laberit.Modu.ports.driving.CartServicePort;
+import com.laberit.Modu.ports.driving.ProductVariantServicePort;
+import com.laberit.Modu.ports.driving.command.*;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class CartServiceUseCase implements CartServicePort {
+    private final CartRepositoryPort cartRepositoryPort;
+    private final CartItemRepositoryPort cartItemRepositoryPort;
+    private final ProductVariantRepositoryPort productVariantRepositoryPort;
+    private final ProductRepositoryPort productRepositoryPort;
+
+    @Transactional
+    public Cart initializeCart(String deviceId) {
+        if (cartRepositoryPort.existsByDeviceId(deviceId)) {
+            cartRepositoryPort.deleteByDeviceId(deviceId);
+        }
+        return cartRepositoryPort.save(
+                Cart.builder().deviceId(deviceId).cartItems(new ArrayList<>()).build());
+    }
+
+    @Transactional
+    public CartWithAllChecks getCartWithAllChecks(String deviceId) {
+        Cart cart = cartRepositoryPort.findByDeviceId(deviceId)
+                .orElseThrow(CartNotFoundException::new);
+        List<CartItem> cartItems = new ArrayList<>(
+                cartItemRepositoryPort.findAllByCartId(cart.getId())
+        );
+
+        Set<Long> variantIds = cartItems.stream()
+                .map(CartItem::getProductVariantId)
+                .collect(Collectors.toSet());
+        Set<ProductVariant> variants = productVariantRepositoryPort.findAllByIdInSet(variantIds);
+
+        updateCurrentStock(cartItems, variants);
+
+        setProductIdsInItems(cartItems, variants);
+
+        List<CartItem> toDelete = new ArrayList<>();
+
+        List<ProductVariantAvailabilityResult> variantAvailability = detectVariantAvailability(
+                cartItems, variants);
+
+        if (!variantAvailability.isEmpty()) {
+            List<CartItem> removedByAvailability = cartItems.stream()
+                    .filter(cartItem -> variantAvailability.stream()
+                            .anyMatch(result -> result.productVariantId().equals(cartItem.getProductVariantId())))
+                    .toList();
+
+            toDelete.addAll(removedByAvailability);
+            cartItems.removeAll(removedByAvailability);
+            cartItemRepositoryPort.saveAll(cartItems);
+        }
+
+        List<ProductPriceChange> priceChanges = detectPriceChanges(cartItems, variants);
+
+        List<InsufficientStockResult> insufficientStock = detectInsufficientStock(cartItems);
+
+        if (!priceChanges.isEmpty()) {
+            applyPriceChanges(cartItems, priceChanges);
+            cartItemRepositoryPort.saveAll(cartItems);
+        }
+        if (!insufficientStock.isEmpty()) {
+            applyQuantityChanges(cartItems, insufficientStock);
+            cartItemRepositoryPort.saveAll(cartItems);
+        }
+
+        cart.setCartItems(cartItems);
+
+        List<Long> cartItemIds = toDelete.stream()
+                .map(CartItem::getId)
+                .collect(Collectors.toList());
+
+        cartItemRepositoryPort.deleteAllByIdIn(cartItemIds);
+
+        return new CartWithAllChecks(cart, priceChanges, insufficientStock, variantAvailability);
+    }
+
+    @Override
+    public Instant getCartUpdatedAt(String deviceId){
+        Cart cart = cartRepositoryPort.findByDeviceId(deviceId)
+                .orElseThrow(CartNotFoundException::new);
+        return cart.getUpdatedAt();
+    }
+
+    @Override
+    public Cart findCartByDeviceId(String deviceId) {
+
+        Cart cart = cartRepositoryPort.findByDeviceId(deviceId)
+                .orElseThrow(CartNotFoundException::new);
+        List<CartItem> cartItems = retrieveFullCartItems(cart.getId());
+
+        cart.setCartItems(cartItems);
+
+        return cart;
+    }
+
+    @Transactional
+    @Override
+    public CartWithAllChecks updateCart(Cart clientCart) {
+        Cart updatedCart = cartRepositoryPort.findByDeviceId(clientCart.getDeviceId())
+                .orElseThrow(CartNotFoundException::new);
+
+        clientCart.setId(updatedCart.getId());
+        List<CartItem> updatedCartItems = retrieveFullCartItems(clientCart.getId());
+        List<CartItem> clientCartItems = clientCart.getCartItems();
+        clientCartItems.forEach(cartItem -> {cartItem.setCartId(clientCart.getId());});
+
+        List<CartItem> toAdd = clientCartItems.stream()
+                .filter(client -> client.getId() == null
+                        || updatedCartItems.stream()
+                        .noneMatch(updated -> updated.getId().equals(client.getId())))
+                .toList();
+
+        List<CartItem> toDelete = new ArrayList<>(updatedCartItems.stream()
+                .filter(updated -> clientCartItems.stream()
+                        .noneMatch(client -> updated.getId().equals(client.getId())))
+                .toList());
+
+        updatedCartItems.stream()
+                .filter(updated -> clientCartItems.stream()
+                        .anyMatch(client -> updated.getId().equals(client.getId())))
+                .forEach(updated -> clientCartItems.stream()
+                        .filter(client -> updated.getId().equals(client.getId()))
+                        .findFirst()
+                        .ifPresent(match -> {
+                            updated.setQuantity(match.getQuantity());
+                            updated.setUnitPrice(match.getUnitPrice());
+                        }));
+
+        updatedCartItems.removeAll(toDelete);
+        updatedCartItems.addAll(toAdd);
+
+        Set<Long> variantIds = updatedCartItems.stream()
+                .map(CartItem::getProductVariantId)
+                .collect(Collectors.toSet());
+        Set<ProductVariant> variants = productVariantRepositoryPort.findAllByIdInSet(variantIds);
+
+        updateCurrentStock(updatedCartItems, variants);
+
+        List<ProductVariantAvailabilityResult> variantAvailability = detectVariantAvailability(
+                updatedCartItems, variants);
+
+        List<CartItem> savedItems = new ArrayList<>();
+
+        if (!variantAvailability.isEmpty()) {
+            List<CartItem> removedByAvailability = updatedCartItems.stream()
+                    .filter(cartItem -> variantAvailability.stream()
+                            .anyMatch(result -> result.productVariantId().equals(cartItem.getProductVariantId())))
+                    .toList();
+
+            toDelete.addAll(removedByAvailability);
+            updatedCartItems.removeAll(removedByAvailability);
+        }
+
+        List<ProductPriceChange> priceChanges = detectPriceChanges(updatedCartItems, variants);
+
+        List<InsufficientStockResult> insufficientStock = detectInsufficientStock(updatedCartItems);
+
+        if (!priceChanges.isEmpty()) {
+            applyPriceChanges(updatedCartItems, priceChanges);
+        }
+        if (!insufficientStock.isEmpty()) {
+            applyQuantityChanges(updatedCartItems, insufficientStock);
+        }
+
+        List<Long> cartItemIds = toDelete.stream()
+            .map(CartItem::getId)
+            .collect(Collectors.toList());
+
+        cartItemRepositoryPort.deleteAllByIdIn(cartItemIds);
+        savedItems = cartItemRepositoryPort.saveAll(updatedCartItems);
+        updatedCart.setCartItems(retrieveFullCartItems(updatedCart.getId()));
+
+        return new CartWithAllChecks(updatedCart, priceChanges, insufficientStock, variantAvailability);
+    }
+
+    @Transactional
+    @Override
+    public Cart updateCartItemsQuantities(String deviceId, CartItemsQuantitiesUpdateDTO cartItemsQuantitiesUpdateDTO) {
+        Cart cart = findCartByDeviceId(deviceId);
+        List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cart.getId());
+
+        if (cartItemsQuantitiesUpdateDTO.cartItemCommands() != null && !cartItemsQuantitiesUpdateDTO.cartItemCommands().isEmpty()) {
+            List<UpdateCartItemQuantityCommand> itemCommands = cartItemsQuantitiesUpdateDTO.cartItemCommands();
+            for (CartItem cartItem : cartItems) {
+                itemCommands.stream()
+                    .filter(command -> command.cartItemId().equals(cartItem.getId()))
+                    .findFirst()
+                    .ifPresent(command -> cartItem.setQuantity(command.quantity()));
+            }
+            cartItemRepositoryPort.saveAll(cartItems);
+        }
+
+        List<CartItem> updatedItems = retrieveFullCartItems(cart.getId());
+        cart.setCartItems(updatedItems);
+        cartRepositoryPort.save(cart);
+        return cart;
+    }
+
+    private boolean isSameCartItem(CartItem cartItemA, CartItem cartItemB) {
+        return cartItemA.getId() != null
+            ? cartItemA.getId().equals(cartItemB.getId())
+            : cartItemA.getProductVariantId().equals(cartItemB.getProductVariantId());
+    }
+
+    private List<CartItem> retrieveFullCartItems(Long cartId) {
+        List<CartItem> cartItems = cartItemRepositoryPort.findAllByCartId(cartId);
+
+        Set<Long> variantIds = cartItems.stream()
+            .map(CartItem::getProductVariantId)
+            .collect(Collectors.toSet());
+        Set<ProductVariant> variants = productVariantRepositoryPort.findAllByIdInSet(variantIds);
+
+        updateCurrentStock(cartItems, variants);
+
+        setProductIdsInItems(cartItems, variants);
+
+        return cartItems;
+    }
+
+    private void applyPriceChanges(List<CartItem> cartItems, List<ProductPriceChange> priceChanges) {
+        Map<Long, Double> variantsWithNewPriceMap = priceChanges.stream()
+            .collect(Collectors.toMap(ProductPriceChange::productVariantId, ProductPriceChange:: newPrice));
+        cartItems.forEach(cartItem -> {
+            if (variantsWithNewPriceMap.containsKey(cartItem.getProductVariantId())) {
+                cartItem.setUnitPrice(variantsWithNewPriceMap.get(cartItem.getProductVariantId()));
+            }
+        });
+    }
+
+    private void applyQuantityChanges(List<CartItem> cartItems, List<InsufficientStockResult> stockDifferences) {
+        Map<Long, Integer> itemsWithInsufficientStock = stockDifferences.stream()
+                .collect(Collectors.toMap(InsufficientStockResult::productVariantId, InsufficientStockResult::availableStock));
+        cartItems.forEach(cartItem -> {
+            if (itemsWithInsufficientStock.containsKey(cartItem.getProductVariantId())) {
+                cartItem.setQuantity(itemsWithInsufficientStock.get(cartItem.getProductVariantId()));
+            }
+        });
+    }
+
+    private List<ProductPriceChange> detectPriceChanges(List<CartItem> cartItems, Set<ProductVariant> variants) {
+        Set<Long> productIds = variants.stream()
+                .map(ProductVariant::getProductId)
+                .collect(Collectors.toSet());
+        Set<Product> products = productRepositoryPort.findAllByIdInSet(productIds);
+        Map<Long, Product> productMap = products.stream()
+                .collect(Collectors.toMap(Product::getId, p -> p));
+
+        Map<Long, Long> variantToProductId = variants.stream()
+                .collect(Collectors.toMap(ProductVariant::getId, ProductVariant::getProductId));
+
+        List<ProductPriceChange> changedPricesList = new ArrayList<>();
+
+        cartItems.forEach(cartItem -> {
+            Long productId =variantToProductId.get(cartItem.getProductVariantId());
+            Product product = productMap.get(productId);
+            if (!Objects.equals(cartItem.getUnitPrice(), product.getPrice())) {
+                changedPricesList.add(new ProductPriceChange(
+                        cartItem.getProductVariantId(),
+                        cartItem.getUnitPrice(),
+                        product.getPrice()
+                ));
+            }
+        });
+        return  changedPricesList;
+    }
+
+    private List<ProductVariantAvailabilityResult> detectVariantAvailability(List<CartItem> cartItems, Set<ProductVariant> variants) {
+
+        return cartItems.stream()
+                .flatMap(cartItem -> variants.stream()
+                        .filter(variant -> variant.getId().equals(cartItem.getProductVariantId()))
+                        .filter(variant -> !Boolean.TRUE.equals(variant.getActive()))
+                        .map(variant -> ProductVariantAvailabilityResult.builder()
+                                .cartItemId(cartItem.getId())
+                                .productVariantId(variant.getId())
+                                .isVariantAvailable(false)
+                                .build()))
+                .toList();
+    }
+
+    private List<InsufficientStockResult> detectInsufficientStock(List<CartItem> cartItems) {
+
+        List<InsufficientStockResult> insufficientStockList = new ArrayList<>();
+
+        cartItems.forEach(cartItem -> {
+            if (cartItem.getQuantity() > cartItem.getCurrentStock()) {
+                insufficientStockList.add(new InsufficientStockResult(
+                        cartItem.getProductVariantId(),
+                        cartItem.getQuantity(),
+                        cartItem.getCurrentStock()
+                ));
+            }
+        });
+        return insufficientStockList;
+    }
+
+    private void updateCurrentStock(List<CartItem> cartItems, Set<ProductVariant> variants) {
+        Map<Long, ProductVariant> variantMap = variants.stream()
+                .collect(Collectors.toMap(ProductVariant::getId, v -> v));
+
+        cartItems.forEach(item -> item.setCurrentStock(
+                variantMap.get(item.getProductVariantId()).getStock()));
+    }
+
+    private void setProductIdsInItems(List<CartItem> cartItems, Set<ProductVariant> variants) {
+        Map<Long, ProductVariant> variantMap = variants.stream()
+                .collect(Collectors.toMap(ProductVariant::getId, v -> v));
+
+        cartItems.forEach(item -> item.setProductId(
+                variantMap.get(item.getProductVariantId()).getProductId()));
+    }
+}

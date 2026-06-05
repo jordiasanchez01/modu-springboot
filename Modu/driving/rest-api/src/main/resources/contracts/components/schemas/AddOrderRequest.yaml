@@ -1,0 +1,20 @@
+type: object
+required:
+  - isPaid
+  - specialInstructions
+  - shippingCosts
+  - cartToOrder
+properties:
+  isPaid:
+    type: boolean
+    example: true
+  specialInstructions:
+    type: string
+    description: Special instructions for the order
+    example: "Please leave at the door"
+  shippingCosts:
+    type: number
+    format: double
+    example: 0.0
+  cartToOrder:
+    $ref: './CartToOrder.yaml'

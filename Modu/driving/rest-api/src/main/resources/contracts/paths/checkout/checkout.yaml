@@ -1,0 +1,50 @@
+post:
+  tags:
+    - Checkout
+  summary: Places the user's cart contents as an Order
+  description: Displays the user's cart details and contained items, receives Special Instructions if any. Authentication is needed in Authorization header (user´s device IMEI)
+  operationId: checkoutCart
+  security:
+    - deviceAuth: [ ]
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas/AddOrderRequest.yaml'
+
+  responses:
+    '200':
+      description: Cart contents sent to Order successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/CheckoutResponse.yaml'
+    '400':
+      description: Invalid request. Check the fields for more details.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '401':
+      description: User authentication by device IMEI is missing.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '404':
+      description: Requested cart could not be found
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/ErrorResponse.yaml'
+    '409':
+      description: |
+        Conflict detected during checkout. Possible causes:
+        - **Price change detected**: One or more cart item prices have changed since they were added to the cart.
+        - **Insufficient stock**: One or more cart items exceed the available stock.
+        - **Empty cart**: The cart contains no items to checkout.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/CheckoutResponse.yaml'
